@@ -1,4 +1,4 @@
-/*global console, window, document*/
+/*global console, window, document, Image*/
 
 // Constants
 var FPS = 30;
@@ -6,12 +6,16 @@ var FPS = 30;
 var canvas = null;
 var context = null;
 
+var L = new Image();
+
 var setup = function () {
     'use strict';
     canvas = document.getElementById("canvas");
     context = canvas.getContext('2d');
     canvas.width = 200;
     canvas.height = 200;
+    
+    L.src = "L.png";
     
     console.log('Setup completed.');
 };
@@ -23,6 +27,8 @@ var mainloop = function () {
     
     context.rect(0, 0, canvas.width, canvas.height);
     context.stroke();
+    
+    context.drawImage(L, 0, 0);
     
     console.log('Mainloop finished');
 };
