@@ -1,4 +1,4 @@
-/*global console, window, document, Image*/
+/*global console, window, document, XMLHttpRequest, Image*/
 
 // Constants
 var FPS = 30;
@@ -7,26 +7,25 @@ var canvas = null;
 var context = null;
 
 var sprites = [];
+var spriteSheet = new Image();
 
 var load = function () {
     'use strict';
-    var xhr = new XMLHttpRequest();
-    var spriteData;
+    var xhr = new XMLHttpRequest(),
+        spriteData,
+        spriteName,
+        sprite;
+    
+    // Loads spritesheet.
+    spriteSheet.src = 'sprites.png';
+    
+    // Loads spritesheet data.
     xhr.open('GET', 'sprites.json', false); // not asynchronous
     xhr.onload = function () {
         spriteData = JSON.parse(this.responseText);
-    }
+    };
     xhr.send();
-    
-    /*
-    sprites['I'] = ;
-    sprites['O'] = ;
-    sprites['J'] = ;
-    sprites['L'] = ;
-    sprites['S'] = ;
-    sprites['Z'] = ;
-    sprites['T'] = ;
-    */
+    sprites = spriteData.frames;
     
     console.log('Loading completed.');
 };
@@ -48,7 +47,8 @@ var mainloop = function () {
     context.rect(0, 0, canvas.width, canvas.height);
     context.stroke();
     
-    // context.drawImage(sprites['L'], 0, 0);
+    var sp = sprites['L.png'].frame;
+    context.drawImage(spriteSheet, sp.x, sp.y, sp.w, sp.h, 0, 0, sp.w, sp.h);
 };
 
 // Kicks in once the DOM has been loaded.
