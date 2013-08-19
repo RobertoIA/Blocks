@@ -9,6 +9,10 @@ var context = null;
 var sprites = [];
 var spriteSheet = new Image();
 
+// Block status
+var blockAngle = 0,
+    blockPosition = {x:0, y:0};
+
 var load = function () {
     'use strict';
     var xhr = new XMLHttpRequest(),
@@ -53,11 +57,22 @@ var mainloop = function () {
     context.rect(0, 0, canvas.width, canvas.height);
     context.stroke();
 
+    context.save();
+    context.translate(blockPosition.x + (nextBlock.w / 2),
+                      blockPosition.y + (nextBlock.h / 2));
+    context.rotate(blockAngle);
     context.drawImage(spriteSheet,
                       nextBlock.x, nextBlock.y,
                       nextBlock.w, nextBlock.h,
-                      0, 0,
+                      -(nextBlock.w / 2), -(nextBlock.h / 2),
                       nextBlock.w, nextBlock.h);
+    context.restore();
+    
+    blockAngle += 0.5 * Math.PI;
+    blockAngle %= 2 * Math.PI;
+    
+    blockPosition.y += 10;
+    blockPosition.y %= canvas.height - nextBlock.h;
 };
 
 // Kicks in once the DOM has been loaded.
@@ -65,5 +80,6 @@ window.onload = function () {
     'use strict';
     load();
     setup();
-    window.setInterval(mainloop, 1000 / FPS);
+    // window.setInterval(mainloop, 1000 / FPS);
+    window.setInterval(mainloop, 1000);
 };
