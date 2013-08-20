@@ -11,7 +11,7 @@ var spriteSheet = new Image();
 
 // Block status
 var blockAngle = 0,
-    blockPosition = {x:0, y:0};
+    blockPosition = {x: 0, y: 0};
 
 var load = function () {
     'use strict';
@@ -50,7 +50,8 @@ var setup = function () {
 
 var mainloop = function () {
     'use strict';
-    var nextBlock = sprites[0].frame//sprites[Math.floor(Math.random() * 7)].frame;
+    var nextBlock = sprites[Math.floor(Math.random() * 7)].frame,
+        position = {x: blockPosition.x, y: blockPosition.y};
     
     context.clearRect(0, 0, canvas.width, canvas.height);
     
@@ -58,24 +59,36 @@ var mainloop = function () {
     context.stroke();
 
     context.save();
-    context.translate((nextBlock.w / 2),
-                      (nextBlock.h / 2));
+    if (blockAngle === 90) {
+        position.x = blockPosition.y;
+        position.y = -blockPosition.x;
+        context.translate(nextBlock.h, 0);
+    } else if (blockAngle === 180) {
+        context.translate(nextBlock.w, nextBlock.h);
+        position.x = -blockPosition.x;
+        position.y = -blockPosition.y;
+    } else if (blockAngle === 270) {
+        position.x = -blockPosition.y;
+        position.y = blockPosition.x;
+        context.translate(0, nextBlock.w);
+    }
     context.rotate(blockAngle * (Math.PI / 180)); // to radians
-    context.translate(-(nextBlock.w / 2),
-                      -(nextBlock.h / 2));
+    
     context.drawImage(spriteSheet,
                       nextBlock.x, nextBlock.y,
                       nextBlock.w, nextBlock.h,
-                      blockPosition.x,
-                      blockPosition.x,
+                      position.x,
+                      position.y,
                       nextBlock.w, nextBlock.h);
     context.restore();
     
     blockAngle += 90;
     blockAngle %= 360;
     
-    //blockPosition.y += 10;
-    //blockPosition.y %= canvas.height - nextBlock.h;
+    blockPosition.x += 10;
+    blockPosition.x %= canvas.width;
+    blockPosition.y += 10;
+    blockPosition.y %= canvas.height;
 };
 
 // Kicks in once the DOM has been loaded.
@@ -84,5 +97,5 @@ window.onload = function () {
     load();
     setup();
     // window.setInterval(mainloop, 1000 / FPS);
-    window.setInterval(mainloop, 1000);
+    window.setInterval(mainloop, 1000 / 3);
 };
