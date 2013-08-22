@@ -2,7 +2,7 @@
 
 // Constants
 var FPS = 60,
-    BLOCK_SPEED = 30;
+    BLOCK_SPEED = 3;
 
 var canvas = null,
     context = null;
@@ -105,7 +105,7 @@ var setup = function () {
     canvas = document.getElementById("canvas");
     context = canvas.getContext('2d');
     canvas.width = 300;
-    canvas.height = 200;
+    canvas.height = 300;
     
     document.addEventListener('keydown', function (event) {
         if (event.keyCode === 37) {
@@ -123,19 +123,21 @@ var setup = function () {
     console.log('Setup completed.');
 };
 
-var mainloop = function () {
-    'use strict';
-    
-    if (currentBlockPosition.y >= canvas.height || !currentBlock) {
-        getNextBlock();
-    }
-    
-    draw();
-};
-
 var updatePosition = function () {
     'use strict';
     currentBlockPosition.y += BLOCK_SPEED;
+};
+
+var mainloop = function () {
+    'use strict';
+    if (!currentBlock || currentBlockPosition.y +
+            (currentBlockAngle === 0 ? currentBlock.h :
+                    currentBlock.w) >= canvas.height) {
+        getNextBlock();
+    }
+    
+    updatePosition();
+    draw();
 };
 
 // Kicks in once the DOM has been loaded.
@@ -144,5 +146,4 @@ window.onload = function () {
     load();
     setup();
     window.setInterval(mainloop, 1000 / FPS);
-    window.setInterval(updatePosition, 1000);
 };
