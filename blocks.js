@@ -42,6 +42,33 @@ var load = function () {
     console.log('Loading completed.');
 };
 
+var drawBlock = function (block, position, angle) {
+    'use strict';
+    context.save();
+    if (angle === 90) {
+        position.x = position.y;
+        position.y = -position.x;
+        context.translate(block.h, 0);
+    } else if (angle === 180) {
+        context.translate(block.w, block.h);
+        position.x = -position.x;
+        position.y = -position.y;
+    } else if (angle === 270) {
+        position.x = -position.y;
+        position.y = position.x;
+        context.translate(0, block.w);
+    }
+    context.rotate(angle * (Math.PI / 180)); // to radians
+    
+    context.drawImage(spriteSheet,
+                      block.x, block.y,
+                      block.w, block.h,
+                      position.x,
+                      position.y,
+                      block.w, block.h);
+    context.restore();
+};
+
 var draw = function () {
     'use strict';
 
@@ -49,38 +76,10 @@ var draw = function () {
     context.clearRect(0, 0, canvas.width, canvas.height);
     
     // Draw current block.
-    var position = {x: blockPosition.x, y: blockPosition.y};
-
-    context.save();
-    if (blockAngle === 90) {
-        position.x = blockPosition.y;
-        position.y = -blockPosition.x;
-        context.translate(currentBlock.h, 0);
-    } else if (blockAngle === 180) {
-        context.translate(currentBlock.w, currentBlock.h);
-        position.x = -blockPosition.x;
-        position.y = -blockPosition.y;
-    } else if (blockAngle === 270) {
-        position.x = -blockPosition.y;
-        position.y = blockPosition.x;
-        context.translate(0, currentBlock.w);
-    }
-    context.rotate(blockAngle * (Math.PI / 180)); // to radians
-    
-    context.drawImage(spriteSheet,
-                      currentBlock.x, currentBlock.y,
-                      currentBlock.w, currentBlock.h,
-                      position.x,
-                      position.y,
-                      currentBlock.w, currentBlock.h);
-    context.restore();
+    drawBlock(currentBlock, blockPosition, blockAngle);
     
     // Draw next block.
-    context.drawImage(spriteSheet,
-                      nextBlock.x, nextBlock.y,
-                      nextBlock.w, nextBlock.h,
-                      0, 0,
-                      nextBlock.w, nextBlock.h);
+    drawBlock(nextBlock, {x: 0, y: 0}, 0);
     
     // Draw canvas limits.
     context.rect(0, 0, canvas.width, canvas.height);
