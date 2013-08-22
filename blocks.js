@@ -1,21 +1,22 @@
 /*global console, window, document, XMLHttpRequest, Image*/
 
 // Constants
-var FPS = 30;
+var FPS = 60,
+    BLOCK_SPEED = 30;
 
-var canvas = null;
-var context = null;
+var canvas = null,
+    context = null;
 
-var sprites = [];
-var spriteSheet = new Image();
+var sprites = [],
+    spriteSheet = new Image();
 
 // Next block
 var nextBlock;
 
 // Current block and status
 var currentBlock,
-    blockAngle = 0,
-    blockPosition = {x: 150, y: 0};
+    currentBlockAngle = 0,
+    currentBlockPosition = {x: 0, y: 0};
 
 var load = function () {
     'use strict';
@@ -44,18 +45,20 @@ var load = function () {
 
 var drawBlock = function (block, position, angle) {
     'use strict';
+    var positionShift = {x: position.x, y: position.y};
+    
     context.save();
     if (angle === 90) {
-        position.x = position.y;
-        position.y = -position.x;
+        positionShift.x = position.y;
+        positionShift.y = -position.x;
         context.translate(block.h, 0);
     } else if (angle === 180) {
+        positionShift.x = -position.x;
+        positionShift.y = -position.y;
         context.translate(block.w, block.h);
-        position.x = -position.x;
-        position.y = -position.y;
     } else if (angle === 270) {
-        position.x = -position.y;
-        position.y = position.x;
+        positionShift.x = -position.y;
+        positionShift.y = position.x;
         context.translate(0, block.w);
     }
     context.rotate(angle * (Math.PI / 180)); // to radians
@@ -63,8 +66,8 @@ var drawBlock = function (block, position, angle) {
     context.drawImage(spriteSheet,
                       block.x, block.y,
                       block.w, block.h,
-                      position.x,
-                      position.y,
+                      positionShift.x,
+                      positionShift.y,
                       block.w, block.h);
     context.restore();
 };
@@ -76,7 +79,7 @@ var draw = function () {
     context.clearRect(0, 0, canvas.width, canvas.height);
     
     // Draw current block.
-    drawBlock(currentBlock, blockPosition, blockAngle);
+    drawBlock(currentBlock, currentBlockPosition, currentBlockAngle);
     
     // Draw next block.
     drawBlock(nextBlock, {x: 0, y: 0}, 0);
@@ -93,8 +96,8 @@ var getNextBlock = function () {
     nextBlock = sprites[Math.floor(Math.random() * 7)].frame;
     
     // Reset position.
-    blockPosition.y = 0;
-    blockPosition.x = 150;
+    currentBlockPosition.y = 0;
+    currentBlockPosition.x = 150;
 };
 
 var setup = function () {
@@ -103,6 +106,16 @@ var setup = function () {
     context = canvas.getContext('2d');
     canvas.width = 300;
     canvas.height = 200;
+    
+    document.addEventListener('keydown', function (event) {
+        if (event.keyCode === 37) {
+            currentBlockAngle -= 90;
+        } else if (event.keyCode === 39) {
+            currentBlockAngle += 90;
+        }
+        currentBlockAngle = Math.abs(currentBlockAngle);
+        currentBlockAngle %= 360;
+    });
     
     // Generate first block.
     getNextBlock();
@@ -113,19 +126,16 @@ var setup = function () {
 var mainloop = function () {
     'use strict';
     
-    if (blockPosition.y >= canvas.height || !currentBlock) {
+    if (currentBlockPosition.y >= canvas.height || !currentBlock) {
         getNextBlock();
     }
-    
-    //blockAngle += 90;
-    blockAngle %= 360;
     
     draw();
 };
 
 var updatePosition = function () {
     'use strict';
-    blockPosition.y += 30;
+    currentBlockPosition.y += BLOCK_SPEED;
 };
 
 // Kicks in once the DOM has been loaded.
@@ -133,7 +143,6 @@ window.onload = function () {
     'use strict';
     load();
     setup();
-    // window.setInterval(mainloop, 1000 / FPS);
-    window.setInterval(mainloop, 1000 / 3);
+    window.setInterval(mainloop, 1000 / FPS);
     window.setInterval(updatePosition, 1000);
 };
