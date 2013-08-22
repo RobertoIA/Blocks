@@ -18,6 +18,9 @@ var currentBlock,
     currentBlockAngle = 0,
     currentBlockPosition = {x: 0, y: 0};
 
+// Blocks already placed.
+var placedBlocks = [];
+
 var load = function () {
     'use strict';
     var xhr = new XMLHttpRequest(),
@@ -78,6 +81,12 @@ var draw = function () {
     // Clean screen.
     context.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Draw placed blocks.
+    for (var i = 0; i < placedBlocks.length; i++) {
+        drawBlock(placedBlocks[i].block, placedBlocks[i].position,
+                  placedBlocks[i].angle);
+    }
+    
     // Draw current block.
     drawBlock(currentBlock, currentBlockPosition, currentBlockAngle);
     
@@ -91,6 +100,12 @@ var draw = function () {
 
 var getNextBlock = function () {
     'use strict';
+    if (currentBlock) {
+        placedBlocks.push({block: currentBlock,
+                           position: {x: currentBlockPosition.x,
+                                      y: currentBlockPosition.y},
+                           angle: currentBlockAngle});
+    }
     // Generate new block and change current one.
     currentBlock = nextBlock;
     nextBlock = sprites[Math.floor(Math.random() * 7)].frame;
@@ -131,7 +146,7 @@ var updatePosition = function () {
 var mainloop = function () {
     'use strict';
     if (!currentBlock || currentBlockPosition.y +
-            (currentBlockAngle === 0 ? currentBlock.h :
+            (currentBlockAngle === 0 || currentBlockAngle === 180 ? currentBlock.h :
                     currentBlock.w) >= canvas.height) {
         getNextBlock();
     }
