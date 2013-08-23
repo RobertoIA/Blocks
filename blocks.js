@@ -2,7 +2,8 @@
 
 // Constants
 var FPS = 60,
-    BLOCK_SPEED = 3;
+    BLOCK_FALLING_SPEED = 3,
+    BLOCK_LATERAL_SPEED = 30;
 
 var canvas = null,
     context = null;
@@ -123,12 +124,14 @@ var setup = function () {
     canvas.height = 300;
     
     document.addEventListener('keydown', function (event) {
-        if (event.keyCode === 37) {
-            currentBlockAngle -= 90;
-        } else if (event.keyCode === 39) {
+        if (event.keyCode === 38) {
             currentBlockAngle += 90;
+        } else if (event.keyCode === 37) {
+            currentBlockPosition.x -= BLOCK_LATERAL_SPEED;
+        } else if (event.keyCode === 39) {
+            currentBlockPosition.x += BLOCK_LATERAL_SPEED;
         }
-        currentBlockAngle = Math.abs(currentBlockAngle);
+        // currentBlockAngle = Math.abs(currentBlockAngle);
         currentBlockAngle %= 360;
     });
     
@@ -140,7 +143,7 @@ var setup = function () {
 
 var updatePosition = function () {
     'use strict';
-    currentBlockPosition.y += BLOCK_SPEED;
+    currentBlockPosition.y += BLOCK_FALLING_SPEED;
 };
 
 var mainloop = function () {
