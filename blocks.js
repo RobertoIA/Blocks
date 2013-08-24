@@ -2,6 +2,10 @@
 
 // Constants
 var FPS = 60,
+    LEFT_MARGIN = 200,
+    RIGHT_MARGIN = 600,
+    TOP_MARGIN = 0,
+    BOTTOM_MARGIN = 800,
     BLOCK_FALLING_SPEED = 3,
     BLOCK_LATERAL_SPEED = 30;
 
@@ -94,8 +98,9 @@ var draw = function () {
     // Draw next block.
     drawBlock(nextBlock, {x: 0, y: 0}, 0);
     
-    // Draw canvas limits.
-    context.rect(0, 0, canvas.width, canvas.height);
+    // Draw board limits.
+    context.rect(LEFT_MARGIN, TOP_MARGIN,
+                 RIGHT_MARGIN - LEFT_MARGIN, BOTTOM_MARGIN - TOP_MARGIN);
     context.stroke();
 };
 
@@ -112,25 +117,39 @@ var getNextBlock = function () {
     nextBlock = sprites[Math.floor(Math.random() * 7)].frame;
     
     // Reset position.
-    currentBlockPosition.y = 0;
-    currentBlockPosition.x = 150;
+    currentBlockPosition.y = TOP_MARGIN;
+    currentBlockPosition.x = LEFT_MARGIN + (RIGHT_MARGIN - LEFT_MARGIN) / 2;
 };
 
 var setup = function () {
     'use strict';
     canvas = document.getElementById("canvas");
     context = canvas.getContext('2d');
-    canvas.width = 300;
-    canvas.height = 300;
+    canvas.width = 800;
+    canvas.height = 800;
     
     document.addEventListener('keydown', function (event) {
+        var blockWidth = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
+                          currentBlock.w : currentBlock.h );
+        
         if (event.keyCode === 38) {
             currentBlockAngle += 90;
+        } else if (event.keyCode === 40) {
+            currentBlockPosition.y += BLOCK_FALLING_SPEED * 2;
         } else if (event.keyCode === 37) {
             currentBlockPosition.x -= BLOCK_LATERAL_SPEED;
         } else if (event.keyCode === 39) {
             currentBlockPosition.x += BLOCK_LATERAL_SPEED;
         }
+        
+        console.log(event.keyCode);
+        
+        // Check margins.
+        if(currentBlockPosition.x < LEFT_MARGIN)
+            currentBlockPosition.x = LEFT_MARGIN;
+        else if(currentBlockPosition.x > RIGHT_MARGIN - blockWidth)
+            currentBlockPosition.x = RIGHT_MARGIN - blockWidth;
+        
         // currentBlockAngle = Math.abs(currentBlockAngle);
         currentBlockAngle %= 360;
     });
