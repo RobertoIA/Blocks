@@ -126,6 +126,7 @@ var getNextBlock = function () {
     // Reset position.
     currentBlockPosition.y = TOP_MARGIN;
     currentBlockPosition.x = LEFT_MARGIN + (RIGHT_MARGIN - LEFT_MARGIN) / 2;
+    currentBlockAngle = 0;
 };
 
 var setup = function () {
