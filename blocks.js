@@ -9,6 +9,9 @@ var FPS = 60,
     BLOCK_FALLING_SPEED = 3,
     BLOCK_LATERAL_SPEED = 30;
 
+// Size of the minimun fragment of a block.
+var fragmentSize;
+
 var canvas = null,
     context = null;
 
@@ -51,7 +54,7 @@ var load = function () {
     console.log('Loading completed.');
 };
 
-var drawBlock = function (block, position, angle) {
+var drawBlock = function (block, position, angle, fragments) {
     'use strict';
     var positionShift = {x: position.x, y: position.y};
     
@@ -82,12 +85,13 @@ var drawBlock = function (block, position, angle) {
 
 var draw = function () {
     'use strict';
+    var i;
 
     // Clean screen.
     context.clearRect(0, 0, canvas.width, canvas.height);
     
     // Draw placed blocks.
-    for (var i = 0; i < placedBlocks.length; i++) {
+    for (i = 0; i < placedBlocks.length; i += 1) {
         drawBlock(placedBlocks[i].block, placedBlocks[i].position,
                   placedBlocks[i].angle);
     }
@@ -102,6 +106,9 @@ var draw = function () {
     context.rect(LEFT_MARGIN, TOP_MARGIN,
                  RIGHT_MARGIN - LEFT_MARGIN, BOTTOM_MARGIN - TOP_MARGIN);
     context.stroke();
+    
+    console.log(Math.round(currentBlock.w / fragmentSize));
+    console.log(Math.round(currentBlock.h / fragmentSize));
 };
 
 var getNextBlock = function () {
@@ -128,27 +135,27 @@ var setup = function () {
     canvas.width = 800;
     canvas.height = 800;
     
+    // Fragment size is the minor side of the I piece.
+    fragmentSize = Math.min(sprites[0].frame.w, sprites[0].frame.h);
+    
     document.addEventListener('keydown', function (event) {
         var blockWidth = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                          currentBlock.w : currentBlock.h );
+                          currentBlock.w : currentBlock.h);
         
         if (event.keyCode === 38) {
             currentBlockAngle += 90;
-        } else if (event.keyCode === 40) {
-            currentBlockPosition.y += BLOCK_FALLING_SPEED * 2;
         } else if (event.keyCode === 37) {
             currentBlockPosition.x -= BLOCK_LATERAL_SPEED;
         } else if (event.keyCode === 39) {
             currentBlockPosition.x += BLOCK_LATERAL_SPEED;
         }
         
-        console.log(event.keyCode);
-        
         // Check margins.
-        if(currentBlockPosition.x < LEFT_MARGIN)
+        if (currentBlockPosition.x < LEFT_MARGIN) {
             currentBlockPosition.x = LEFT_MARGIN;
-        else if(currentBlockPosition.x > RIGHT_MARGIN - blockWidth)
+        } else if (currentBlockPosition.x > RIGHT_MARGIN - blockWidth) {
             currentBlockPosition.x = RIGHT_MARGIN - blockWidth;
+        }
         
         // currentBlockAngle = Math.abs(currentBlockAngle);
         currentBlockAngle %= 360;
