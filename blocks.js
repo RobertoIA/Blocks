@@ -6,8 +6,7 @@ var FPS = 60,
     RIGHT_MARGIN = 600,
     TOP_MARGIN = 0,
     BOTTOM_MARGIN = 800,
-    BLOCK_FALLING_SPEED = 3,
-    BLOCK_LATERAL_SPEED = 30;
+    BLOCK_FALLING_SPEED = 3;
 
 // Size of the minimun fragment of a block.
 var fragmentSize;
@@ -146,9 +145,9 @@ var setup = function () {
         if (event.keyCode === 38) {
             currentBlockAngle += 90;
         } else if (event.keyCode === 37) {
-            currentBlockPosition.x -= BLOCK_LATERAL_SPEED;
+            currentBlockPosition.x -= fragmentSize;
         } else if (event.keyCode === 39) {
-            currentBlockPosition.x += BLOCK_LATERAL_SPEED;
+            currentBlockPosition.x += fragmentSize;
         }
         
         // Check margins.
