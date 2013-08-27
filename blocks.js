@@ -59,7 +59,8 @@ var load = function () {
 // Draws a block with the specified parameters.
 var drawBlock = function (block, position, angle, fragments) {
     'use strict';
-    var positionShift = {x: position.x, y: position.y};
+    var i,
+        positionShift = {x: position.x, y: position.y};
     
     context.save();
     if (angle === 90) {
@@ -77,12 +78,34 @@ var drawBlock = function (block, position, angle, fragments) {
     }
     context.rotate(angle * (Math.PI / 180)); // to radians
     
-    context.drawImage(spriteSheet,
+    if (!fragments) {
+        context.drawImage(spriteSheet,
                       block.x, block.y,
                       block.w, block.h,
                       positionShift.x,
                       positionShift.y,
                       block.w, block.h);
+    } else {
+        for (i = 0; i < fragments.length; i += 1) {
+            if (fragments[i]) {
+                if (angle === 0 || angle === 180) {
+                    context.drawImage(spriteSheet,
+                                      block.x, block.y + (fragmentSize * i),
+                                      block.w, fragmentSize,
+                                      positionShift.x,
+                                      positionShift.y + (fragmentSize * i),
+                                      block.w, fragmentSize);
+                } else {
+                    context.drawImage(spriteSheet,
+                                      block.x + (fragmentSize * i), block.y,
+                                      fragmentSize, block.h,
+                                      positionShift.x + (fragmentSize * i),
+                                      positionShift.y,
+                                      fragmentSize, block.h);
+                }
+            }
+        }
+    }
     context.restore();
 };
 
@@ -119,6 +142,9 @@ var draw = function () {
         console.log('height ' + Math.round(currentBlock.w / fragmentSize));
         console.log('width ' + Math.round(currentBlock.h / fragmentSize));
     }
+    
+    // TEST - draw part of a block
+    drawBlock(sprites[0].frame, {x: 0, y: 100}, 90, [true, false, false, true]);
 };
 
 // Changes block to the next one.
