@@ -1,33 +1,36 @@
 /*global console, window, document, XMLHttpRequest, Image*/
 
-// Constants
+// Constants.
 var FPS = 60,
     LEFT_MARGIN = 200,
     RIGHT_MARGIN = 600,
     TOP_MARGIN = 0,
     BOTTOM_MARGIN = 800,
-    BLOCK_FALLING_SPEED = 3;
+    BLOCK_FALLING_SPEED = 3,
 
-// Size of the minimun fragment of a block.
-var fragmentSize;
+    // Size of the minimun fragment of a block.
+    fragmentSize,
 
-var canvas = null,
-    context = null;
+    // Graphic elements.
+    canvas = null,
+    context = null,
 
-var sprites = [],
-    spriteSheet = new Image();
+    // Spritesheet and sprite data.
+    sprites = [],
+    spriteSheet = new Image(),
 
-// Next block
-var nextBlock;
+    // Next block
+    nextBlock,
 
-// Current block and status
-var currentBlock,
+    // Current block and status
+    currentBlock,
     currentBlockAngle = 0,
-    currentBlockPosition = {x: 0, y: 0};
+    currentBlockPosition = {x: 0, y: 0},
 
-// Blocks already placed.
-var placedBlocks = [];
+    // Blocks already placed.
+    placedBlocks = [];
 
+// Loads sprites and sprite data.
 var load = function () {
     'use strict';
     var xhr = new XMLHttpRequest(),
@@ -53,6 +56,7 @@ var load = function () {
     console.log('Loading completed.');
 };
 
+// Draws a block with the specified parameters.
 var drawBlock = function (block, position, angle, fragments) {
     'use strict';
     var positionShift = {x: position.x, y: position.y};
@@ -82,6 +86,7 @@ var drawBlock = function (block, position, angle, fragments) {
     context.restore();
 };
 
+// Draws current screen contents.
 var draw = function () {
     'use strict';
     var i;
@@ -106,10 +111,17 @@ var draw = function () {
                  RIGHT_MARGIN - LEFT_MARGIN, BOTTOM_MARGIN - TOP_MARGIN);
     context.stroke();
     
-    console.log(Math.round(currentBlock.w / fragmentSize));
-    console.log(Math.round(currentBlock.h / fragmentSize));
+    // TEST - width and height calculation in fragments.
+    if (currentBlockAngle === 0 || currentBlockAngle === 180) {
+        console.log('width ' + Math.round(currentBlock.w / fragmentSize));
+        console.log('height ' + Math.round(currentBlock.h / fragmentSize));
+    } else {
+        console.log('height ' + Math.round(currentBlock.w / fragmentSize));
+        console.log('width ' + Math.round(currentBlock.h / fragmentSize));
+    }
 };
 
+// Changes block to the next one.
 var getNextBlock = function () {
     'use strict';
     if (currentBlock) {
@@ -128,6 +140,7 @@ var getNextBlock = function () {
     currentBlockAngle = 0;
 };
 
+// Sets up basics elements.
 var setup = function () {
     'use strict';
     canvas = document.getElementById("canvas");
@@ -167,11 +180,13 @@ var setup = function () {
     console.log('Setup completed.');
 };
 
+// Updates current block position.
 var updatePosition = function () {
     'use strict';
     currentBlockPosition.y += BLOCK_FALLING_SPEED;
 };
 
+// Main game loop.
 var mainloop = function () {
     'use strict';
     if (!currentBlock || currentBlockPosition.y +
