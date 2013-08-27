@@ -3,9 +3,7 @@
 // Constants.
 var FPS = 60,
     LEFT_MARGIN = 200,
-    RIGHT_MARGIN = 600,
     TOP_MARGIN = 0,
-    BOTTOM_MARGIN = 800,
     BLOCK_FALLING_SPEED = 3,
 
     // Size of the minimun fragment of a block.
@@ -131,7 +129,7 @@ var draw = function () {
     
     // Draw board limits.
     context.rect(LEFT_MARGIN, TOP_MARGIN,
-                 RIGHT_MARGIN - LEFT_MARGIN, BOTTOM_MARGIN - TOP_MARGIN);
+                 fragmentSize * 10, fragmentSize * 20);
     context.stroke();
     
     // TEST - width and height calculation in fragments.
@@ -162,7 +160,7 @@ var getNextBlock = function () {
     
     // Reset position.
     currentBlockPosition.y = TOP_MARGIN;
-    currentBlockPosition.x = LEFT_MARGIN + (RIGHT_MARGIN - LEFT_MARGIN) / 2;
+    currentBlockPosition.x = LEFT_MARGIN + fragmentSize * 5;
     currentBlockAngle = 0;
 };
 
@@ -192,8 +190,9 @@ var setup = function () {
         // Check margins.
         if (currentBlockPosition.x < LEFT_MARGIN) {
             currentBlockPosition.x = LEFT_MARGIN;
-        } else if (currentBlockPosition.x > RIGHT_MARGIN - blockWidth) {
-            currentBlockPosition.x = RIGHT_MARGIN - blockWidth;
+        } else if (currentBlockPosition.x >
+                   (LEFT_MARGIN + (fragmentSize * 10)) - blockWidth) {
+            currentBlockPosition.x = (LEFT_MARGIN + (fragmentSize * 10)) - blockWidth;
         }
         
         // currentBlockAngle = Math.abs(currentBlockAngle);
@@ -217,7 +216,7 @@ var mainloop = function () {
     'use strict';
     if (!currentBlock || currentBlockPosition.y +
             (currentBlockAngle === 0 || currentBlockAngle === 180 ? currentBlock.h :
-                    currentBlock.w) >= canvas.height) {
+                    currentBlock.w) >= TOP_MARGIN + fragmentSize * 20) {
         getNextBlock();
     }
     
