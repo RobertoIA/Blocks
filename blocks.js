@@ -58,6 +58,7 @@ var load = function () {
 var drawBlock = function (block, position, angle, fragments) {
     'use strict';
     var i,
+        fragmentsDrawn = 0,
         positionShift = {x: position.x, y: position.y};
     
     context.save();
@@ -88,19 +89,20 @@ var drawBlock = function (block, position, angle, fragments) {
             if (fragments[i]) {
                 if (angle === 0 || angle === 180) {
                     context.drawImage(spriteSheet,
-                                      block.x, block.y + (fragmentSize * i),
+                                      block.x, block.y + (fragmentSize * fragmentsDrawn),
                                       block.w, fragmentSize,
                                       positionShift.x,
-                                      positionShift.y + (fragmentSize * i),
+                                      positionShift.y + (fragmentSize * fragmentsDrawn),
                                       block.w, fragmentSize);
                 } else {
                     context.drawImage(spriteSheet,
-                                      block.x + (fragmentSize * i), block.y,
+                                      block.x + (fragmentSize * fragmentsDrawn), block.y,
                                       fragmentSize, block.h,
-                                      positionShift.x + (fragmentSize * i),
+                                      positionShift.x + (fragmentSize * fragmentsDrawn),
                                       positionShift.y,
                                       fragmentSize, block.h);
                 }
+                fragmentsDrawn += 1;
             }
         }
     }
