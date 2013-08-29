@@ -2,7 +2,7 @@
 
 // Constants.
 var FPS = 60,
-    LEFT_MARGIN = 200,
+    LEFT_MARGIN = 150,
     TOP_MARGIN = 0,
     BLOCK_FALLING_SPEED = 3,
 
@@ -135,6 +135,7 @@ var draw = function () {
     context.stroke();
     
     // TEST - width and height calculation in fragments.
+    /*
     if (currentBlockAngle === 0 || currentBlockAngle === 180) {
         console.log('width ' + Math.round(currentBlock.w / fragmentSize));
         console.log('height ' + Math.round(currentBlock.h / fragmentSize));
@@ -142,9 +143,10 @@ var draw = function () {
         console.log('height ' + Math.round(currentBlock.w / fragmentSize));
         console.log('width ' + Math.round(currentBlock.h / fragmentSize));
     }
+    */
     
     // TEST - draw part of a block
-    drawBlock(sprites[0].frame, {x: 0, y: 100}, 90, [true, false, false, true]);
+    // drawBlock(sprites[0].frame, {x: 0, y: 100}, 90, [true, false, false, true]);
 };
 
 // Changes block to the next one.
