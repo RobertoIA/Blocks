@@ -85,20 +85,30 @@ var drawBlock = function (block, position, angle, fragments) {
                       positionShift.y,
                       block.w, block.h);
     } else {
-        for (i = 0; i < fragments.length; i += 1) {
+        for (i = fragments.length - 1; i >= 0 ; i -= 1) {
             if (fragments[i]) {
                 if (angle === 0 || angle === 180) {
                     context.drawImage(spriteSheet,
-                                      block.x, block.y + (fragmentSize * fragmentsDrawn),
+                                      block.x,
+                                      block.y + (fragmentSize *
+                                                 (fragments.length -
+                                                  (fragmentsDrawn + 1))),
                                       block.w, fragmentSize,
                                       positionShift.x,
-                                      positionShift.y + (fragmentSize * fragmentsDrawn),
+                                      positionShift.y + (fragmentSize *
+                                                 (fragments.length -
+                                                  (fragmentsDrawn + 1))),
                                       block.w, fragmentSize);
                 } else {
                     context.drawImage(spriteSheet,
-                                      block.x + (fragmentSize * fragmentsDrawn), block.y,
+                                      block.x + (fragmentSize *
+                                                 (fragments.length -
+                                                  (fragmentsDrawn + 1))),
+                                      block.y,
                                       fragmentSize, block.h,
-                                      positionShift.x + (fragmentSize * fragmentsDrawn),
+                                      positionShift.x + (fragmentSize *
+                                                 (fragments.length -
+                                                  (fragmentsDrawn + 1))),
                                       positionShift.y,
                                       fragmentSize, block.h);
                 }
@@ -145,8 +155,9 @@ var draw = function () {
     }
     */
     
-    // TEST - draw part of a block
-    // drawBlock(sprites[0].frame, {x: 0, y: 100}, 90, [true, false, false, true]);
+    // TEST - draw part of a block and compare against normal block
+    drawBlock(sprites[0].frame, {x: 0, y: 100}, 90, [true, false, false, true]);
+    drawBlock(sprites[0].frame, {x: 50, y: 100}, 90);
 };
 
 // Changes block to the next one.
