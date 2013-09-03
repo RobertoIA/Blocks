@@ -33,7 +33,8 @@ var load = function () {
     'use strict';
     var xhr = new XMLHttpRequest(),
         spriteData,
-        sprite;
+        sprite,
+        block;
     
     // Loads spritesheet.
     spriteSheet.src = 'sprites.png';
@@ -48,6 +49,32 @@ var load = function () {
     for (sprite in spriteData.frames) {
         if (spriteData.frames.hasOwnProperty(sprite)) {
             sprites.push(spriteData.frames[sprite]);
+            
+            console.log(spriteData.frames[sprite].filename);
+            switch (spriteData.frames[sprite].filename) {
+            case "I.png":
+                block = [[1, 1, 1, 1]];
+                break;
+            case "J.png":
+                block = [[1, 0, 0], [1, 1, 1]];
+                break;
+            case "L.png":
+                block = [[0, 0, 1], [1, 1, 1]];
+                break;
+            case "O.png":
+                block = [[1, 1], [1, 1]];
+                break;
+            case "S.png":
+                block = [[0, 1, 1], [1, 1, 0]];
+                break;
+            case "T.png":
+                block = [[0, 1, 0], [1, 1, 1]];
+                break;
+            case "Z.png":
+                block = [[1, 1, 0], [0, 1, 1]];
+                break;
+            }
+            console.log(block);
         }
     }
 
@@ -85,7 +112,7 @@ var drawBlock = function (block, position, angle, fragments) {
                       positionShift.y,
                       block.w, block.h);
     } else {
-        for (i = fragments.length - 1; i >= 0 ; i -= 1) {
+        for (i = fragments.length - 1; i >= 0; i -= 1) {
             if (fragments[i]) {
                 if (angle === 0 || angle === 180) {
                     context.drawImage(spriteSheet,
