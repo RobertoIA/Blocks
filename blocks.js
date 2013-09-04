@@ -13,8 +13,8 @@ var FPS = 60,
     canvas = null,
     context = null,
 
-    // Spritesheet and sprite data.
-    sprites = [],
+    // Spritesheet and block data.
+    blocks = [],
     spriteSheet = new Image(),
 
     // Next block
@@ -34,7 +34,7 @@ var load = function () {
     var xhr = new XMLHttpRequest(),
         spriteData,
         sprite,
-        block;
+        shape;
     
     // Loads spritesheet.
     spriteSheet.src = 'sprites.png';
@@ -48,33 +48,35 @@ var load = function () {
     
     for (sprite in spriteData.frames) {
         if (spriteData.frames.hasOwnProperty(sprite)) {
-            sprites.push(spriteData.frames[sprite]);
             
-            console.log(spriteData.frames[sprite].filename);
             switch (spriteData.frames[sprite].filename) {
             case "I.png":
-                block = [[1, 1, 1, 1]];
+                shape = [[1, 1, 1, 1]];
                 break;
             case "J.png":
-                block = [[1, 0, 0], [1, 1, 1]];
+                shape = [[1, 0, 0], [1, 1, 1]];
                 break;
             case "L.png":
-                block = [[0, 0, 1], [1, 1, 1]];
+                shape = [[0, 0, 1], [1, 1, 1]];
                 break;
             case "O.png":
-                block = [[1, 1], [1, 1]];
+                shape = [[1, 1], [1, 1]];
                 break;
             case "S.png":
-                block = [[0, 1, 1], [1, 1, 0]];
+                shape = [[0, 1, 1], [1, 1, 0]];
                 break;
             case "T.png":
-                block = [[0, 1, 0], [1, 1, 1]];
+                shape = [[0, 1, 0], [1, 1, 1]];
                 break;
             case "Z.png":
-                block = [[1, 1, 0], [0, 1, 1]];
+                shape = [[1, 1, 0], [0, 1, 1]];
                 break;
             }
-            console.log(block);
+            
+            blocks.push({
+                'sprite': spriteData.frames[sprite],
+                'shape': shape
+            });
         }
     }
 
@@ -87,6 +89,8 @@ var drawBlock = function (block, position, angle, fragments) {
     var i,
         fragmentsDrawn = 0,
         positionShift = {x: position.x, y: position.y};
+    
+    block = block.sprite.frame;
     
     context.save();
     if (angle === 90) {
@@ -183,8 +187,8 @@ var draw = function () {
     */
     
     // TEST - draw part of a block and compare against normal block
-    drawBlock(sprites[0].frame, {x: 0, y: 100}, 90, [true, false, false, true]);
-    drawBlock(sprites[0].frame, {x: 50, y: 100}, 90);
+    drawBlock(blocks[0], {x: 0, y: 100}, 90, [true, false, false, true]);
+    drawBlock(blocks[0], {x: 50, y: 100}, 90);
 };
 
 // Changes block to the next one.
@@ -198,7 +202,7 @@ var getNextBlock = function () {
     }
     // Generate new block and change current one.
     currentBlock = nextBlock;
-    nextBlock = sprites[Math.floor(Math.random() * 7)].frame;
+    nextBlock = blocks[Math.floor(Math.random() * 7)];
     
     // Reset position.
     currentBlockPosition.y = TOP_MARGIN;
@@ -215,11 +219,15 @@ var setup = function () {
     canvas.height = 800;
     
     // Fragment size is the minor side of the I piece.
-    fragmentSize = Math.min(sprites[0].frame.w, sprites[0].frame.h);
+    fragmentSize = Math.min(blocks[0].sprite.frame.w, blocks[0].sprite.frame.h);
+    
+    // Generate first block and next block.
+    getNextBlock();
+    getNextBlock();
     
     document.addEventListener('keydown', function (event) {
         var blockWidth = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                          currentBlock.w : currentBlock.h);
+                          currentBlock.sprite.frame.w : currentBlock.sprite.frame.h);
         
         if (event.keyCode === 38) {
             currentBlockAngle += 90;
@@ -240,10 +248,7 @@ var setup = function () {
         // currentBlockAngle = Math.abs(currentBlockAngle);
         currentBlockAngle %= 360;
     });
-    
-    // Generate first block.
-    getNextBlock();
-    
+
     console.log('Setup completed.');
 };
 
@@ -257,8 +262,9 @@ var updatePosition = function () {
 var mainloop = function () {
     'use strict';
     if (!currentBlock || currentBlockPosition.y +
-            (currentBlockAngle === 0 || currentBlockAngle === 180 ? currentBlock.h :
-                    currentBlock.w) >= TOP_MARGIN + fragmentSize * 20) {
+            (currentBlockAngle === 0 || currentBlockAngle === 180 ?
+                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w)
+            >= TOP_MARGIN + fragmentSize * 20) {
         getNextBlock();
     }
     
