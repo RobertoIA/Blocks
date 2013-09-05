@@ -51,7 +51,7 @@ var load = function () {
             
             switch (spriteData.frames[sprite].filename) {
             case "I.png":
-                shape = [[1, 1, 1, 1]];
+                shape = [[1], [1], [1], [1]];
                 break;
             case "J.png":
                 shape = [[1, 0, 0], [1, 1, 1]];
@@ -84,11 +84,25 @@ var load = function () {
 };
 
 // Draws a block with the specified parameters.
-var drawBlock = function (block, position, angle, fragments) {
+var drawBlock = function (block, position, angle) {
     'use strict';
     var i,
+        fragments = [],
         fragmentsDrawn = 0,
-        positionShift = {x: position.x, y: position.y};
+        positionShift = {x: position.x, y: position.y},
+        rowSum = function (prev, cur) {
+            return prev + cur;
+        };
+    
+    //console.log(block.shape);
+    for (i = 0; i < block.shape.length; i += 1) {
+        //console.log(block.shape[i]);
+        //console.log(block.shape[i].reduce(rowSum));
+        if (block.shape[i].reduce(rowSum) > 0) {
+            fragments.push(true);
+        }
+    }
+    console.log(fragments);
     
     block = block.sprite.frame;
     
@@ -108,45 +122,38 @@ var drawBlock = function (block, position, angle, fragments) {
     }
     context.rotate(angle * (Math.PI / 180)); // to radians
     
-    if (!fragments) {
-        context.drawImage(spriteSheet,
-                      block.x, block.y,
-                      block.w, block.h,
-                      positionShift.x,
-                      positionShift.y,
-                      block.w, block.h);
-    } else {
-        for (i = fragments.length - 1; i >= 0; i -= 1) {
-            if (fragments[i]) {
-                if (angle === 0 || angle === 180) {
-                    context.drawImage(spriteSheet,
-                                      block.x,
-                                      block.y + (fragmentSize *
-                                                 (fragments.length -
-                                                  (fragmentsDrawn + 1))),
-                                      block.w, fragmentSize,
-                                      positionShift.x,
-                                      positionShift.y + (fragmentSize *
-                                                 (fragments.length -
-                                                  (fragmentsDrawn + 1))),
-                                      block.w, fragmentSize);
-                } else {
-                    context.drawImage(spriteSheet,
-                                      block.x + (fragmentSize *
-                                                 (fragments.length -
-                                                  (fragmentsDrawn + 1))),
-                                      block.y,
-                                      fragmentSize, block.h,
-                                      positionShift.x + (fragmentSize *
-                                                 (fragments.length -
-                                                  (fragmentsDrawn + 1))),
-                                      positionShift.y,
-                                      fragmentSize, block.h);
-                }
-                fragmentsDrawn += 1;
+
+    for (i = fragments.length - 1; i >= 0; i -= 1) {
+        if (fragments[i]) {
+            if (angle === 0 || angle === 180) {
+                context.drawImage(spriteSheet,
+                                  block.x,
+                                  block.y + (fragmentSize *
+                                             (fragments.length -
+                                              (fragmentsDrawn + 1))),
+                                  block.w, fragmentSize,
+                                  positionShift.x,
+                                  positionShift.y + (fragmentSize *
+                                             (fragments.length -
+                                              (fragmentsDrawn + 1))),
+                                  block.w, fragmentSize);
+            } else {
+                context.drawImage(spriteSheet,
+                                  block.x + (fragmentSize *
+                                             (fragments.length -
+                                              (fragmentsDrawn + 1))),
+                                  block.y,
+                                  fragmentSize, block.h,
+                                  positionShift.x + (fragmentSize *
+                                             (fragments.length -
+                                              (fragmentsDrawn + 1))),
+                                  positionShift.y,
+                                  fragmentSize, block.h);
             }
+            fragmentsDrawn += 1;
         }
     }
+
     context.restore();
 };
 
