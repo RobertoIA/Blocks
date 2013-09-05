@@ -46,12 +46,13 @@ var load = function () {
     };
     xhr.send();
     
+    // Shape of every block
     for (sprite in spriteData.frames) {
         if (spriteData.frames.hasOwnProperty(sprite)) {
             
             switch (spriteData.frames[sprite].filename) {
             case "I.png":
-                shape = [[1], [1], [1], [1]];
+                shape = [[1, 1, 1, 1]];
                 break;
             case "J.png":
                 shape = [[1, 0, 0], [1, 1, 1]];
@@ -94,15 +95,11 @@ var drawBlock = function (block, position, angle) {
             return prev + cur;
         };
     
-    //console.log(block.shape);
     for (i = 0; i < block.shape.length; i += 1) {
-        //console.log(block.shape[i]);
-        //console.log(block.shape[i].reduce(rowSum));
         if (block.shape[i].reduce(rowSum) > 0) {
             fragments.push(true);
         }
     }
-    console.log(fragments);
     
     block = block.sprite.frame;
     
@@ -181,26 +178,13 @@ var draw = function () {
     context.rect(LEFT_MARGIN, TOP_MARGIN,
                  fragmentSize * 10, fragmentSize * 20);
     context.stroke();
-    
-    // TEST - width and height calculation in fragments.
-    /*
-    if (currentBlockAngle === 0 || currentBlockAngle === 180) {
-        console.log('width ' + Math.round(currentBlock.w / fragmentSize));
-        console.log('height ' + Math.round(currentBlock.h / fragmentSize));
-    } else {
-        console.log('height ' + Math.round(currentBlock.w / fragmentSize));
-        console.log('width ' + Math.round(currentBlock.h / fragmentSize));
-    }
-    */
-    
-    // TEST - draw part of a block and compare against normal block
-    drawBlock(blocks[0], {x: 0, y: 100}, 90, [true, false, false, true]);
-    drawBlock(blocks[0], {x: 50, y: 100}, 90);
 };
 
 // Changes block to the next one.
 var getNextBlock = function () {
     'use strict';
+    var nextBlockNum = Math.floor(Math.random() * 7);
+    
     if (currentBlock) {
         placedBlocks.push({block: currentBlock,
                            position: {x: currentBlockPosition.x,
@@ -209,7 +193,9 @@ var getNextBlock = function () {
     }
     // Generate new block and change current one.
     currentBlock = nextBlock;
-    nextBlock = blocks[Math.floor(Math.random() * 7)];
+    console.log();
+    nextBlock = {'sprite': blocks[nextBlockNum].sprite,
+                 'shape': blocks[nextBlockNum].shape};
     
     // Reset position.
     currentBlockPosition.y = TOP_MARGIN;
@@ -220,11 +206,24 @@ var getNextBlock = function () {
 // Rotates current block.
 var rotate = function () {
     'use strict';
+    var i, j,
+        rowShape,
+        rotatedShape = [];
+    
     currentBlockAngle += 90;
     // currentBlockAngle = Math.abs(currentBlockAngle);
     currentBlockAngle %= 360;
     
     // Matrix rotation.
+    for (i = 0; i < currentBlock.shape[0].length; i += 1) {
+        rowShape = [];
+        for (j = 0; j < currentBlock.shape.length; j += 1) {
+            rowShape.push(currentBlock.shape[j][i]);
+        }
+        rotatedShape.push(rowShape);
+    }
+    
+    currentBlock.shape = rotatedShape;
 };
 
 // Sets up basics elements.
