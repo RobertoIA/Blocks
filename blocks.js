@@ -217,6 +217,16 @@ var getNextBlock = function () {
     currentBlockAngle = 0;
 };
 
+// Rotates current block.
+var rotate = function () {
+    'use strict';
+    currentBlockAngle += 90;
+    // currentBlockAngle = Math.abs(currentBlockAngle);
+    currentBlockAngle %= 360;
+    
+    // Matrix rotation.
+};
+
 // Sets up basics elements.
 var setup = function () {
     'use strict';
@@ -237,7 +247,7 @@ var setup = function () {
                           currentBlock.sprite.frame.w : currentBlock.sprite.frame.h);
         
         if (event.keyCode === 38) {
-            currentBlockAngle += 90;
+            rotate();
         } else if (event.keyCode === 37) {
             currentBlockPosition.x -= fragmentSize;
         } else if (event.keyCode === 39) {
@@ -251,9 +261,6 @@ var setup = function () {
                    (LEFT_MARGIN + (fragmentSize * 10)) - blockWidth) {
             currentBlockPosition.x = (LEFT_MARGIN + (fragmentSize * 10)) - blockWidth;
         }
-        
-        // currentBlockAngle = Math.abs(currentBlockAngle);
-        currentBlockAngle %= 360;
     });
 
     console.log('Setup completed.');
