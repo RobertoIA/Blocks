@@ -25,6 +25,8 @@ var FPS = 60,
     currentBlockAngle = 0,
     currentBlockPosition = {x: 0, y: 0},
 
+    // Board
+    board = [],
     // Blocks already placed.
     placedBlocks = [];
 
@@ -229,6 +231,8 @@ var rotate = function () {
 // Sets up basics elements.
 var setup = function () {
     'use strict';
+    var i, j, row;
+    
     canvas = document.getElementById("canvas");
     context = canvas.getContext('2d');
     canvas.width = 800;
@@ -236,6 +240,16 @@ var setup = function () {
     
     // Fragment size is the minor side of the I piece.
     fragmentSize = Math.min(blocks[0].sprite.frame.w, blocks[0].sprite.frame.h);
+    
+    // Initialize 10x20 board.
+    for (i = 0; i < 20; i += 1) {
+        row = [];
+        for (j = 0; j < 10; j += 1) {
+            row.push(0);
+        }
+        board.push(row);
+    }
+    console.log(board);
     
     // Generate first block and next block.
     getNextBlock();
