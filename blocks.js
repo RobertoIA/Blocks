@@ -4,7 +4,7 @@
 var FPS = 60,
     LEFT_MARGIN = 150,
     TOP_MARGIN = 0,
-    BLOCK_FALLING_SPEED = 3,
+    BLOCK_FALLING_SPEED = 500,
 
     // Size of the minimun fragment of a block.
     fragmentSize,
@@ -159,7 +159,7 @@ var drawBlock = function (block, position, angle) {
 // Draws current screen contents.
 var draw = function () {
     'use strict';
-    var i;
+    var i, j;
 
     // Clean screen.
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -179,6 +179,17 @@ var draw = function () {
     // Draw board limits.
     context.rect(LEFT_MARGIN, TOP_MARGIN,
                  fragmentSize * 10, fragmentSize * 20);
+    
+    // TEST - Draw board fragments.
+    for (i = 0; i < 20; i += 1) {
+        for (j = 0; j < 10; j += 1) {
+            context.rect(LEFT_MARGIN + fragmentSize * j,
+                         TOP_MARGIN + fragmentSize * i,
+                         fragmentSize,
+                         fragmentSize);
+        }
+    }
+
     context.stroke();
 };
 
@@ -249,7 +260,6 @@ var setup = function () {
         }
         board.push(row);
     }
-    console.log(board);
     
     // Generate first block and next block.
     getNextBlock();
@@ -282,7 +292,7 @@ var setup = function () {
 // Updates current block position.
 var updatePosition = function () {
     'use strict';
-    currentBlockPosition.y += BLOCK_FALLING_SPEED;
+    currentBlockPosition.y += fragmentSize;
 };
 
 // Main game loop.
@@ -295,7 +305,6 @@ var mainloop = function () {
         getNextBlock();
     }
     
-    updatePosition();
     draw();
 };
 
@@ -305,4 +314,5 @@ window.onload = function () {
     load();
     setup();
     window.setInterval(mainloop, 1000 / FPS);
+    window.setInterval(updatePosition, BLOCK_FALLING_SPEED);
 };
