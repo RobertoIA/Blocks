@@ -3,8 +3,10 @@
 // Constants.
 var FPS = 60,
     LEFT_MARGIN = 150,
-    TOP_MARGIN = 0,
+    TOP_MARGIN = 10,
     BLOCK_FALLING_SPEED = 500,
+    WIDTH = 10,
+    HEIGHT = 20,
 
     // Size of the minimun fragment of a block.
     fragmentSize,
@@ -29,6 +31,78 @@ var FPS = 60,
     board = [],
     // Blocks already placed.
     placedBlocks = [];
+
+/*
+Utility functions.
+*/
+
+// Rotates current block.
+var rotate = function () {
+    'use strict';
+    var i, j,
+        rowShape,
+        rotatedShape = [];
+    
+    currentBlockAngle += 90;
+    // currentBlockAngle = Math.abs(currentBlockAngle);
+    currentBlockAngle %= 360;
+    
+    // Matrix rotation.
+    for (i = 0; i < currentBlock.shape[0].length; i += 1) {
+        rowShape = [];
+        for (j = 0; j < currentBlock.shape.length; j += 1) {
+            rowShape.push(currentBlock.shape[j][i]);
+        }
+        rotatedShape.push(rowShape);
+    }
+    
+    currentBlock.shape = rotatedShape;
+};
+
+// Updates current block position.
+var updatePosition = function () {
+    'use strict';
+    currentBlockPosition.y += 1;
+    console.log(currentBlockPosition);
+};
+
+// Changes block to the next one.
+var getNextBlock = function () {
+    'use strict';
+    var nextBlockNum = Math.floor(Math.random() * 7);
+    
+    if (currentBlock) {
+        placedBlocks.push({block: currentBlock,
+                           position: {x: currentBlockPosition.x,
+                                      y: currentBlockPosition.y},
+                           angle: currentBlockAngle});
+    }
+    // Generate new block and change current one.
+    currentBlock = nextBlock;
+    console.log();
+    nextBlock = {'sprite': blocks[nextBlockNum].sprite,
+                 'shape': blocks[nextBlockNum].shape};
+    
+    // Reset position.
+    currentBlockPosition.y = 0;
+    currentBlockPosition.x = 4;
+    currentBlockAngle = 0;
+};
+
+// Translates from grid position to canvas position.
+var translateCoordinates = function (position) {
+    'use strict';
+    
+    var translatedPosition = {
+        'x': (position.x * fragmentSize) + LEFT_MARGIN,
+        'y': (position.y * fragmentSize) + TOP_MARGIN
+    };
+    return translatedPosition;
+};
+
+/*
+Main functions.
+*/
 
 // Loads sprites and sprite data.
 var load = function () {
@@ -87,11 +161,12 @@ var load = function () {
 };
 
 // Draws a block with the specified parameters.
-var drawBlock = function (block, position, angle) {
+var drawBlock = function (block, gridPosition, angle) {
     'use strict';
     var i,
         fragments = [],
         fragmentsDrawn = 0,
+        position = translateCoordinates(gridPosition),
         positionShift = {x: position.x, y: position.y},
         rowSum = function (prev, cur) {
             return prev + cur;
@@ -174,15 +249,15 @@ var draw = function () {
     drawBlock(currentBlock, currentBlockPosition, currentBlockAngle);
     
     // Draw next block.
-    drawBlock(nextBlock, {x: 0, y: 0}, 0);
+    drawBlock(nextBlock, {x: -5, y: 0}, 0);
     
     // Draw board limits.
     context.rect(LEFT_MARGIN, TOP_MARGIN,
                  fragmentSize * 10, fragmentSize * 20);
     
     // TEST - Draw board fragments.
-    for (i = 0; i < 20; i += 1) {
-        for (j = 0; j < 10; j += 1) {
+    for (i = 0; i < HEIGHT; i += 1) {
+        for (j = 0; j < WIDTH; j += 1) {
             context.rect(LEFT_MARGIN + fragmentSize * j,
                          TOP_MARGIN + fragmentSize * i,
                          fragmentSize,
@@ -191,52 +266,6 @@ var draw = function () {
     }
 
     context.stroke();
-};
-
-// Changes block to the next one.
-var getNextBlock = function () {
-    'use strict';
-    var nextBlockNum = Math.floor(Math.random() * 7);
-    
-    if (currentBlock) {
-        placedBlocks.push({block: currentBlock,
-                           position: {x: currentBlockPosition.x,
-                                      y: currentBlockPosition.y},
-                           angle: currentBlockAngle});
-    }
-    // Generate new block and change current one.
-    currentBlock = nextBlock;
-    console.log();
-    nextBlock = {'sprite': blocks[nextBlockNum].sprite,
-                 'shape': blocks[nextBlockNum].shape};
-    
-    // Reset position.
-    currentBlockPosition.y = TOP_MARGIN;
-    currentBlockPosition.x = LEFT_MARGIN + fragmentSize * 5;
-    currentBlockAngle = 0;
-};
-
-// Rotates current block.
-var rotate = function () {
-    'use strict';
-    var i, j,
-        rowShape,
-        rotatedShape = [];
-    
-    currentBlockAngle += 90;
-    // currentBlockAngle = Math.abs(currentBlockAngle);
-    currentBlockAngle %= 360;
-    
-    // Matrix rotation.
-    for (i = 0; i < currentBlock.shape[0].length; i += 1) {
-        rowShape = [];
-        for (j = 0; j < currentBlock.shape.length; j += 1) {
-            rowShape.push(currentBlock.shape[j][i]);
-        }
-        rotatedShape.push(rowShape);
-    }
-    
-    currentBlock.shape = rotatedShape;
 };
 
 // Sets up basics elements.
@@ -253,9 +282,9 @@ var setup = function () {
     fragmentSize = Math.min(blocks[0].sprite.frame.w, blocks[0].sprite.frame.h);
     
     // Initialize 10x20 board.
-    for (i = 0; i < 20; i += 1) {
+    for (i = 0; i < HEIGHT; i += 1) {
         row = [];
-        for (j = 0; j < 10; j += 1) {
+        for (j = 0; j < WIDTH; j += 1) {
             row.push(0);
         }
         board.push(row);
@@ -272,36 +301,30 @@ var setup = function () {
         if (event.keyCode === 38) {
             rotate();
         } else if (event.keyCode === 37) {
-            currentBlockPosition.x -= fragmentSize;
+            currentBlockPosition.x -= 1;
         } else if (event.keyCode === 39) {
-            currentBlockPosition.x += fragmentSize;
+            currentBlockPosition.x += 1;
         }
         
         // Check margins.
-        if (currentBlockPosition.x < LEFT_MARGIN) {
-            currentBlockPosition.x = LEFT_MARGIN;
-        } else if (currentBlockPosition.x >
-                   (LEFT_MARGIN + (fragmentSize * 10)) - blockWidth) {
-            currentBlockPosition.x = (LEFT_MARGIN + (fragmentSize * 10)) - blockWidth;
+        if (currentBlockPosition.x < 0) {
+            currentBlockPosition.x = 0;
+        } else if (currentBlockPosition.x > (WIDTH - (blockWidth / fragmentSize))) {
+            currentBlockPosition.x = (WIDTH - (blockWidth / fragmentSize));
         }
     });
 
     console.log('Setup completed.');
 };
 
-// Updates current block position.
-var updatePosition = function () {
-    'use strict';
-    currentBlockPosition.y += fragmentSize;
-};
-
 // Main game loop.
 var mainloop = function () {
     'use strict';
-    if (!currentBlock || currentBlockPosition.y +
-            (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w)
-            >= TOP_MARGIN + fragmentSize * 20) {
+    var blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
+                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w);
+    
+    if (!currentBlock || currentBlockPosition.y >=
+        HEIGHT - (blockHeight / fragmentSize)) {
         getNextBlock();
     }
     
