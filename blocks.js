@@ -60,10 +60,18 @@ var rotate = function () {
 };
 
 // Updates current block position.
-var updatePosition = function () {
+var moveDown = function () {
     'use strict';
+    var blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
+                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w),
+        isAtBottom;
+    
     currentBlockPosition.y += 1;
-    console.log(currentBlockPosition);
+    isAtBottom = currentBlockPosition.y >= HEIGHT - (blockHeight / fragmentSize);
+    
+    if (!currentBlock || isAtBottom) {
+        getNextBlock();
+    }
 };
 
 // Changes block to the next one.
@@ -320,13 +328,6 @@ var setup = function () {
 // Main game loop.
 var mainloop = function () {
     'use strict';
-    var blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w);
-    
-    if (!currentBlock || currentBlockPosition.y >=
-        HEIGHT - (blockHeight / fragmentSize)) {
-        getNextBlock();
-    }
     
     draw();
 };
@@ -337,5 +338,5 @@ window.onload = function () {
     load();
     setup();
     window.setInterval(mainloop, 1000 / FPS);
-    window.setInterval(updatePosition, BLOCK_FALLING_SPEED);
+    window.setInterval(moveDown, BLOCK_FALLING_SPEED);
 };
