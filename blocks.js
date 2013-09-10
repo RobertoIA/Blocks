@@ -59,6 +59,48 @@ var rotate = function () {
     currentBlock.shape = rotatedShape;
 };
 
+// Checks if the current block collides with a previously placed block.
+var checkCollision = function () {
+    'use strict';
+    
+};
+
+// Places block on the board.
+var addToBoard = function (block, position, angle) {
+    'use strict';
+    var i, j;
+    
+    placedBlocks.push({block: block,
+                           position: {x: position.x,
+                                      y: position.y},
+                           angle: angle});
+    
+    for (i = 0; i < block.shape.length; i += 1) {
+        for (j = 0; j < block.shape[0].length; j += 1) {
+            board[position.y + i][position.x + j] = block.shape[i][j];
+        }
+    }
+    console.log(block.shape);
+    console.log(board);
+};
+
+// Changes block to the next one.
+var getNextBlock = function () {
+    'use strict';
+    var nextBlockNum = Math.floor(Math.random() * 7);
+    
+    // Generate new block and change current one.
+    currentBlock = nextBlock;
+    
+    nextBlock = {'sprite': blocks[nextBlockNum].sprite,
+                 'shape': blocks[nextBlockNum].shape};
+    
+    // Reset position.
+    currentBlockPosition.y = 0;
+    currentBlockPosition.x = 4;
+    currentBlockAngle = 0;
+};
+
 // Updates current block position.
 var moveDown = function () {
     'use strict';
@@ -69,32 +111,10 @@ var moveDown = function () {
     currentBlockPosition.y += 1;
     isAtBottom = currentBlockPosition.y >= HEIGHT - (blockHeight / fragmentSize);
     
-    if (!currentBlock || isAtBottom) {
+    if (!currentBlock || isAtBottom || checkCollision()) {
+        addToBoard(currentBlock, currentBlockPosition, currentBlockAngle);
         getNextBlock();
     }
-};
-
-// Changes block to the next one.
-var getNextBlock = function () {
-    'use strict';
-    var nextBlockNum = Math.floor(Math.random() * 7);
-    
-    if (currentBlock) {
-        placedBlocks.push({block: currentBlock,
-                           position: {x: currentBlockPosition.x,
-                                      y: currentBlockPosition.y},
-                           angle: currentBlockAngle});
-    }
-    // Generate new block and change current one.
-    currentBlock = nextBlock;
-    console.log();
-    nextBlock = {'sprite': blocks[nextBlockNum].sprite,
-                 'shape': blocks[nextBlockNum].shape};
-    
-    // Reset position.
-    currentBlockPosition.y = 0;
-    currentBlockPosition.x = 4;
-    currentBlockAngle = 0;
 };
 
 // Translates from grid position to canvas position.
