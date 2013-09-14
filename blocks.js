@@ -62,7 +62,22 @@ var rotate = function () {
 // Checks if the current block collides with a previously placed block.
 var checkCollision = function () {
     'use strict';
+    var i, j,
+        nextPosition = {x: 0, y: 0},
+        blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
+                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w);
+    blockHeight /= fragmentSize;
     
+    nextPosition.x = currentBlockPosition.x;
+    nextPosition.y = currentBlockPosition.y + blockHeight;
+    
+    // traverse horizontally
+    for (i = 0; i < currentBlock.shape[0].length; i += 1) {
+        if (board[nextPosition.y][nextPosition.x + i]) {
+            return true;
+        }
+    }
+    return false;
 };
 
 // Places block on the board.
