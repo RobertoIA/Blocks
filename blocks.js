@@ -65,11 +65,24 @@ var checkCollision = function () {
     var i, j,
         nextPosition = {x: 0, y: 0},
         blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w);
+                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w),
+        height = [];
+    
     blockHeight /= fragmentSize;
     
     nextPosition.x = currentBlockPosition.x;
     nextPosition.y = currentBlockPosition.y + blockHeight;
+    
+    // example: S block
+    //  0 1 1
+    //  1 1 0
+    
+    // for each column
+    // if last item is 1: height is blockHeight
+    // else get the item before that, height is blockHeight - iteration
+    
+    // for each height
+    // if next position from height in board is 1, return collision
     
     // traverse horizontally
     for (i = 0; i < currentBlock.shape[0].length; i += 1) {
