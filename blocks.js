@@ -4,7 +4,7 @@
 var FPS = 60,
     LEFT_MARGIN = 150,
     TOP_MARGIN = 10,
-    BLOCK_FALLING_SPEED = 500,
+    BLOCK_FALLING_SPEED = 200,
     WIDTH = 10,
     HEIGHT = 20,
 
@@ -59,8 +59,8 @@ var rotate = function () {
     currentBlock.shape = rotatedShape;
 };
 
-// Checks if the current block collides with a previously placed block.
-var checkCollision = function () {
+// Checks if the current block collides with a previously placed block vertically.
+var checkVerticalCollision = function () {
     'use strict';
     var i, j,
         nextPosition = {x: 0, y: 0},
@@ -73,20 +73,19 @@ var checkCollision = function () {
     nextPosition.x = currentBlockPosition.x;
     nextPosition.y = currentBlockPosition.y + blockHeight;
     
-    // example: S block
-    //  0 1 1
-    //  1 1 0
-    
-    // for each column
-    // if last item is 1: height is blockHeight
-    // else get the item before that, height is blockHeight - iteration
-    
-    // for each height
-    // if next position from height in board is 1, return collision
-    
-    // traverse horizontally
+    // Checks height of each column.
     for (i = 0; i < currentBlock.shape[0].length; i += 1) {
-        if (board[nextPosition.y][nextPosition.x + i]) {
+        for (j = currentBlock.shape.length - 1; j >= 0; j -= 1) {
+            if (currentBlock.shape[j][i] === 1) {
+                height.push(j + 1);
+                break;
+            }
+        }
+    }
+    
+    // checks for collisions.
+    for (i = 0; i < height.length; i += 1) {
+        if (board[currentBlockPosition.y + height[i]][currentBlockPosition.x + i]) {
             return true;
         }
     }
@@ -108,8 +107,6 @@ var addToBoard = function (block, position, angle) {
             board[position.y + i][position.x + j] = block.shape[i][j];
         }
     }
-    console.log(block.shape);
-    console.log(board);
 };
 
 // Changes block to the next one.
@@ -139,7 +136,7 @@ var moveDown = function () {
     currentBlockPosition.y += 1;
     isAtBottom = currentBlockPosition.y >= HEIGHT - (blockHeight / fragmentSize);
     
-    if (!currentBlock || isAtBottom || checkCollision()) {
+    if (!currentBlock || isAtBottom || checkVerticalCollision()) {
         addToBoard(currentBlock, currentBlockPosition, currentBlockAngle);
         getNextBlock();
     }
