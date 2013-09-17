@@ -48,7 +48,7 @@ var rotate = function () {
     currentBlockAngle %= 360;
     
     // Matrix rotation.
-    for (i = 0; i < currentBlock.shape[0].length; i += 1) {
+    for (i = currentBlock.shape[0].length - 1; i >= 0; i -= 1) {
         rowShape = [];
         for (j = 0; j < currentBlock.shape.length; j += 1) {
             rowShape.push(currentBlock.shape[j][i]);
@@ -57,6 +57,12 @@ var rotate = function () {
     }
     
     currentBlock.shape = rotatedShape;
+};
+
+// Checks if the current block collides with a previously placed block horizontally.
+var checkHorizontalCollision = function () {
+    'use strict';
+    
 };
 
 // Checks if the current block collides with a previously placed block vertically.
@@ -86,6 +92,7 @@ var checkVerticalCollision = function () {
     // checks for collisions.
     for (i = 0; i < height.length; i += 1) {
         if (board[currentBlockPosition.y + height[i]][currentBlockPosition.x + i]) {
+            console.log(currentBlock.shape);
             return true;
         }
     }
