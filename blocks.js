@@ -62,7 +62,19 @@ var rotate = function () {
 // Checks if the current block collides with a previously placed block horizontally.
 var checkHorizontalCollision = function () {
     'use strict';
+    var horizontalCollisions = {right: false,
+                                 left: false},
+        blockWidth = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
+                      currentBlock.sprite.frame.w : currentBlock.sprite.frame.h);
+  
+    if (currentBlockPosition.x + 1 > (WIDTH - (blockWidth / fragmentSize))) {
+        horizontalCollisions.right = true;
+    }
+    if (currentBlockPosition.x - 1 < 0) {
+        horizontalCollisions.left = true;
+    }
     
+    return horizontalCollisions;
 };
 
 // Checks if the current block collides with a previously placed block vertically.
@@ -146,6 +158,26 @@ var moveDown = function () {
     if (!currentBlock || isAtBottom || checkVerticalCollision()) {
         addToBoard(currentBlock, currentBlockPosition, currentBlockAngle);
         getNextBlock();
+    }
+};
+
+// Moves current block to the right.
+var moveRight = function () {
+    'use strict';
+    var blockWidth = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
+                  currentBlock.sprite.frame.w : currentBlock.sprite.frame.h);
+  
+    if (!checkHorizontalCollision().right) {
+        currentBlockPosition.x += 1;
+    }
+};
+
+// Moves current block to the left.
+var moveLeft = function () {
+    'use strict';
+    
+    if (!checkHorizontalCollision().left) {
+        currentBlockPosition.x -= 1;
     }
 };
 
@@ -355,22 +387,12 @@ var setup = function () {
     getNextBlock();
     
     document.addEventListener('keydown', function (event) {
-        var blockWidth = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                          currentBlock.sprite.frame.w : currentBlock.sprite.frame.h);
-        
         if (event.keyCode === 38) {
             rotate();
         } else if (event.keyCode === 37) {
-            currentBlockPosition.x -= 1;
+            moveLeft();
         } else if (event.keyCode === 39) {
-            currentBlockPosition.x += 1;
-        }
-        
-        // Check margins.
-        if (currentBlockPosition.x < 0) {
-            currentBlockPosition.x = 0;
-        } else if (currentBlockPosition.x > (WIDTH - (blockWidth / fragmentSize))) {
-            currentBlockPosition.x = (WIDTH - (blockWidth / fragmentSize));
+            moveRight();
         }
     });
 
