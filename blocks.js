@@ -62,17 +62,43 @@ var rotate = function () {
 // Checks if the current block collides with a previously placed block horizontally.
 var checkHorizontalCollision = function () {
     'use strict';
-    var horizontalCollisions = {right: false,
+    var i, j,
+        horizontalCollisions = {right: false,
                                  left: false},
         blockWidth = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                      currentBlock.sprite.frame.w : currentBlock.sprite.frame.h);
+                      currentBlock.sprite.frame.w : currentBlock.sprite.frame.h),
+        width = {right: [],
+                 left: []};
   
+    // Right side.
     if (currentBlockPosition.x + 1 > (WIDTH - (blockWidth / fragmentSize))) {
         horizontalCollisions.right = true;
     }
+    
+    for (i = 0; i < currentBlock.shape.length; i += 1) {
+        for (j = currentBlock.shape[i].length - 1; j >= 0; j -= 1) {
+            if (currentBlock.shape[i][j]) {
+                width.right.push(j + 1);
+                break;
+            }
+        }
+    }
+    console.log(width.right);
+    
+    // Left side.
     if (currentBlockPosition.x - 1 < 0) {
         horizontalCollisions.left = true;
     }
+    
+    for (i = 0; i < currentBlock.shape.length; i += 1) {
+        for (j = 0; j < currentBlock.shape[i].length; j += 1) {
+            if (currentBlock.shape[i][j]) {
+                width.left.push(j);
+                break;
+            }
+        }
+    }
+    console.log(width.left);
     
     return horizontalCollisions;
 };
@@ -104,7 +130,6 @@ var checkVerticalCollision = function () {
     // checks for collisions.
     for (i = 0; i < height.length; i += 1) {
         if (board[currentBlockPosition.y + height[i]][currentBlockPosition.x + i]) {
-            console.log(currentBlock.shape);
             return true;
         }
     }
