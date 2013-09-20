@@ -4,7 +4,7 @@
 var FPS = 60,
     LEFT_MARGIN = 150,
     TOP_MARGIN = 10,
-    BLOCK_FALLING_SPEED = 200,
+    BLOCK_FALLING_SPEED = 500,
     WIDTH = 10,
     HEIGHT = 20,
 
@@ -48,9 +48,9 @@ var rotate = function () {
     currentBlockAngle %= 360;
     
     // Matrix rotation.
-    for (i = currentBlock.shape[0].length - 1; i >= 0; i -= 1) {
+    for (i = 0; i < currentBlock.shape[0].length; i += 1) {
         rowShape = [];
-        for (j = 0; j < currentBlock.shape.length; j += 1) {
+        for (j = currentBlock.shape.length - 1; j >= 0; j -= 1) {
             rowShape.push(currentBlock.shape[j][i]);
         }
         rotatedShape.push(rowShape);
@@ -73,32 +73,42 @@ var checkHorizontalCollision = function () {
     // Right side.
     if (currentBlockPosition.x + 1 > (WIDTH - (blockWidth / fragmentSize))) {
         horizontalCollisions.right = true;
-    }
+    } else {
     
-    for (i = 0; i < currentBlock.shape.length; i += 1) {
-        for (j = currentBlock.shape[i].length - 1; j >= 0; j -= 1) {
-            if (currentBlock.shape[i][j]) {
-                width.right.push(j + 1);
-                break;
+        for (i = 0; i < currentBlock.shape.length; i += 1) {
+            for (j = currentBlock.shape[i].length - 1; j >= 0; j -= 1) {
+                if (currentBlock.shape[i][j]) {
+                    width.right.push(j + 1);
+                    break;
+                }
+            }
+        }
+        // console.log(width.right);
+        
+        for (i = 0; i < width.right.length; i += 1) {
+            if (board[currentBlockPosition.y
+                      + i][currentBlockPosition.x + width.right[i]]) {
+                horizontalCollisions.right = true;
             }
         }
     }
-    console.log(width.right);
     
-    // Left side.
+        // Left side.
     if (currentBlockPosition.x - 1 < 0) {
         horizontalCollisions.left = true;
-    }
-    
-    for (i = 0; i < currentBlock.shape.length; i += 1) {
-        for (j = 0; j < currentBlock.shape[i].length; j += 1) {
-            if (currentBlock.shape[i][j]) {
-                width.left.push(j);
-                break;
+    } else {
+        
+        for (i = 0; i < currentBlock.shape.length; i += 1) {
+            for (j = 0; j < currentBlock.shape[i].length; j += 1) {
+                if (currentBlock.shape[i][j]) {
+                    width.left.push(j);
+                    break;
+                }
             }
         }
+        // console.log(width.left);
+        
     }
-    console.log(width.left);
     
     return horizontalCollisions;
 };
