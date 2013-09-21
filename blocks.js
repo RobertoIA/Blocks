@@ -101,13 +101,19 @@ var checkHorizontalCollision = function () {
         for (i = 0; i < currentBlock.shape.length; i += 1) {
             for (j = 0; j < currentBlock.shape[i].length; j += 1) {
                 if (currentBlock.shape[i][j]) {
-                    width.left.push(j);
+                    width.left.push(j - 1);
                     break;
                 }
             }
         }
         // console.log(width.left);
         
+        for (i = 0; i < width.left.length; i += 1) {
+            if (board[currentBlockPosition.y
+                      + i][currentBlockPosition.x + width.left[i]]) {
+                horizontalCollisions.left = true;
+            }
+        }
     }
     
     return horizontalCollisions;
