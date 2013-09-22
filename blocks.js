@@ -127,12 +127,19 @@ var checkVerticalCollision = function () {
         nextPosition = {x: 0, y: 0},
         blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
                     currentBlock.sprite.frame.h : currentBlock.sprite.frame.w),
+        isAtBottom,
         height = [];
     
     blockHeight /= fragmentSize;
     
     nextPosition.x = currentBlockPosition.x;
     nextPosition.y = currentBlockPosition.y + blockHeight;
+    
+    isAtBottom = nextPosition.y > HEIGHT - (blockHeight / fragmentSize);
+    
+    if (isAtBottom) {
+        return true;
+    }
     
     // Checks height of each column.
     for (i = 0; i < currentBlock.shape[0].length; i += 1) {
@@ -191,13 +198,11 @@ var getNextBlock = function () {
 var moveDown = function () {
     'use strict';
     var blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w),
-        isAtBottom;
+                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w);
     
     currentBlockPosition.y += 1;
-    isAtBottom = currentBlockPosition.y >= HEIGHT - (blockHeight / fragmentSize);
     
-    if (!currentBlock || isAtBottom || checkVerticalCollision()) {
+    if (!currentBlock || checkVerticalCollision()) {
         addToBoard(currentBlock, currentBlockPosition, currentBlockAngle);
         getNextBlock();
     }
