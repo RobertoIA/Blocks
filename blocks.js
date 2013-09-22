@@ -200,11 +200,13 @@ var moveDown = function () {
     var blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
                     currentBlock.sprite.frame.h : currentBlock.sprite.frame.w);
     
-    currentBlockPosition.y += 1;
+    
     
     if (!currentBlock || checkVerticalCollision()) {
         addToBoard(currentBlock, currentBlockPosition, currentBlockAngle);
         getNextBlock();
+    } else {
+        currentBlockPosition.y += 1;
     }
 };
 
