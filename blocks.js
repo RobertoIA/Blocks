@@ -42,21 +42,22 @@ var rotate = function () {
     var i, j,
         rowShape,
         rotatedShape = [];
-    
-    currentBlockAngle += 90;
-    // currentBlockAngle = Math.abs(currentBlockAngle);
-    currentBlockAngle %= 360;
-    
-    // Matrix rotation.
-    for (i = 0; i < currentBlock.shape[0].length; i += 1) {
-        rowShape = [];
-        for (j = currentBlock.shape.length - 1; j >= 0; j -= 1) {
-            rowShape.push(currentBlock.shape[j][i]);
+    if (currentBlockPosition.x + currentBlock.shape.length <= WIDTH) {
+        currentBlockAngle += 90;
+        // currentBlockAngle = Math.abs(currentBlockAngle);
+        currentBlockAngle %= 360;
+        
+        // Matrix rotation.
+        for (i = 0; i < currentBlock.shape[0].length; i += 1) {
+            rowShape = [];
+            for (j = currentBlock.shape.length - 1; j >= 0; j -= 1) {
+                rowShape.push(currentBlock.shape[j][i]);
+            }
+            rotatedShape.push(rowShape);
         }
-        rotatedShape.push(rowShape);
+        
+        currentBlock.shape = rotatedShape;
     }
-    
-    currentBlock.shape = rotatedShape;
 };
 
 // Checks if the current block collides with a previously placed block horizontally.
