@@ -66,13 +66,12 @@ var checkHorizontalCollision = function () {
     var i, j,
         horizontalCollisions = {right: false,
                                  left: false},
-        blockWidth = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                      currentBlock.sprite.frame.w : currentBlock.sprite.frame.h),
+        blockWidth = currentBlock.shape[0].length,
         width = {right: [],
                  left: []};
   
     // Right side.
-    if (currentBlockPosition.x + 1 > (WIDTH - (blockWidth / fragmentSize))) {
+    if (currentBlockPosition.x + 1 > (WIDTH - blockWidth)) {
         horizontalCollisions.right = true;
     } else {
     
@@ -125,17 +124,14 @@ var checkVerticalCollision = function () {
     'use strict';
     var i, j,
         nextPosition = {x: 0, y: 0},
-        blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w),
+        blockHeight = currentBlock.shape.length,
         isAtBottom,
         height = [];
     
-    blockHeight /= fragmentSize;
-    
     nextPosition.x = currentBlockPosition.x;
-    nextPosition.y = currentBlockPosition.y + blockHeight;
+    nextPosition.y = currentBlockPosition.y + 1;
     
-    isAtBottom = nextPosition.y > HEIGHT - (blockHeight / fragmentSize);
+    isAtBottom = nextPosition.y > HEIGHT - blockHeight;
     
     if (isAtBottom) {
         return true;
@@ -197,11 +193,7 @@ var getNextBlock = function () {
 // Updates current block position.
 var moveDown = function () {
     'use strict';
-    var blockHeight = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                    currentBlock.sprite.frame.h : currentBlock.sprite.frame.w);
-    
-    
-    
+
     if (!currentBlock || checkVerticalCollision()) {
         addToBoard(currentBlock, currentBlockPosition, currentBlockAngle);
         getNextBlock();
@@ -213,9 +205,7 @@ var moveDown = function () {
 // Moves current block to the right.
 var moveRight = function () {
     'use strict';
-    var blockWidth = (currentBlockAngle === 0 || currentBlockAngle === 180 ?
-                  currentBlock.sprite.frame.w : currentBlock.sprite.frame.h);
-  
+    
     if (!checkHorizontalCollision().right) {
         currentBlockPosition.x += 1;
     }
