@@ -232,6 +232,20 @@ var translateCoordinates = function (position) {
 };
 
 /*
+Auxiliary / Debug functions.
+*/
+
+var markLine = function (lineNumber) {
+    'use strict';
+    var coordinatesTop = translateCoordinates({x: 0, y: lineNumber}),
+        coordinatesBottom = translateCoordinates({x: WIDTH, y: 1});
+    
+    context.fillStyle = 'rgba(225, 0, 0, 0.5)';
+    context.fillRect(coordinatesTop.x, coordinatesTop.y,
+                 coordinatesBottom.x - LEFT_MARGIN, coordinatesBottom.y - TOP_MARGIN);
+};
+
+/*
 Main functions.
 */
 
@@ -395,6 +409,10 @@ var draw = function () {
                          fragmentSize);
         }
     }
+    
+    // TEST - Mark line.
+    markLine(0);
+    markLine(5);
 
     context.stroke();
 };
