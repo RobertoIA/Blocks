@@ -30,11 +30,24 @@ var FPS = 60,
     // Board
     board = [],
     // Blocks already placed.
-    placedBlocks = [];
+    placedBlocks = [],
+    // DEBUG - marks filled rows
+    filledRows = [];
 
 /*
 Utility functions.
 */
+
+// Translates from grid position to canvas position.
+var translateCoordinates = function (position) {
+    'use strict';
+    
+    var translatedPosition = {
+        'x': (position.x * fragmentSize) + LEFT_MARGIN,
+        'y': (position.y * fragmentSize) + TOP_MARGIN
+    };
+    return translatedPosition;
+};
 
 // Rotates current block.
 var rotate = function () {
@@ -176,7 +189,7 @@ var addToBoard = function (block, position, angle) {
 // Changes block to the next one.
 var getNextBlock = function () {
     'use strict';
-    var nextBlockNum = Math.floor(Math.random() * 7);
+    var nextBlockNum = 1;//Math.floor(Math.random() * 7);
     
     // Generate new block and change current one.
     currentBlock = nextBlock;
@@ -190,12 +203,42 @@ var getNextBlock = function () {
     currentBlockAngle = 0;
 };
 
+// Debug function, highlights a line.
+var markLine = function (lineNumber) {
+    'use strict';
+    var coordinatesTop = translateCoordinates({x: 0, y: lineNumber}),
+        coordinatesBottom = translateCoordinates({x: WIDTH, y: 1});
+    
+    context.fillStyle = 'rgba(225, 0, 0, 0.5)';
+    context.fillRect(coordinatesTop.x, coordinatesTop.y,
+                 coordinatesBottom.x - LEFT_MARGIN, coordinatesBottom.y - TOP_MARGIN);
+};
+
+// Checks full rows.
+var checkRows = function () {
+    'use strict';
+    var i, j;
+    
+    filledRows = [];
+    for (i = board.length - 1; i >= 0; i -= 1) {
+        for (j = 0; j < board[0].length; j += 1) {
+            if (!board[i][j]) {
+                break;
+            }
+            if (j === board[0].length - 1) {
+                filledRows.push(i);
+            }
+        }
+    }
+};
+
 // Updates current block position.
 var moveDown = function () {
     'use strict';
 
     if (!currentBlock || checkVerticalCollision()) {
         addToBoard(currentBlock, currentBlockPosition, currentBlockAngle);
+        checkRows();
         getNextBlock();
     } else {
         currentBlockPosition.y += 1;
@@ -218,31 +261,6 @@ var moveLeft = function () {
     if (!checkHorizontalCollision().left) {
         currentBlockPosition.x -= 1;
     }
-};
-
-// Translates from grid position to canvas position.
-var translateCoordinates = function (position) {
-    'use strict';
-    
-    var translatedPosition = {
-        'x': (position.x * fragmentSize) + LEFT_MARGIN,
-        'y': (position.y * fragmentSize) + TOP_MARGIN
-    };
-    return translatedPosition;
-};
-
-/*
-Auxiliary / Debug functions.
-*/
-
-var markLine = function (lineNumber) {
-    'use strict';
-    var coordinatesTop = translateCoordinates({x: 0, y: lineNumber}),
-        coordinatesBottom = translateCoordinates({x: WIDTH, y: 1});
-    
-    context.fillStyle = 'rgba(225, 0, 0, 0.5)';
-    context.fillRect(coordinatesTop.x, coordinatesTop.y,
-                 coordinatesBottom.x - LEFT_MARGIN, coordinatesBottom.y - TOP_MARGIN);
 };
 
 /*
@@ -401,6 +419,7 @@ var draw = function () {
                  fragmentSize * 10, fragmentSize * 20);
     
     // TEST - Draw board fragments.
+    /*
     for (i = 0; i < HEIGHT; i += 1) {
         for (j = 0; j < WIDTH; j += 1) {
             context.rect(LEFT_MARGIN + fragmentSize * j,
@@ -409,10 +428,14 @@ var draw = function () {
                          fragmentSize);
         }
     }
+    */
     
     // TEST - Mark line.
-    markLine(0);
-    markLine(5);
+    // markLine(0);
+    // markLine(5);
+    for (i = 0; i < filledRows.length; i += 1) {
+        markLine(filledRows[i]);
+    }
 
     context.stroke();
 };
