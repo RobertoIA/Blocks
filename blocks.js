@@ -54,8 +54,16 @@ var rotate = function () {
     'use strict';
     var i, j,
         rowShape,
-        rotatedShape = [];
-    if (currentBlockPosition.x + currentBlock.shape.length <= WIDTH) {
+        rotatedShape = [],
+        collidesWithBorder,
+        collidesWithBottom;
+    
+    collidesWithBorder = currentBlockPosition.x
+        + currentBlock.shape.length > WIDTH;
+    collidesWithBottom = currentBlockPosition.y
+        + currentBlock.shape[0].length > HEIGHT;
+    
+    if (!collidesWithBorder && !collidesWithBottom) {
         currentBlockAngle += 90;
         // currentBlockAngle = Math.abs(currentBlockAngle);
         currentBlockAngle %= 360;
