@@ -4,7 +4,7 @@
 var FPS = 60,
     LEFT_MARGIN = 150,
     TOP_MARGIN = 10,
-    BLOCK_FALLING_SPEED = 500,
+    BLOCK_FALLING_SPEED = 250,
     WIDTH = 10,
     HEIGHT = 20,
 
@@ -197,7 +197,7 @@ var addToBoard = function (block, position, angle) {
 // Changes block to the next one.
 var getNextBlock = function () {
     'use strict';
-    var nextBlockNum = 1;//Math.floor(Math.random() * 7);
+    var nextBlockNum = Math.floor(Math.random() * 7);
     
     // Generate new block and change current one.
     currentBlock = nextBlock;
@@ -217,25 +217,32 @@ var markLine = function (lineNumber) {
     var coordinatesTop = translateCoordinates({x: 0, y: lineNumber}),
         coordinatesBottom = translateCoordinates({x: WIDTH, y: 1});
     
-    context.fillStyle = 'rgba(225, 0, 0, 0.5)';
+    context.fillStyle = 'rgba(0, 0, 250, 0.8)';
     context.fillRect(coordinatesTop.x, coordinatesTop.y,
                  coordinatesBottom.x - LEFT_MARGIN, coordinatesBottom.y - TOP_MARGIN);
+};
+
+// Removes filled row and moves all lines above it.
+var removeRow = function (lineNumber) {
+    'use strict';
+    
 };
 
 // Checks full rows.
 var checkRows = function () {
     'use strict';
-    var i, j;
+    var i, j,
+        sum;
     
     filledRows = [];
-    for (i = board.length - 1; i >= 0; i -= 1) {
+    for (i = 0; i < board.length; i += 1) {
+        sum = 0;
         for (j = 0; j < board[0].length; j += 1) {
-            if (!board[i][j]) {
-                break;
-            }
-            if (j === board[0].length - 1) {
-                filledRows.push(i);
-            }
+            sum += board[i][j];
+        }
+        console.log(sum);
+        if (sum === WIDTH) {
+            filledRows.push(i);
         }
     }
 };
