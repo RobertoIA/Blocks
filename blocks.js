@@ -223,9 +223,11 @@ var markLine = function (lineNumber) {
 };
 
 // Removes filled row and moves all lines above it.
-var removeRow = function (lineNumber) {
+var clearLine = function (lineNumber) {
     'use strict';
-    
+    //board.splice(lineNumber, 1);
+    board[lineNumber] = [0, 0, 0, 0, 0,
+                         0, 0, 0, 0, 0];
 };
 
 // Checks full rows.
@@ -449,7 +451,8 @@ var draw = function () {
     // markLine(0);
     // markLine(5);
     for (i = 0; i < filledRows.length; i += 1) {
-        markLine(filledRows[i]);
+        // markLine(filledRows[i]);
+        clearLine(filledRows[i]);
     }
 
     context.stroke();
