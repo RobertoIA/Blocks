@@ -225,7 +225,6 @@ var markLine = function (lineNumber) {
 // Removes filled row and moves all lines above it.
 var clearLine = function (lineNumber) {
     'use strict';
-    //board.splice(lineNumber, 1);
     board[lineNumber] = [0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0];
 };
@@ -447,9 +446,6 @@ var draw = function () {
     }
     */
     
-    // TEST - Mark line.
-    // markLine(0);
-    // markLine(5);
     for (i = 0; i < filledRows.length; i += 1) {
         // markLine(filledRows[i]);
         clearLine(filledRows[i]);
