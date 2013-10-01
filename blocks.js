@@ -4,7 +4,7 @@
 var FPS = 60,
     LEFT_MARGIN = 150,
     TOP_MARGIN = 10,
-    BLOCK_FALLING_SPEED = 250,
+    BLOCK_FALLING_SPEED = 100,
     WIDTH = 10,
     HEIGHT = 20,
 
@@ -225,8 +225,30 @@ var markLine = function (lineNumber) {
 // Removes filled row and moves all lines above it.
 var clearLine = function (lineNumber) {
     'use strict';
+    var i, y, h,
+        removedBlocks = [];
+    
     board[lineNumber] = [0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0];
+    
+    console.log(placedBlocks.length);
+    
+    for (i = 0; i < placedBlocks.length; i += 1) {
+        y = placedBlocks[i].position.y;
+        h = y + placedBlocks[i].block.shape.length;
+        
+        if (lineNumber >= y && lineNumber <= h) {
+            placedBlocks[i].block.shape.splice(lineNumber - y, 1);
+            if (placedBlocks[i].block.shape.length === 0) {
+                removedBlocks.push(i);
+            }
+        }
+    }
+    
+    for (i = 0; i < removedBlocks.length; i += 1) {
+        placedBlocks.splice(placedBlocks.indexOf(removedBlocks[i]));
+    }
+    
 };
 
 // Checks full rows.
@@ -235,13 +257,12 @@ var checkRows = function () {
     var i, j,
         sum;
     
-    filledRows = [];
     for (i = 0; i < board.length; i += 1) {
         sum = 0;
         for (j = 0; j < board[0].length; j += 1) {
             sum += board[i][j];
         }
-        console.log(sum);
+        //console.log(sum);
         if (sum === WIDTH) {
             filledRows.push(i);
         }
@@ -450,6 +471,7 @@ var draw = function () {
         // markLine(filledRows[i]);
         clearLine(filledRows[i]);
     }
+    filledRows = [];
 
     context.stroke();
 };
