@@ -197,13 +197,13 @@ var addToBoard = function (block, position, angle) {
 // Changes block to the next one.
 var getNextBlock = function () {
     'use strict';
-    var nextBlockNum = Math.floor(Math.random() * 7);
+    var nextBlockNum = 0; //Math.floor(Math.random() * 7);
     
     // Generate new block and change current one.
     currentBlock = nextBlock;
     
     nextBlock = {'sprite': blocks[nextBlockNum].sprite,
-                 'shape': blocks[nextBlockNum].shape};
+                 'shape': blocks[nextBlockNum].shape.slice(0)};
     
     // Reset position.
     currentBlockPosition.y = 0;
@@ -249,6 +249,12 @@ var clearLine = function (lineNumber) {
         placedBlocks.splice(placedBlocks.indexOf(removedBlocks[i]));
     }
     
+    for (i = 0; i < placedBlocks.length; i += 1) {
+        if (y < lineNumber) {
+            placedBlocks[i].position.y += 1;
+            // needs to recalculate board
+        }
+    }
 };
 
 // Checks full rows.
