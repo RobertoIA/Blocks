@@ -197,13 +197,20 @@ var addToBoard = function (block, position, angle) {
 // Changes block to the next one.
 var getNextBlock = function () {
     'use strict';
-    var nextBlockNum = 0; //Math.floor(Math.random() * 7);
+    var i,
+        nextBlockShape = [],
+        nextBlockNum = 0; //Math.floor(Math.random() * 7);
     
     // Generate new block and change current one.
     currentBlock = nextBlock;
     
+    // Shape copy.
+    for (i = 0; i < blocks[nextBlockNum].shape.length; i += 1) {
+        nextBlockShape.push(blocks[nextBlockNum].shape[i].slice(0));
+    }
+    
     nextBlock = {'sprite': blocks[nextBlockNum].sprite,
-                 'shape': blocks[nextBlockNum].shape.slice(0)};
+                 'shape': nextBlockShape};
     
     // Reset position.
     currentBlockPosition.y = 0;
