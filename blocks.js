@@ -444,51 +444,6 @@ var drawBlock = function (block, gridPosition, angle) {
     context.restore();
 };
 
-// Draws current screen contents.
-var draw = function () {
-    'use strict';
-    var i, j;
-
-    // Clean screen.
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw placed blocks.
-    for (i = 0; i < placedBlocks.length; i += 1) {
-        drawBlock(placedBlocks[i].block, placedBlocks[i].position,
-                  placedBlocks[i].angle);
-    }
-    
-    // Draw current block.
-    drawBlock(currentBlock, currentBlockPosition, currentBlockAngle);
-    
-    // Draw next block.
-    drawBlock(nextBlock, {x: -5, y: 0}, 0);
-    
-    // Draw board limits.
-    context.rect(LEFT_MARGIN, TOP_MARGIN,
-                 fragmentSize * 10, fragmentSize * 20);
-    
-    // TEST - Draw board fragments.
-    /*
-    for (i = 0; i < HEIGHT; i += 1) {
-        for (j = 0; j < WIDTH; j += 1) {
-            context.rect(LEFT_MARGIN + fragmentSize * j,
-                         TOP_MARGIN + fragmentSize * i,
-                         fragmentSize,
-                         fragmentSize);
-        }
-    }
-    */
-    
-    for (i = 0; i < filledRows.length; i += 1) {
-        // markLine(filledRows[i]);
-        clearLine(filledRows[i]);
-    }
-    filledRows = [];
-
-    context.stroke();
-};
-
 // Sets up basics elements.
 var setup = function () {
     'use strict';
@@ -532,7 +487,46 @@ var setup = function () {
 var mainloop = function () {
     'use strict';
     
-    draw();
+    var i, j;
+
+    // Clean screen.
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw placed blocks.
+    for (i = 0; i < placedBlocks.length; i += 1) {
+        drawBlock(placedBlocks[i].block, placedBlocks[i].position,
+                  placedBlocks[i].angle);
+    }
+    
+    // Draw current block.
+    drawBlock(currentBlock, currentBlockPosition, currentBlockAngle);
+    
+    // Draw next block.
+    drawBlock(nextBlock, {x: -5, y: 0}, 0);
+    
+    // Draw board limits.
+    context.rect(LEFT_MARGIN, TOP_MARGIN,
+                 fragmentSize * 10, fragmentSize * 20);
+    
+    // TEST - Draw board fragments.
+    /*
+    for (i = 0; i < HEIGHT; i += 1) {
+        for (j = 0; j < WIDTH; j += 1) {
+            context.rect(LEFT_MARGIN + fragmentSize * j,
+                         TOP_MARGIN + fragmentSize * i,
+                         fragmentSize,
+                         fragmentSize);
+        }
+    }
+    */
+    
+    for (i = 0; i < filledRows.length; i += 1) {
+        // markLine(filledRows[i]);
+        clearLine(filledRows[i]);
+    }
+    filledRows = [];
+
+    context.stroke();
 };
 
 // Kicks in once the DOM has been loaded.
