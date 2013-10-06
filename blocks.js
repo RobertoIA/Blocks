@@ -1,10 +1,9 @@
 /*global console, window, document, XMLHttpRequest, Image*/
 
 // Constants.
-var FPS = 60,
+var FPS = 6,
     LEFT_MARGIN = 150,
     TOP_MARGIN = 10,
-    BLOCK_FALLING_SPEED = 100,
     WIDTH = 10,
     HEIGHT = 20,
 
@@ -527,6 +526,8 @@ var mainloop = function () {
     filledRows = [];
 
     context.stroke();
+    
+    moveDown();
 };
 
 // Kicks in once the DOM has been loaded.
@@ -535,5 +536,4 @@ window.onload = function () {
     load();
     setup();
     window.setInterval(mainloop, 1000 / FPS);
-    window.setInterval(moveDown, BLOCK_FALLING_SPEED);
 };
