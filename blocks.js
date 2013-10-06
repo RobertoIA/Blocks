@@ -30,7 +30,7 @@ var FPS = 6,
     board = [],
     // Blocks already placed.
     placedBlocks = [],
-    // DEBUG - marks filled rows
+    // Marks filled rows
     filledRows = [];
 
 /*
@@ -215,17 +215,6 @@ var getNextBlock = function () {
     currentBlockPosition.y = 0;
     currentBlockPosition.x = 4;
     currentBlockAngle = 0;
-};
-
-// Debug function, highlights a line.
-var markLine = function (lineNumber) {
-    'use strict';
-    var coordinatesTop = translateCoordinates({x: 0, y: lineNumber}),
-        coordinatesBottom = translateCoordinates({x: WIDTH, y: 1});
-    
-    context.fillStyle = 'rgba(0, 0, 250, 0.8)';
-    context.fillRect(coordinatesTop.x, coordinatesTop.y,
-                 coordinatesBottom.x - LEFT_MARGIN, coordinatesBottom.y - TOP_MARGIN);
 };
 
 // Removes filled row and moves all lines above it.
