@@ -471,8 +471,7 @@ var setup = function () {
     console.log('Setup completed.');
 };
 
-// Main game loop.
-var mainloop = function () {
+var draw = function () {
     'use strict';
     
     var i, j;
@@ -515,7 +514,13 @@ var mainloop = function () {
     filledRows = [];
 
     context.stroke();
+};
+
+// Main game loop.
+var mainloop = function () {
+    'use strict';
     
+    draw();
     moveDown();
 };
 
