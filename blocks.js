@@ -506,12 +506,6 @@ var draw = function () {
         }
     }
     */
-    
-    for (i = 0; i < filledRows.length; i += 1) {
-        // markLine(filledRows[i]);
-        clearLine(filledRows[i]);
-    }
-    filledRows = [];
 
     context.stroke();
 };
@@ -519,6 +513,13 @@ var draw = function () {
 // Main game loop.
 var mainloop = function () {
     'use strict';
+    var i;
+    
+    for (i = 0; i < filledRows.length; i += 1) {
+        // markLine(filledRows[i]);
+        clearLine(filledRows[i]);
+    }
+    filledRows = [];
     
     draw();
     moveDown();
