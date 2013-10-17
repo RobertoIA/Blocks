@@ -506,6 +506,18 @@ var draw = function () {
         }
     }
     */
+    
+    // TEST
+    var testBlockNum = 2,
+        testBlockShape = [];
+    for (i = 0; i < blocks[testBlockNum].shape.length; i += 1) {
+        testBlockShape.push(blocks[testBlockNum].shape[i].slice(0));
+    }
+    
+    var testBlock = {'sprite': blocks[testBlockNum].sprite,
+                 'shape': testBlockShape};
+    
+    drawBlock(testBlock, {x: -5, y: 2}, 0);
 
     context.stroke();
 };
