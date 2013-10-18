@@ -37,19 +37,8 @@ var FPS = 6,
 Utility functions.
 */
 
-// Translates from grid position to canvas position.
-var translateCoordinates = function (position) {
-    'use strict';
-    
-    var translatedPosition = {
-        'x': (position.x * fragmentSize) + LEFT_MARGIN,
-        'y': (position.y * fragmentSize) + TOP_MARGIN
-    };
-    return translatedPosition;
-};
-
 // Rotates current block.
-var rotate = function () {
+var rotate = function (block, position, angle) {
     'use strict';
     var i, j,
         rowShape,
@@ -57,18 +46,16 @@ var rotate = function () {
         collidesWithBorder,
         collidesWithBottom;
     
-    collidesWithBorder = currentBlockPosition.x
-        + currentBlock.shape.length > WIDTH;
-    collidesWithBottom = currentBlockPosition.y
-        + currentBlock.shape[0].length > HEIGHT;
+    collidesWithBorder = position.x + block.shape.length > WIDTH;
+    collidesWithBottom = position.y + block.shape[0].length > HEIGHT;
     
     if (!collidesWithBorder && !collidesWithBottom) {
-        currentBlockAngle += 90;
+        angle += 90;
         // currentBlockAngle = Math.abs(currentBlockAngle);
-        currentBlockAngle %= 360;
+        angle %= 360;
         
         // Matrix rotation.
-        for (i = 0; i < currentBlock.shape[0].length; i += 1) {
+        for (i = 0; i < block.shape[0].length; i += 1) {
             rowShape = [];
             for (j = currentBlock.shape.length - 1; j >= 0; j -= 1) {
                 rowShape.push(currentBlock.shape[j][i]);
@@ -76,8 +63,9 @@ var rotate = function () {
             rotatedShape.push(rowShape);
         }
         
-        currentBlock.shape = rotatedShape;
+        block.shape = rotatedShape;
     }
+    return angle;
 };
 
 // Checks if the current block collides with a previously placed block horizontally.
@@ -361,17 +349,146 @@ var load = function () {
     console.log('Loading completed.');
 };
 
+// Sets up basics elements.
+var setup = function () {
+    'use strict';
+    var i, j, row;
+    
+    canvas = document.getElementById("canvas");
+    context = canvas.getContext('2d');
+    canvas.width = 800;
+    canvas.height = 800;
+    
+    // Fragment size is the minor side of the I piece.
+    fragmentSize = Math.min(blocks[0].sprite.frame.w, blocks[0].sprite.frame.h);
+    
+    // Initialize 10x20 board.
+    for (i = 0; i < HEIGHT; i += 1) {
+        row = [];
+        for (j = 0; j < WIDTH; j += 1) {
+            row.push(0);
+        }
+        board.push(row);
+    }
+    
+    // Generate first block and next block.
+    getNextBlock();
+    getNextBlock();
+    
+    document.addEventListener('keydown', function (event) {
+        if (event.keyCode === 38) {
+            currentBlockAngle = rotate(currentBlock, currentBlockPosition,
+                                       currentBlockAngle);
+        } else if (event.keyCode === 37) {
+            moveLeft();
+        } else if (event.keyCode === 39) {
+            moveRight();
+        }
+    });
+
+    console.log('Setup completed.');
+};
+
+var draw = function () {
+    'use strict';
+    
+    var i, j;
+
+    // Clean screen.
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw placed blocks.
+    for (i = 0; i < placedBlocks.length; i += 1) {
+        drawBlock(placedBlocks[i].block, placedBlocks[i].position,
+                  placedBlocks[i].angle);
+    }
+    
+    // Draw current block.
+    drawBlock(currentBlock, currentBlockPosition, currentBlockAngle);
+    
+    // Draw next block.
+    drawBlock(nextBlock, {x: -5, y: 0}, 0);
+    
+    // Draw board limits.
+    context.rect(LEFT_MARGIN, TOP_MARGIN,
+                 fragmentSize * 10, fragmentSize * 20);
+    
+    // TEST - Draw board fragments.
+    /*
+    for (i = 0; i < HEIGHT; i += 1) {
+        for (j = 0; j < WIDTH; j += 1) {
+            context.rect(LEFT_MARGIN + fragmentSize * j,
+                         TOP_MARGIN + fragmentSize * i,
+                         fragmentSize,
+                         fragmentSize);
+        }
+    }
+    */
+    
+    // TEST
+    /*
+    var testBlockNum = 2,
+        testBlockShape = [];
+    for (i = 0; i < blocks[testBlockNum].shape.length; i += 1) {
+        testBlockShape.push(blocks[testBlockNum].shape[i].slice(0));
+    }
+    
+    var testBlock = {'sprite': blocks[testBlockNum].sprite,
+                 'shape': testBlockShape};
+    
+    var angle = rotate(testBlock, {x: -5, y: 2}, 0);
+    console.log(testBlock.shape);
+    drawBlock(testBlock, {x: -5, y: 2}, angle);
+    */
+    context.stroke();
+};
+
+// Main game loop.
+var mainloop = function () {
+    'use strict';
+    var i;
+    
+    for (i = 0; i < filledRows.length; i += 1) {
+        // markLine(filledRows[i]);
+        clearLine(filledRows[i]);
+    }
+    filledRows = [];
+    
+    draw();
+    moveDown();
+};
+
+/* DEBUG & REFACTORED */
+/**********************/
+/**********************/
+/**********************/
+/**********************/
+
+// Translates from grid position to canvas position.
+var translateCoordinates = function (position) {
+    'use strict';
+    
+    var translatedPosition = {
+        'x': (position.x * fragmentSize) + LEFT_MARGIN,
+        'y': (position.y * fragmentSize) + TOP_MARGIN
+    };
+    return translatedPosition;
+};
+
 // Draws a block with the specified parameters.
-var drawBlock = function (block, gridPosition, angle) {
+var drawBlock = function (block) {
     'use strict';
     var i,
         fragments = [],
         fragmentsDrawn = 0,
-        position = translateCoordinates(gridPosition),
+        angle = block.angle,
+        position = translateCoordinates(block.position),
         positionShift = {x: position.x, y: position.y},
         rowSum = function (prev, cur) {
             return prev + cur;
         };
+    
+    block = block.blockData;
     
     for (i = 0; i < block.shape.length; i += 1) {
         if (block.shape[i].reduce(rowSum) > 0) {
@@ -432,109 +549,26 @@ var drawBlock = function (block, gridPosition, angle) {
     context.restore();
 };
 
-// Sets up basics elements.
-var setup = function () {
+var debugLoop = function () {
     'use strict';
-    var i, j, row;
-    
-    canvas = document.getElementById("canvas");
-    context = canvas.getContext('2d');
-    canvas.width = 800;
-    canvas.height = 800;
-    
-    // Fragment size is the minor side of the I piece.
-    fragmentSize = Math.min(blocks[0].sprite.frame.w, blocks[0].sprite.frame.h);
-    
-    // Initialize 10x20 board.
-    for (i = 0; i < HEIGHT; i += 1) {
-        row = [];
-        for (j = 0; j < WIDTH; j += 1) {
-            row.push(0);
-        }
-        board.push(row);
-    }
-    
-    // Generate first block and next block.
-    getNextBlock();
-    getNextBlock();
-    
-    document.addEventListener('keydown', function (event) {
-        if (event.keyCode === 38) {
-            rotate();
-        } else if (event.keyCode === 37) {
-            moveLeft();
-        } else if (event.keyCode === 39) {
-            moveRight();
-        }
-    });
-
-    console.log('Setup completed.');
-};
-
-var draw = function () {
-    'use strict';
-    
-    var i, j;
-
-    // Clean screen.
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw placed blocks.
-    for (i = 0; i < placedBlocks.length; i += 1) {
-        drawBlock(placedBlocks[i].block, placedBlocks[i].position,
-                  placedBlocks[i].angle);
-    }
-    
-    // Draw current block.
-    drawBlock(currentBlock, currentBlockPosition, currentBlockAngle);
-    
-    // Draw next block.
-    drawBlock(nextBlock, {x: -5, y: 0}, 0);
-    
-    // Draw board limits.
-    context.rect(LEFT_MARGIN, TOP_MARGIN,
-                 fragmentSize * 10, fragmentSize * 20);
-    
-    // TEST - Draw board fragments.
-    /*
-    for (i = 0; i < HEIGHT; i += 1) {
-        for (j = 0; j < WIDTH; j += 1) {
-            context.rect(LEFT_MARGIN + fragmentSize * j,
-                         TOP_MARGIN + fragmentSize * i,
-                         fragmentSize,
-                         fragmentSize);
-        }
-    }
-    */
-    
-    // TEST
-    var testBlockNum = 2,
+    var i,
+        testBlock = {blockData: {sprite: null, shape: null},
+                     position: {x: 0, y: 0},
+                     angle: 0},
+        testBlockNum = 2,
         testBlockShape = [];
+    
     for (i = 0; i < blocks[testBlockNum].shape.length; i += 1) {
         testBlockShape.push(blocks[testBlockNum].shape[i].slice(0));
     }
     
-    var testBlock = {'sprite': blocks[testBlockNum].sprite,
-                 'shape': testBlockShape};
+    testBlock.blockData.sprite = blocks[testBlockNum].sprite;
+    testBlock.blockData.shape = testBlockShape;
+    testBlock.position.x = -5;
+    testBlock.position.y = 0;
     
-    drawBlock(testBlock, {x: -5, y: 2}, 0);
-
+    drawBlock(testBlock);
     context.stroke();
-};
-
-// Main game loop.
-var mainloop = function () {
-    'use strict';
-    var i;
-    
-    for (i = 0; i < filledRows.length; i += 1) {
-        // markLine(filledRows[i]);
-        clearLine(filledRows[i]);
-    }
-    filledRows = [];
-    
-    draw();
-    moveDown();
 };
 
 // Kicks in once the DOM has been loaded.
@@ -542,5 +576,6 @@ window.onload = function () {
     'use strict';
     load();
     setup();
-    window.setInterval(mainloop, 1000 / FPS);
+    //window.setInterval(mainloop, 1000 / FPS);
+    window.setInterval(debugLoop, 1000 / FPS);
 };
