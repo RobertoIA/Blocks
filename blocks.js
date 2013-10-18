@@ -33,266 +33,6 @@ var FPS = 6,
     // Marks filled rows
     filledRows = [];
 
-/*
-Utility functions.
-*/
-
-// Rotates current block.
-var rotate = function (block, position, angle) {
-    'use strict';
-    var i, j,
-        rowShape,
-        rotatedShape = [],
-        collidesWithBorder,
-        collidesWithBottom;
-    
-    collidesWithBorder = position.x + block.shape.length > WIDTH;
-    collidesWithBottom = position.y + block.shape[0].length > HEIGHT;
-    
-    if (!collidesWithBorder && !collidesWithBottom) {
-        angle += 90;
-        // currentBlockAngle = Math.abs(currentBlockAngle);
-        angle %= 360;
-        
-        // Matrix rotation.
-        for (i = 0; i < block.shape[0].length; i += 1) {
-            rowShape = [];
-            for (j = currentBlock.shape.length - 1; j >= 0; j -= 1) {
-                rowShape.push(currentBlock.shape[j][i]);
-            }
-            rotatedShape.push(rowShape);
-        }
-        
-        block.shape = rotatedShape;
-    }
-    return angle;
-};
-
-// Checks if the current block collides with a previously placed block horizontally.
-var checkHorizontalCollision = function () {
-    'use strict';
-    var i, j,
-        horizontalCollisions = {right: false,
-                                 left: false},
-        blockWidth = currentBlock.shape[0].length,
-        width = {right: [],
-                 left: []};
-  
-    // Right side.
-    if (currentBlockPosition.x + 1 > (WIDTH - blockWidth)) {
-        horizontalCollisions.right = true;
-    } else {
-    
-        for (i = 0; i < currentBlock.shape.length; i += 1) {
-            for (j = currentBlock.shape[i].length - 1; j >= 0; j -= 1) {
-                if (currentBlock.shape[i][j]) {
-                    width.right.push(j + 1);
-                    break;
-                }
-            }
-        }
-        // console.log(width.right);
-        
-        for (i = 0; i < width.right.length; i += 1) {
-            if (board[currentBlockPosition.y
-                      + i][currentBlockPosition.x + width.right[i]]) {
-                horizontalCollisions.right = true;
-            }
-        }
-    }
-    
-        // Left side.
-    if (currentBlockPosition.x - 1 < 0) {
-        horizontalCollisions.left = true;
-    } else {
-        
-        for (i = 0; i < currentBlock.shape.length; i += 1) {
-            for (j = 0; j < currentBlock.shape[i].length; j += 1) {
-                if (currentBlock.shape[i][j]) {
-                    width.left.push(j - 1);
-                    break;
-                }
-            }
-        }
-        // console.log(width.left);
-        
-        for (i = 0; i < width.left.length; i += 1) {
-            if (board[currentBlockPosition.y
-                      + i][currentBlockPosition.x + width.left[i]]) {
-                horizontalCollisions.left = true;
-            }
-        }
-    }
-    
-    return horizontalCollisions;
-};
-
-// Checks if the current block collides with a previously placed block vertically.
-var checkVerticalCollision = function () {
-    'use strict';
-    var i, j,
-        nextPosition = {x: 0, y: 0},
-        blockHeight = currentBlock.shape.length,
-        isAtBottom,
-        height = [];
-    
-    nextPosition.x = currentBlockPosition.x;
-    nextPosition.y = currentBlockPosition.y + 1;
-    
-    isAtBottom = nextPosition.y > HEIGHT - blockHeight;
-    
-    if (isAtBottom) {
-        return true;
-    }
-    
-    // Checks height of each column.
-    for (i = 0; i < currentBlock.shape[0].length; i += 1) {
-        for (j = currentBlock.shape.length - 1; j >= 0; j -= 1) {
-            if (currentBlock.shape[j][i] === 1) {
-                height.push(j + 1);
-                break;
-            }
-        }
-    }
-    
-    // checks for collisions.
-    for (i = 0; i < height.length; i += 1) {
-        if (board[currentBlockPosition.y + height[i]][currentBlockPosition.x + i]) {
-            return true;
-        }
-    }
-    return false;
-};
-
-// Places block on the board.
-var addToBoard = function (block, position, angle) {
-    'use strict';
-    var i, j;
-    
-    placedBlocks.push({block: block,
-                           position: {x: position.x,
-                                      y: position.y},
-                           angle: angle});
-    
-    for (i = 0; i < block.shape.length; i += 1) {
-        for (j = 0; j < block.shape[0].length; j += 1) {
-            board[position.y + i][position.x + j] = block.shape[i][j];
-        }
-    }
-};
-
-// Changes block to the next one.
-var getNextBlock = function () {
-    'use strict';
-    var i,
-        nextBlockShape = [],
-        nextBlockNum = 0; //Math.floor(Math.random() * 7);
-    
-    // Generate new block and change current one.
-    currentBlock = nextBlock;
-    
-    // Shape copy.
-    for (i = 0; i < blocks[nextBlockNum].shape.length; i += 1) {
-        nextBlockShape.push(blocks[nextBlockNum].shape[i].slice(0));
-    }
-    
-    nextBlock = {'sprite': blocks[nextBlockNum].sprite,
-                 'shape': nextBlockShape};
-    
-    // Reset position.
-    currentBlockPosition.y = 0;
-    currentBlockPosition.x = 4;
-    currentBlockAngle = 0;
-};
-
-// Removes filled row and moves all lines above it.
-var clearLine = function (lineNumber) {
-    'use strict';
-    var i, y, h,
-        removedBlocks = [];
-    
-    board[lineNumber] = [0, 0, 0, 0, 0,
-                         0, 0, 0, 0, 0];
-    
-    console.log(placedBlocks.length);
-    
-    for (i = 0; i < placedBlocks.length; i += 1) {
-        y = placedBlocks[i].position.y;
-        h = y + placedBlocks[i].block.shape.length;
-        
-        if (lineNumber >= y && lineNumber <= h) {
-            placedBlocks[i].block.shape.splice(lineNumber - y, 1);
-            if (placedBlocks[i].block.shape.length === 0) {
-                removedBlocks.push(i);
-            }
-        }
-    }
-    
-    for (i = 0; i < removedBlocks.length; i += 1) {
-        placedBlocks.splice(placedBlocks.indexOf(removedBlocks[i]));
-    }
-    
-    for (i = 0; i < placedBlocks.length; i += 1) {
-        if (y < lineNumber) {
-            placedBlocks[i].position.y += 1;
-            // needs to recalculate board
-        }
-    }
-};
-
-// Checks full rows.
-var checkRows = function () {
-    'use strict';
-    var i, j,
-        sum;
-    
-    for (i = 0; i < board.length; i += 1) {
-        sum = 0;
-        for (j = 0; j < board[0].length; j += 1) {
-            sum += board[i][j];
-        }
-        //console.log(sum);
-        if (sum === WIDTH) {
-            filledRows.push(i);
-        }
-    }
-};
-
-// Updates current block position.
-var moveDown = function () {
-    'use strict';
-
-    if (!currentBlock || checkVerticalCollision()) {
-        addToBoard(currentBlock, currentBlockPosition, currentBlockAngle);
-        checkRows();
-        getNextBlock();
-    } else {
-        currentBlockPosition.y += 1;
-    }
-};
-
-// Moves current block to the right.
-var moveRight = function () {
-    'use strict';
-    
-    if (!checkHorizontalCollision().right) {
-        currentBlockPosition.x += 1;
-    }
-};
-
-// Moves current block to the left.
-var moveLeft = function () {
-    'use strict';
-    
-    if (!checkHorizontalCollision().left) {
-        currentBlockPosition.x -= 1;
-    }
-};
-
-/*
-Main functions.
-*/
-
 // Loads sprites and sprite data.
 var load = function () {
     'use strict';
@@ -372,8 +112,8 @@ var setup = function () {
     }
     
     // Generate first block and next block.
-    getNextBlock();
-    getNextBlock();
+    // getNextBlock();
+    // getNextBlock();
     
     document.addEventListener('keydown', function (event) {
         if (event.keyCode === 38) {
@@ -413,56 +153,8 @@ var draw = function () {
     context.rect(LEFT_MARGIN, TOP_MARGIN,
                  fragmentSize * 10, fragmentSize * 20);
     
-    // TEST - Draw board fragments.
-    /*
-    for (i = 0; i < HEIGHT; i += 1) {
-        for (j = 0; j < WIDTH; j += 1) {
-            context.rect(LEFT_MARGIN + fragmentSize * j,
-                         TOP_MARGIN + fragmentSize * i,
-                         fragmentSize,
-                         fragmentSize);
-        }
-    }
-    */
-    
-    // TEST
-    /*
-    var testBlockNum = 2,
-        testBlockShape = [];
-    for (i = 0; i < blocks[testBlockNum].shape.length; i += 1) {
-        testBlockShape.push(blocks[testBlockNum].shape[i].slice(0));
-    }
-    
-    var testBlock = {'sprite': blocks[testBlockNum].sprite,
-                 'shape': testBlockShape};
-    
-    var angle = rotate(testBlock, {x: -5, y: 2}, 0);
-    console.log(testBlock.shape);
-    drawBlock(testBlock, {x: -5, y: 2}, angle);
-    */
     context.stroke();
 };
-
-// Main game loop.
-var mainloop = function () {
-    'use strict';
-    var i;
-    
-    for (i = 0; i < filledRows.length; i += 1) {
-        // markLine(filledRows[i]);
-        clearLine(filledRows[i]);
-    }
-    filledRows = [];
-    
-    draw();
-    moveDown();
-};
-
-/* DEBUG & REFACTORED */
-/**********************/
-/**********************/
-/**********************/
-/**********************/
 
 // Translates from grid position to canvas position.
 var translateCoordinates = function (position) {
@@ -491,7 +183,7 @@ var drawBlock = function (block) {
     block = block.blockData;
     
     for (i = 0; i < block.shape.length; i += 1) {
-        if (block.shape[i].reduce(rowSum) > 0) {
+        if (block.shape[i].length != 0 && block.shape[i].reduce(rowSum) > 0) {
             fragments.push(true);
         }
     }
@@ -549,6 +241,21 @@ var drawBlock = function (block) {
     context.restore();
 };
 
+// Main game loop.
+var mainloop = function () {
+    'use strict';
+    var i;
+    
+    for (i = 0; i < filledRows.length; i += 1) {
+        // markLine(filledRows[i]);
+        clearLine(filledRows[i]);
+    }
+    filledRows = [];
+    
+    draw();
+    moveDown();
+};
+
 var debugLoop = function () {
     'use strict';
     var i,
@@ -558,9 +265,10 @@ var debugLoop = function () {
         testBlockNum = 2,
         testBlockShape = [];
     
-    for (i = 0; i < blocks[testBlockNum].shape.length; i += 1) {
+    for (i = 0; i < blocks[testBlockNum].shape.length - 1; i += 1) {
         testBlockShape.push(blocks[testBlockNum].shape[i].slice(0));
-    }
+    } 
+    testBlockShape.push([]);
     
     testBlock.blockData.sprite = blocks[testBlockNum].sprite;
     testBlock.blockData.shape = testBlockShape;
