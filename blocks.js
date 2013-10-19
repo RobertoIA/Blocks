@@ -36,6 +36,26 @@ function Block(sprite, shape) {
         return {'x': (this.position.x * fragmentSize) + LEFT_MARGIN,
                 'y': (this.position.y * fragmentSize) + TOP_MARGIN};
     };
+    
+    this.rotate = function () {
+        var i, j,
+            rowShape,
+            rotatedShape = [];
+        
+        this.angle += 90;
+        this.angle %= 360;
+        
+        // Matrix rotation.
+        for (i = 0; i < this.shape[0].length; i += 1) {
+            rowShape = [];
+            for (j = this.shape.length - 1; j >= 0; j -= 1) {
+                rowShape.push(this.shape[j][i]);
+            }
+            rotatedShape.push(rowShape);
+        }
+        
+        this.shape = rotatedShape;
+    };
 }
 
 // Loads sprites and sprite data.
@@ -116,64 +136,86 @@ var drawBlock = function (block) {
     var i,
         fragments = [],
         fragmentsDrawn = 0,
+        fragmentsCount = 0,
         angle = block.angle,
         position = block.absolutePosition(),
         positionShift = {x: position.x, y: position.y},
-        rowSum = function (prev, cur) {
-            return prev + cur;
-        };
+        frame = block.sprite.frame;
     
     for (i = 0; i < block.shape.length; i += 1) {
-        if (block.shape[i].length !== 0 && block.shape[i].reduce(rowSum) > 0) {
-            fragments.push(true);
-        }
+        fragments.push(block.shape[i].length !== 0);
+        fragmentsCount += block.shape[i].length !== 0;
     }
-    
-    block = block.sprite.frame;
     
     context.save();
     if (angle === 90) {
         positionShift.x = position.y;
         positionShift.y = -position.x;
-        context.translate(block.h, 0);
+        context.translate(frame.h, 0);
     } else if (angle === 180) {
         positionShift.x = -position.x;
         positionShift.y = -position.y;
-        context.translate(block.w, block.h);
+        context.translate(frame.w, frame.h);
     } else if (angle === 270) {
         positionShift.x = -position.y;
         positionShift.y = position.x;
-        context.translate(0, block.w);
+        context.translate(0, frame.w);
     }
     context.rotate(angle * (Math.PI / 180)); // to radians
-    
 
-    for (i = fragments.length - 1; i >= 0; i -= 1) {
-        if (fragments[i]) {
-            if (angle === 0 || angle === 180) {
+    if (angle === 0) { // WORKS, CLEAN
+        for (i = 0; i < fragments.length; i += 1) {
+            if (fragments[i]) {
                 context.drawImage(spriteSheet,
-                                  block.x,
-                                  block.y + (fragmentSize *
-                                             (fragments.length -
-                                              (fragmentsDrawn + 1))),
-                                  block.w, fragmentSize,
+                                  frame.x,
+                                  frame.y + (fragmentSize * i),
+                                  frame.w, fragmentSize,
                                   positionShift.x,
-                                  positionShift.y + (fragmentSize *
-                                             (fragments.length -
-                                              (fragmentsDrawn + 1))),
-                                  block.w, fragmentSize);
-            } else {
+                                  positionShift.y + (fragmentSize * fragmentsDrawn),
+                                  frame.w, fragmentSize);
+                fragmentsDrawn += 1;
+            }
+        }
+    } else if (angle === 90) { // WORKS, CLEAN
+        for (i = 0; i < fragments.length; i += 1) {
+            if (fragments[i]) {
                 context.drawImage(spriteSheet,
-                                  block.x + (fragmentSize *
+                                  frame.x + (fragmentSize * i),
+                                  frame.y,
+                                  fragmentSize, frame.h,
+                                  positionShift.x + (fragmentSize * fragmentsDrawn),
+                                  positionShift.y,
+                                  fragmentSize, frame.h);
+                fragmentsDrawn += 1;
+            }
+        }
+    } else if (angle === 180) { // 
+        for (i = 0; i < fragments.length; i += 1) {
+            if (fragments[i]) {
+                context.drawImage(spriteSheet,
+                                  frame.x,
+                                  frame.y + (fragmentSize * i),
+                                  frame.w, fragmentSize,
+                                  positionShift.x,
+                                  positionShift.y + (fragmentSize * fragmentsDrawn),
+                                  frame.w, fragmentSize);
+                fragmentsDrawn += 1;
+            }
+        }
+    } else { // 270 // 
+        for (i = 0; i < fragments.length; i += 1) {
+            if (fragments[i]) {
+                context.drawImage(spriteSheet,
+                                  frame.x + (fragmentSize *
                                              (fragments.length -
                                               (fragmentsDrawn + 1))),
-                                  block.y,
-                                  fragmentSize, block.h,
+                                  frame.y,
+                                  fragmentSize, frame.h,
                                   positionShift.x + (fragmentSize *
-                                             (fragments.length -
+                                             (fragmentsCount -
                                               (fragmentsDrawn + 1))),
                                   positionShift.y,
-                                  fragmentSize, block.h);
+                                  fragmentSize, frame.h);
             }
             fragmentsDrawn += 1;
         }
@@ -187,17 +229,32 @@ var debugLoop = function () {
     var i,
         testBlock,
         testBlock2,
+        testBlock3,
         testBlockNum = 2,
         testBlockShape = [];
     
     testBlock = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
-    testBlock.shape[1] = [];
+    //testBlock.shape[1] = [];
     
     testBlock2 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
     testBlock2.position.x = -4;
+    testBlock2.rotate();
+    testBlock2.rotate();
+    //testBlock2.rotate();
+    //testBlock2.shape[0] = [];
+    //testBlock2.shape[1] = [];
+    //testBlock2.shape[2] = [];
+    
+    testBlock3 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
+    testBlock3.position.x = 12;
+    testBlock3.rotate();
+    testBlock3.rotate();
+    testBlock3.rotate();
+    testBlock3.shape[0] = [];
     
     drawBlock(testBlock);
     drawBlock(testBlock2);
+    //drawBlock(testBlock3);
     context.stroke();
 };
 
