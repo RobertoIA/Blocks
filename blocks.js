@@ -189,7 +189,7 @@ var drawBlock = function (block) {
                 fragmentsDrawn += 1;
             }
         }
-    } else if (angle === 180) { // 
+    } else if (angle === 180) { // CLEAN
         for (i = 0; i < fragments.length; i += 1) {
             if (fragments[i]) {
                 context.drawImage(spriteSheet,
@@ -202,22 +202,19 @@ var drawBlock = function (block) {
                 fragmentsDrawn += 1;
             }
         }
-    } else { // 270 // 
+    } else { // 270 // CLEAN
         for (i = 0; i < fragments.length; i += 1) {
             if (fragments[i]) {
+                console.log();
                 context.drawImage(spriteSheet,
-                                  frame.x + (fragmentSize *
-                                             (fragments.length -
-                                              (fragmentsDrawn + 1))),
+                                  frame.x + (fragmentSize * i),
                                   frame.y,
                                   fragmentSize, frame.h,
-                                  positionShift.x + (fragmentSize *
-                                             (fragmentsCount -
-                                              (fragmentsDrawn + 1))),
+                                  positionShift.x + (fragmentSize * fragmentsDrawn),
                                   positionShift.y,
                                   fragmentSize, frame.h);
+                fragmentsDrawn += 1;
             }
-            fragmentsDrawn += 1;
         }
     }
 
@@ -230,31 +227,42 @@ var debugLoop = function () {
         testBlock,
         testBlock2,
         testBlock3,
+        testBlock4,
         testBlockNum = 2,
         testBlockShape = [];
     
     testBlock = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
+    testBlock.position.x = -2;
+    //testBlock.shape[0] = [];
     //testBlock.shape[1] = [];
     
     testBlock2 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
-    testBlock2.position.x = -4;
     testBlock2.rotate();
-    testBlock2.rotate();
-    //testBlock2.rotate();
     //testBlock2.shape[0] = [];
     //testBlock2.shape[1] = [];
     //testBlock2.shape[2] = [];
     
     testBlock3 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
-    testBlock3.position.x = 12;
+    testBlock3.position.x = 8;
     testBlock3.rotate();
     testBlock3.rotate();
-    testBlock3.rotate();
-    testBlock3.shape[0] = [];
+    //testBlock3.shape[0] = [];
+    //testBlock3.shape[1] = [];
+    
+    testBlock4 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
+    testBlock4.position.x = 12;
+    testBlock4.rotate();
+    testBlock4.rotate();
+    testBlock4.rotate();
+    //testBlock4.shape[0] = [];
+    //testBlock4.shape[1] = [];
+    //testBlock4.shape[2] = [];
     
     drawBlock(testBlock);
     drawBlock(testBlock2);
-    //drawBlock(testBlock3);
+    drawBlock(testBlock3);
+    drawBlock(testBlock4);
+    
     context.stroke();
 };
 
