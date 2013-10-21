@@ -191,21 +191,20 @@ var drawBlock = function (block) {
         }
     } else if (angle === 180) { // CLEAN, WORKS WITH COMPLETE BLOCKS
         for (i = 0; i < fragments.length; i += 1) {
-            if (fragments[i]) {
+            if (fragments[(fragments.length - 1) - i]) {
                 context.drawImage(spriteSheet,
                                   frame.x,
                                   frame.y + (fragmentSize * i),
                                   frame.w, fragmentSize,
                                   positionShift.x,
-                                  positionShift.y + (fragmentSize * i),
+                                  positionShift.y + (fragmentSize * fragmentsDrawn),
                                   frame.w, fragmentSize);
                 fragmentsDrawn += 1;
             }
         }
     } else { // 270 // CLEAN
         for (i = 0; i < fragments.length; i += 1) {
-            if (fragments[i]) {
-                console.log();
+            if (fragments[(fragments.length - 1) - i]) {
                 context.drawImage(spriteSheet,
                                   frame.x + (fragmentSize * i),
                                   frame.y,
