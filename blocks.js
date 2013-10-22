@@ -189,7 +189,7 @@ var drawBlock = function (block) {
                 fragmentsDrawn += 1;
             }
         }
-    } else if (angle === 180) { // CLEAN, WORKS WITH COMPLETE BLOCKS
+    } else if (angle === 180) { // CLEAN, WORKS
         for (i = 0; i < fragments.length; i += 1) {
             if (fragments[(fragments.length - 1) - i]) {
                 context.drawImage(spriteSheet,
@@ -197,7 +197,8 @@ var drawBlock = function (block) {
                                   frame.y + (fragmentSize * i),
                                   frame.w, fragmentSize,
                                   positionShift.x,
-                                  positionShift.y + (fragmentSize * fragmentsDrawn),
+                                  positionShift.y + (fragmentSize * fragmentsDrawn)
+                                  + fragmentSize * (fragments.length - fragmentsCount),
                                   frame.w, fragmentSize);
                 fragmentsDrawn += 1;
             }
