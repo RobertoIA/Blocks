@@ -229,35 +229,34 @@ var debugLoop = function () {
         testBlock2,
         testBlock3,
         testBlock4,
-        testBlockNum = 2,
-        testBlockShape = [];
+        testBlockShape = [],
+        testBlockNum = 0,
+        testNum = 4;
     
     testBlock = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
     testBlock.position.x = -2;
-    //testBlock.shape[0] = [];
-    //testBlock.shape[1] = [];
     
     testBlock2 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
     testBlock2.rotate();
-    //testBlock2.shape[0] = [];
-    //testBlock2.shape[1] = [];
-    //testBlock2.shape[2] = [];
     
     testBlock3 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
     testBlock3.position.x = 8;
     testBlock3.rotate();
     testBlock3.rotate();
-    //testBlock3.shape[0] = [];
-    //testBlock3.shape[1] = [];
+
     
     testBlock4 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
-    testBlock4.position.x = 12;
+    testBlock4.position.x = 14;
     testBlock4.rotate();
     testBlock4.rotate();
     testBlock4.rotate();
-    //testBlock4.shape[0] = [];
-    //testBlock4.shape[1] = [];
-    testBlock4.shape[2] = [];
+    
+    if (testNum < 4) {
+        testBlock.shape[testNum] = [];
+        testBlock2.shape[testNum] = [];
+        testBlock3.shape[testNum] = [];
+        testBlock4.shape[testNum] = [];
+    }
     
     drawBlock(testBlock);
     drawBlock(testBlock2);
