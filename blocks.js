@@ -210,7 +210,8 @@ var drawBlock = function (block) {
                                   frame.x + (fragmentSize * i),
                                   frame.y,
                                   fragmentSize, frame.h,
-                                  positionShift.x + (fragmentSize * fragmentsDrawn),
+                                  positionShift.x + (fragmentSize * fragmentsDrawn)
+                                  + fragmentSize * (fragments.length - fragmentsCount),
                                   positionShift.y,
                                   fragmentSize, frame.h);
                 fragmentsDrawn += 1;
@@ -256,7 +257,7 @@ var debugLoop = function () {
     testBlock4.rotate();
     //testBlock4.shape[0] = [];
     //testBlock4.shape[1] = [];
-    //testBlock4.shape[2] = [];
+    testBlock4.shape[2] = [];
     
     drawBlock(testBlock);
     drawBlock(testBlock2);
