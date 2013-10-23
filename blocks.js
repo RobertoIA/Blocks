@@ -56,6 +56,95 @@ function Block(sprite, shape) {
         
         this.shape = rotatedShape;
     };
+    
+    this.draw = function () {
+        var i,
+            fragments = [],
+            fragmentsDrawn = 0,
+            fragmentsCount = 0,
+            position = this.absolutePosition(),
+            positionShift = {x: position.x, y: position.y},
+            frame = this.sprite.frame;
+        
+        for (i = 0; i < this.shape.length; i += 1) {
+            fragments.push(this.shape[i].length !== 0);
+            fragmentsCount += this.shape[i].length !== 0;
+        }
+        
+        context.save();
+        if (this.angle === 90) {
+            positionShift.x = position.y;
+            positionShift.y = -position.x;
+            context.translate(frame.h, 0);
+        } else if (this.angle === 180) {
+            positionShift.x = -position.x;
+            positionShift.y = -position.y;
+            context.translate(frame.w, frame.h);
+        } else if (this.angle === 270) {
+            positionShift.x = -position.y;
+            positionShift.y = position.x;
+            context.translate(0, frame.w);
+        }
+        context.rotate(this.angle * (Math.PI / 180)); // to radians
+    
+        if (this.angle === 0) {
+            for (i = 0; i < fragments.length; i += 1) {
+                if (fragments[i]) {
+                    context.drawImage(spriteSheet,
+                                      frame.x,
+                                      frame.y + (fragmentSize * i),
+                                      frame.w, fragmentSize,
+                                      positionShift.x,
+                                      positionShift.y + (fragmentSize * fragmentsDrawn),
+                                      frame.w, fragmentSize);
+                    fragmentsDrawn += 1;
+                }
+            }
+        } else if (this.angle === 90) {
+            for (i = 0; i < fragments.length; i += 1) {
+                if (fragments[i]) {
+                    context.drawImage(spriteSheet,
+                                      frame.x + (fragmentSize * i),
+                                      frame.y,
+                                      fragmentSize, frame.h,
+                                      positionShift.x + (fragmentSize * fragmentsDrawn),
+                                      positionShift.y,
+                                      fragmentSize, frame.h);
+                    fragmentsDrawn += 1;
+                }
+            }
+        } else if (this.angle === 180) {
+            for (i = 0; i < fragments.length; i += 1) {
+                if (fragments[(fragments.length - 1) - i]) {
+                    context.drawImage(spriteSheet,
+                                      frame.x,
+                                      frame.y + (fragmentSize * i),
+                                      frame.w, fragmentSize,
+                                      positionShift.x,
+                                      positionShift.y + (fragmentSize * fragmentsDrawn)
+                                      + fragmentSize * (fragments.length - fragmentsCount),
+                                      frame.w, fragmentSize);
+                    fragmentsDrawn += 1;
+                }
+            }
+        } else { // 270
+            for (i = 0; i < fragments.length; i += 1) {
+                if (fragments[(fragments.length - 1) - i]) {
+                    context.drawImage(spriteSheet,
+                                      frame.x + (fragmentSize * i),
+                                      frame.y,
+                                      fragmentSize, frame.h,
+                                      positionShift.x + (fragmentSize * fragmentsDrawn)
+                                      + fragmentSize * (fragments.length - fragmentsCount),
+                                      positionShift.y,
+                                      fragmentSize, frame.h);
+                    fragmentsDrawn += 1;
+                }
+            }
+        }
+    
+        context.restore();
+    };
 }
 
 // Loads sprites and sprite data.
@@ -130,98 +219,6 @@ var setup = function () {
     console.log('Setup completed.');
 };
 
-// Draws a block with the specified parameters.
-var drawBlock = function (block) {
-    'use strict';
-    var i,
-        fragments = [],
-        fragmentsDrawn = 0,
-        fragmentsCount = 0,
-        angle = block.angle,
-        position = block.absolutePosition(),
-        positionShift = {x: position.x, y: position.y},
-        frame = block.sprite.frame;
-    
-    for (i = 0; i < block.shape.length; i += 1) {
-        fragments.push(block.shape[i].length !== 0);
-        fragmentsCount += block.shape[i].length !== 0;
-    }
-    
-    context.save();
-    if (angle === 90) {
-        positionShift.x = position.y;
-        positionShift.y = -position.x;
-        context.translate(frame.h, 0);
-    } else if (angle === 180) {
-        positionShift.x = -position.x;
-        positionShift.y = -position.y;
-        context.translate(frame.w, frame.h);
-    } else if (angle === 270) {
-        positionShift.x = -position.y;
-        positionShift.y = position.x;
-        context.translate(0, frame.w);
-    }
-    context.rotate(angle * (Math.PI / 180)); // to radians
-
-    if (angle === 0) { // WORKS, CLEAN
-        for (i = 0; i < fragments.length; i += 1) {
-            if (fragments[i]) {
-                context.drawImage(spriteSheet,
-                                  frame.x,
-                                  frame.y + (fragmentSize * i),
-                                  frame.w, fragmentSize,
-                                  positionShift.x,
-                                  positionShift.y + (fragmentSize * fragmentsDrawn),
-                                  frame.w, fragmentSize);
-                fragmentsDrawn += 1;
-            }
-        }
-    } else if (angle === 90) { // WORKS, CLEAN
-        for (i = 0; i < fragments.length; i += 1) {
-            if (fragments[i]) {
-                context.drawImage(spriteSheet,
-                                  frame.x + (fragmentSize * i),
-                                  frame.y,
-                                  fragmentSize, frame.h,
-                                  positionShift.x + (fragmentSize * fragmentsDrawn),
-                                  positionShift.y,
-                                  fragmentSize, frame.h);
-                fragmentsDrawn += 1;
-            }
-        }
-    } else if (angle === 180) { // CLEAN, WORKS
-        for (i = 0; i < fragments.length; i += 1) {
-            if (fragments[(fragments.length - 1) - i]) {
-                context.drawImage(spriteSheet,
-                                  frame.x,
-                                  frame.y + (fragmentSize * i),
-                                  frame.w, fragmentSize,
-                                  positionShift.x,
-                                  positionShift.y + (fragmentSize * fragmentsDrawn)
-                                  + fragmentSize * (fragments.length - fragmentsCount),
-                                  frame.w, fragmentSize);
-                fragmentsDrawn += 1;
-            }
-        }
-    } else { // 270 // CLEAN
-        for (i = 0; i < fragments.length; i += 1) {
-            if (fragments[(fragments.length - 1) - i]) {
-                context.drawImage(spriteSheet,
-                                  frame.x + (fragmentSize * i),
-                                  frame.y,
-                                  fragmentSize, frame.h,
-                                  positionShift.x + (fragmentSize * fragmentsDrawn)
-                                  + fragmentSize * (fragments.length - fragmentsCount),
-                                  positionShift.y,
-                                  fragmentSize, frame.h);
-                fragmentsDrawn += 1;
-            }
-        }
-    }
-
-    context.restore();
-};
-
 var debugLoop = function () {
     'use strict';
     var i,
@@ -258,10 +255,10 @@ var debugLoop = function () {
         testBlock4.shape[testNum] = [];
     }
     
-    drawBlock(testBlock);
-    drawBlock(testBlock2);
-    drawBlock(testBlock3);
-    drawBlock(testBlock4);
+    testBlock.draw();
+    testBlock2.draw();
+    testBlock3.draw();
+    testBlock4.draw();
     
     context.stroke();
 };
