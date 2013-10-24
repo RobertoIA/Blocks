@@ -107,7 +107,8 @@ function Block(sprite, shape) {
                                       frame.y + (fragmentSize * i),
                                       frame.w, fragmentSize,
                                       positionShift.x,
-                                      positionShift.y + (fragmentSize * fragmentsDrawn),
+                                      positionShift.y +
+                                      (fragmentSize * fragmentsDrawn),
                                       frame.w, fragmentSize);
                     fragmentsDrawn += 1;
                 }
@@ -119,7 +120,8 @@ function Block(sprite, shape) {
                                       frame.x + (fragmentSize * i),
                                       frame.y,
                                       fragmentSize, frame.h,
-                                      positionShift.x + (fragmentSize * fragmentsDrawn),
+                                      positionShift.x +
+                                      (fragmentSize * fragmentsDrawn),
                                       positionShift.y,
                                       fragmentSize, frame.h);
                     fragmentsDrawn += 1;
@@ -134,7 +136,8 @@ function Block(sprite, shape) {
                                       frame.w, fragmentSize,
                                       positionShift.x,
                                       positionShift.y + (fragmentSize * fragmentsDrawn)
-                                      + fragmentSize * (fragments.length - fragmentsCount),
+                                      + fragmentSize *
+                                      (fragments.length - fragmentsCount),
                                       frame.w, fragmentSize);
                     fragmentsDrawn += 1;
                 }
@@ -147,7 +150,8 @@ function Block(sprite, shape) {
                                       frame.y,
                                       fragmentSize, frame.h,
                                       positionShift.x + (fragmentSize * fragmentsDrawn)
-                                      + fragmentSize * (fragments.length - fragmentsCount),
+                                      + fragmentSize *
+                                      (fragments.length - fragmentsCount),
                                       positionShift.y,
                                       fragmentSize, frame.h);
                     fragmentsDrawn += 1;
@@ -156,6 +160,15 @@ function Block(sprite, shape) {
         }
     
         context.restore();
+    };
+}
+
+function Board() {
+    'use strict';
+    
+    this.draw = function () {
+        context.rect(LEFT_MARGIN, TOP_MARGIN,
+                 fragmentSize * WIDTH, fragmentSize * HEIGHT);
     };
 }
 
@@ -233,45 +246,9 @@ var setup = function () {
 
 var debugLoop = function () {
     'use strict';
-    var i,
-        testBlock,
-        testBlock2,
-        testBlock3,
-        testBlock4,
-        testBlockShape = [],
-        testBlockNum = 0,
-        testNum = 4;
-    
-    testBlock = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
-    testBlock.position.x = -2;
-    
-    testBlock2 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
-    testBlock2.rotate();
-    
-    testBlock3 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
-    testBlock3.position.x = 8;
-    testBlock3.rotate();
-    testBlock3.rotate();
-
-    
-    testBlock4 = new Block(blockData[testBlockNum].sprite, blockData[testBlockNum].shape);
-    testBlock4.position.x = 14;
-    testBlock4.rotate();
-    testBlock4.rotate();
-    testBlock4.rotate();
-    
-    if (testNum < 4) {
-        testBlock.shape[testNum] = [];
-        testBlock2.shape[testNum] = [];
-        testBlock3.shape[testNum] = [];
-        testBlock4.shape[testNum] = [];
-    }
-    
-    testBlock.draw();
-    testBlock2.draw();
-    testBlock3.draw();
-    testBlock4.draw();
-    
+    var testBlock = new Block(blockData[0].sprite, 
+                          blockData[0].shape).draw(),
+        testBoard = new Board().draw();
     context.stroke();
 };
 
