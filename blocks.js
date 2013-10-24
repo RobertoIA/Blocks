@@ -57,6 +57,18 @@ function Block(sprite, shape) {
         this.shape = rotatedShape;
     };
     
+    this.moveLeft = function () {
+        this.position.x -= 1;
+    };
+    
+    this.moveRight = function () {
+        this.position.x += 1;
+    };
+    
+    this.moveDown = function () {
+        this.position.y += 1;
+    };
+    
     this.draw = function () {
         var i,
             fragments = [],
