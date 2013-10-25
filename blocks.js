@@ -165,6 +165,17 @@ function Block(sprite, shape) {
 
 function Board() {
     'use strict';
+    var i, j, row;
+    
+    this.grid = [];
+    
+    for (i = 0; i < HEIGHT; i += 1) {
+        row = [];
+        for (j = 0; j < WIDTH; j += 1) {
+            row.push(false);
+        }
+        this.grid.push(row);
+    }
     
     this.draw = function () {
         context.rect(LEFT_MARGIN, TOP_MARGIN,
@@ -246,7 +257,7 @@ var setup = function () {
 
 var debugLoop = function () {
     'use strict';
-    var testBlock = new Block(blockData[0].sprite, 
+    var testBlock = new Block(blockData[0].sprite,
                           blockData[0].shape).draw(),
         testBoard = new Board().draw();
     context.stroke();
@@ -258,4 +269,7 @@ window.onload = function () {
     load();
     setup();
     window.setInterval(debugLoop, 1000 / FPS);
+    
+    var board = new Board();
+    console.log(board.grid);
 };
