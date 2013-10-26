@@ -177,9 +177,27 @@ function Board() {
         this.grid.push(row);
     }
     
+    this.addBlock = function (block) {
+        // add block to placed blocks
+        
+        // add block shape to grid
+    };
+    
     this.draw = function () {
         context.rect(LEFT_MARGIN, TOP_MARGIN,
                  fragmentSize * WIDTH, fragmentSize * HEIGHT);
+    };
+    
+    this.print = function () {
+        var i, j, row;
+        
+        for (i = 0; i < HEIGHT; i += 1) {
+            row = "";
+            for (j = 0; j < WIDTH; j += 1) {
+                row += this.grid[i][j] ? 'x ' : '_ ';
+            }
+            console.log(row);
+        }
     };
 }
 
@@ -271,5 +289,5 @@ window.onload = function () {
     window.setInterval(debugLoop, 1000 / FPS);
     
     var board = new Board();
-    console.log(board.grid);
+    board.print();
 };
