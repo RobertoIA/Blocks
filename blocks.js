@@ -177,15 +177,19 @@ function Board() {
         this.grid.push(row);
     }
     
+    this.blocks = [];
+    
     this.addBlock = function (block) {
-        // add block to placed blocks
-        
-        // add block shape to grid
+        this.blocks.push(block);
     };
     
     this.draw = function () {
         context.rect(LEFT_MARGIN, TOP_MARGIN,
                  fragmentSize * WIDTH, fragmentSize * HEIGHT);
+        
+        for (i = 0; i < this.blocks.length; i += 1) {
+            this.blocks[i].draw();
+        }
     };
     
     this.print = function () {
@@ -276,8 +280,12 @@ var setup = function () {
 var debugLoop = function () {
     'use strict';
     var testBlock = new Block(blockData[0].sprite,
-                          blockData[0].shape).draw(),
-        testBoard = new Board().draw();
+                          blockData[0].shape),
+        testBoard = new Board();
+    
+    testBoard.addBlock(testBlock);
+    testBoard.draw();
+    
     context.stroke();
 };
 
