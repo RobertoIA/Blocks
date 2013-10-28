@@ -167,15 +167,20 @@ function Board() {
     'use strict';
     var i, j, row;
     
-    this.grid = [];
+    this.grid = function () {
+        var grid = [],
+            row;
     
-    for (i = 0; i < HEIGHT; i += 1) {
-        row = [];
-        for (j = 0; j < WIDTH; j += 1) {
-            row.push(false);
+        for (i = 0; i < HEIGHT; i += 1) {
+            row = [];
+            for (j = 0; j < WIDTH; j += 1) {
+                row.push(false);
+            }
+            grid.push(row);
         }
-        this.grid.push(row);
-    }
+        
+        return grid;
+    };
     
     this.blocks = [];
     
@@ -193,12 +198,13 @@ function Board() {
     };
     
     this.print = function () {
-        var i, j, row;
+        var i, j, row,
+            grid = this.grid();
         
         for (i = 0; i < HEIGHT; i += 1) {
             row = "";
             for (j = 0; j < WIDTH; j += 1) {
-                row += this.grid[i][j] ? 'x ' : '_ ';
+                row += grid[i][j] ? 'x ' : '_ ';
             }
             console.log(row);
         }
