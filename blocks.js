@@ -200,6 +200,25 @@ function Board() {
         this.blocks.push(block);
     };
     
+    this.checkCollision = function (block) {
+        var grid = this.grid(),
+            blockHeight = block.shape.length,
+            blockWidth = block.shape[0].length,
+            collisions = {down: false, right: false, left: false};
+        
+        // Border collisions.
+        if (block.position.x + 1 > (WIDTH - blockWidth)) {
+            collisions.right = true;
+        } else if (block.position.x - 1 < 0) {
+            collisions.left = true;
+        }
+        if (block.position.y + 1 > HEIGHT - blockHeight) {
+            collisions.down = true;
+        }
+        
+        return collisions;
+    };
+    
     this.draw = function () {
         var i;
         
@@ -299,13 +318,19 @@ var setup = function () {
 
 var debugLoop = function () {
     'use strict';
-    var testBlock = new Block(blockData[0].sprite,
+    var testBlock1 = new Block(blockData[0].sprite,
                           blockData[0].shape),
+        testBlock2 = new Block(blockData[3].sprite,
+                          blockData[3].shape),
         testBoard = new Board();
     
-    testBlock.rotate();
-    testBoard.addBlock(testBlock);
-    testBoard.print();
+    //testBlock1.rotate();
+    testBoard.addBlock(testBlock1);
+    testBlock2.position.x = 0;
+    testBlock2.position.y = 18;
+    console.log(testBoard.checkCollision(testBlock2));
+    testBoard.addBlock(testBlock2);
+    //testBoard.print();
     testBoard.draw();
     
     context.stroke();
@@ -317,6 +342,6 @@ window.onload = function () {
     load();
     setup();
     
-    debugLoop();
-    //window.setInterval(debugLoop, 1000 / FPS);
+    //debugLoop();
+    window.setInterval(debugLoop, 1000 / FPS);
 };
