@@ -37,6 +37,14 @@ function Block(sprite, shape) {
                 'y': (this.position.y * fragmentSize) + TOP_MARGIN};
     };
     
+    this.width = function () {
+        
+    };
+    
+    this.height = function () {
+        
+    };
+    
     this.rotate = function () {
         var i, j,
             rowShape,
@@ -202,17 +210,15 @@ function Board() {
     
     this.checkCollision = function (block) {
         var grid = this.grid(),
-            blockHeight = block.shape.length,
-            blockWidth = block.shape[0].length,
             collisions = {down: false, right: false, left: false};
         
         // Border collisions.
-        if (block.position.x + 1 > (WIDTH - blockWidth)) {
+        if (block.position.x + 1 > (WIDTH - block.width())) {
             collisions.right = true;
         } else if (block.position.x - 1 < 0) {
             collisions.left = true;
         }
-        if (block.position.y + 1 > HEIGHT - blockHeight) {
+        if (block.position.y + 1 > HEIGHT - block.height()) {
             collisions.down = true;
         }
         
