@@ -38,11 +38,19 @@ function Block(sprite, shape) {
     };
     
     this.width = function () {
-        
+        return this.shape[0].length;
     };
     
     this.height = function () {
+        var i, rowCount = 0;
         
+        for (i = 0; i < this.shape.length; i += 1) {
+            if (this.shape[i].length !== 0) {
+                rowCount += 1;
+            }
+        }
+        
+        return rowCount;
     };
     
     this.rotate = function () {
@@ -324,8 +332,8 @@ var setup = function () {
 
 var debugLoop = function () {
     'use strict';
-    var testBlock1 = new Block(blockData[0].sprite,
-                          blockData[0].shape),
+    var testBlock1 = new Block(blockData[2].sprite,
+                          blockData[2].shape),
         testBlock2 = new Block(blockData[3].sprite,
                           blockData[3].shape),
         testBoard = new Board();
@@ -334,7 +342,7 @@ var debugLoop = function () {
     testBoard.addBlock(testBlock1);
     testBlock2.position.x = 0;
     testBlock2.position.y = 18;
-    console.log(testBoard.checkCollision(testBlock2));
+    //console.log(testBoard.checkCollision(testBlock2));
     testBoard.addBlock(testBlock2);
     //testBoard.print();
     testBoard.draw();
