@@ -16,7 +16,12 @@ var FPS = 6,
 
     // Spritesheet and block data.
     blockData = [],
-    spriteSheet = new Image();
+    spriteSheet = new Image(),
+    
+    // DEBUG
+    testBoard,
+    testBlock1,
+    testBlock2;
 
 function Block(sprite, shape) {
     'use strict';
@@ -322,7 +327,7 @@ var setup = function () {
     canvas = document.getElementById("canvas");
     context = canvas.getContext('2d');
     canvas.width = 800;
-    canvas.height = 800;
+    canvas.height = 700;
     
     // Fragment size is the minor side of the I piece.
     fragmentSize = Math.min(blockData[0].sprite.frame.w, blockData[0].sprite.frame.h);
@@ -332,19 +337,10 @@ var setup = function () {
 
 var debugLoop = function () {
     'use strict';
-    var testBlock1 = new Block(blockData[2].sprite,
-                          blockData[2].shape),
-        testBlock2 = new Block(blockData[3].sprite,
-                          blockData[3].shape),
-        testBoard = new Board();
     
-    //testBlock1.rotate();
-    testBoard.addBlock(testBlock1);
-    testBlock2.position.x = 0;
-    testBlock2.position.y = 18;
-    //console.log(testBoard.checkCollision(testBlock2));
-    testBoard.addBlock(testBlock2);
-    //testBoard.print();
+    // Clean screen.
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
     testBoard.draw();
     
     context.stroke();
@@ -355,6 +351,33 @@ window.onload = function () {
     'use strict';
     load();
     setup();
+    
+    document.addEventListener('keydown', function (event) {
+        if (event.keyCode === 38) {
+            testBlock1.rotate();
+        } else if (event.keyCode === 37) {
+            testBlock1.moveLeft();
+        } else if (event.keyCode === 39) {
+            testBlock1.moveRight();
+        } else if (event.keyCode === 40) {
+            testBlock1.moveDown();
+        }
+        
+        console.log(testBoard.checkCollision(testBlock1));
+    });
+    
+    testBlock1 = new Block(blockData[2].sprite,
+                          blockData[2].shape);
+    testBlock2 = new Block(blockData[3].sprite,
+                          blockData[3].shape);
+    testBoard = new Board();
+    
+    testBoard.addBlock(testBlock1);
+    
+    testBlock2.position.x = 0;
+    testBlock2.position.y = 18;
+    //console.log(testBoard.checkCollision(testBlock2));
+    testBoard.addBlock(testBlock2);
     
     //debugLoop();
     window.setInterval(debugLoop, 1000 / FPS);
