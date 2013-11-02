@@ -190,7 +190,7 @@ function Board() {
     this.grid = function () {
         var i, j, k,
             grid = [],
-            row;
+            row, rowIndex;
     
         // Initialize grid.
         for (i = 0; i < HEIGHT; i += 1) {
@@ -203,11 +203,15 @@ function Board() {
         
         // Add blocks.
         for (i = 0; i < this.blocks.length; i += 1) {
+            rowIndex = 0;
             for (j = 0; j < this.blocks[i].shape.length; j += 1) {
-                for (k = 0; k < this.blocks[i].shape[j].length; k += 1) {
-                    grid[this.blocks[i].position.y + j][
-                        this.blocks[i].position.x + k
-                    ] = this.blocks[i].shape[j][k];
+                if (this.blocks[i].shape[j].length !== 0) {
+                    for (k = 0; k < this.blocks[i].shape[j].length; k += 1) {
+                        grid[this.blocks[i].position.y + rowIndex][
+                            this.blocks[i].position.x + k
+                        ] = this.blocks[i].shape[j][k];
+                    }
+                    rowIndex += 1;
                 }
             }
         }
@@ -372,12 +376,17 @@ window.onload = function () {
                           blockData[3].shape);
     testBoard = new Board();
     
+    testBlock1.rotate();
+    testBlock1.shape[1] = [];
+    
     testBoard.addBlock(testBlock1);
     
     testBlock2.position.x = 0;
     testBlock2.position.y = 18;
     //console.log(testBoard.checkCollision(testBlock2));
     testBoard.addBlock(testBlock2);
+    
+    testBoard.print();
     
     //debugLoop();
     window.setInterval(debugLoop, 1000 / FPS);
