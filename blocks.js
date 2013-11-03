@@ -359,11 +359,14 @@ window.onload = function () {
     document.addEventListener('keydown', function (event) {
         if (event.keyCode === 38) {
             testBlock1.rotate();
-        } else if (event.keyCode === 37) {
+        } else if (event.keyCode === 37
+                   && !testBoard.checkCollision(testBlock1).left) {
             testBlock1.moveLeft();
-        } else if (event.keyCode === 39) {
+        } else if (event.keyCode === 39
+                   && !testBoard.checkCollision(testBlock1).right) {
             testBlock1.moveRight();
-        } else if (event.keyCode === 40) {
+        } else if (event.keyCode === 40
+                   && !testBoard.checkCollision(testBlock1).down) {
             testBlock1.moveDown();
         }
         
