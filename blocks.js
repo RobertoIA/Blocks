@@ -267,6 +267,17 @@ function Board() {
     };
 }
 
+var getBlock = function () {
+    'use strict';
+    
+    var index,
+        block;
+    
+    index = Math.floor(Math.random() * 7);
+    return new Block(blockData[index].sprite,
+                          blockData[index].shape);
+};
+
 // Loads sprites and sprite data.
 var load = function () {
     'use strict';
@@ -373,14 +384,12 @@ window.onload = function () {
         console.log(testBoard.checkCollision(testBlock1));
     });
     
-    testBlock1 = new Block(blockData[2].sprite,
-                          blockData[2].shape);
-    testBlock2 = new Block(blockData[3].sprite,
-                          blockData[3].shape);
+    testBlock1 = getBlock();
+    testBlock2 = getBlock();
     testBoard = new Board();
     
     testBlock1.rotate();
-    testBlock1.shape[1] = [];
+    //testBlock1.shape[1] = [];
     
     testBoard.addBlock(testBlock1);
     
