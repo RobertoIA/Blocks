@@ -18,23 +18,22 @@ var FPS = 6,
     blockData = [],
     spriteSheet = new Image(),
     
-    // DEBUG
-    testBoard,
-    testBlock1,
-    testBlock2;
+    gameState;
 
-function Block(sprite, shape) {
+function Block(index) {
     'use strict';
-    var i;
-
-    this.sprite = sprite;
+    var i,
+        shape;
+    
+    this.sprite = blockData[index].sprite;
     this.shape = [];
     
+    shape = blockData[index].shape;
     for (i = 0; i < shape.length; i += 1) {
         this.shape.push(shape[i].slice(0));
     }
     
-    this.position = {'x': 4, 'y': 0};
+    this.position = {'x': -5, 'y': 0};
     this.angle = 0;
     
     this.absolutePosition = function () {
@@ -267,16 +266,38 @@ function Board() {
     };
 }
 
-var getBlock = function () {
+function GameState() {
     'use strict';
+    var indexA,
+        indexB;
     
-    var index,
-        block;
+    indexA = Math.floor(Math.random() * 7);
+    indexB = Math.floor(Math.random() * 7);
     
-    index = Math.floor(Math.random() * 7);
-    return new Block(blockData[index].sprite,
-                          blockData[index].shape);
-};
+    this.board = new Board();
+    
+    this.block = new Block(indexA);
+    this.block.position = {'x': 4, 'y': 0};
+    this.board.addBlock(this.block);
+    
+    this.nextBlock = new Block(indexB);
+    
+    this.draw = function () {
+        this.board.draw();
+        this.nextBlock.draw();
+    };
+    
+    this.next = function () {
+        var index;
+    
+        this.block = this.nextBlock;
+        this.block.position = {'x': 4, 'y': 0};
+        this.board.addBlock(this.block);
+        
+        index = Math.floor(Math.random() * 7);
+        this.nextBlock = new Block(index);
+    };
+}
 
 // Loads sprites and sprite data.
 var load = function () {
@@ -356,7 +377,7 @@ var debugLoop = function () {
     // Clean screen.
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    testBoard.draw();
+    gameState.draw();
     
     context.stroke();
 };
@@ -364,42 +385,35 @@ var debugLoop = function () {
 // Kicks in once the DOM has been loaded.
 window.onload = function () {
     'use strict';
+    var board,
+        block,
+        nextBlock;
+    
     load();
     setup();
     
+    gameState = new GameState();
+    
     document.addEventListener('keydown', function (event) {
         if (event.keyCode === 38) {
-            testBlock1.rotate();
+            gameState.block.rotate();
         } else if (event.keyCode === 37
-                   && !testBoard.checkCollision(testBlock1).left) {
-            testBlock1.moveLeft();
+                   && !gameState.board.checkCollision(gameState.block).left) {
+            gameState.block.moveLeft();
         } else if (event.keyCode === 39
-                   && !testBoard.checkCollision(testBlock1).right) {
-            testBlock1.moveRight();
+                   && !gameState.board.checkCollision(gameState.block).right) {
+            gameState.block.moveRight();
         } else if (event.keyCode === 40
-                   && !testBoard.checkCollision(testBlock1).down) {
-            testBlock1.moveDown();
+                   && !gameState.board.checkCollision(gameState.block).down) {
+            gameState.block.moveDown();
+        } else if (event.keyCode === 32) {
+            gameState.next();
+        } else {
+            console.log(event.keyCode);
         }
         
-        console.log(testBoard.checkCollision(testBlock1));
+        console.log(gameState.board.checkCollision(gameState.block));
     });
-    
-    testBlock1 = getBlock();
-    testBlock2 = getBlock();
-    testBoard = new Board();
-    
-    testBlock1.rotate();
-    //testBlock1.shape[1] = [];
-    
-    testBoard.addBlock(testBlock1);
-    
-    testBlock2.position.x = 0;
-    testBlock2.position.y = 18;
-    //console.log(testBoard.checkCollision(testBlock2));
-    testBoard.addBlock(testBlock2);
-    
-    testBoard.print();
-    
-    //debugLoop();
+
     window.setInterval(debugLoop, 1000 / FPS);
 };
