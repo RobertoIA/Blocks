@@ -297,6 +297,14 @@ function GameState() {
         index = Math.floor(Math.random() * 7);
         this.nextBlock = new Block(index);
     };
+    
+    this.advance = function () {
+        if (this.board.checkCollision(this.block).down) {
+            this.next();
+        } else {
+            this.block.moveDown();
+        }
+    };
 }
 
 // Loads sprites and sprite data.
@@ -377,6 +385,7 @@ var debugLoop = function () {
     // Clean screen.
     context.clearRect(0, 0, canvas.width, canvas.height);
 
+    //gameState.advance();
     gameState.draw();
     
     context.stroke();
