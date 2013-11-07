@@ -412,16 +412,7 @@ window.onload = function () {
         } else if (event.keyCode === 39
                    && !gameState.board.checkCollision(gameState.block).right) {
             gameState.block.moveRight();
-        } else if (event.keyCode === 40
-                   && !gameState.board.checkCollision(gameState.block).down) {
-            gameState.block.moveDown();
-        } else if (event.keyCode === 32) {
-            gameState.next();
-        } else {
-            console.log(event.keyCode);
         }
-        
-        console.log(gameState.board.checkCollision(gameState.block));
     });
 
     window.setInterval(debugLoop, 1000 / FPS);
