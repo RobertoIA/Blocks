@@ -287,20 +287,16 @@ function GameState() {
         this.nextBlock.draw();
     };
     
-    this.next = function () {
-        var index;
-    
-        this.block = this.nextBlock;
-        this.block.position = {'x': 4, 'y': 0};
-        this.board.addBlock(this.block);
-        
-        index = Math.floor(Math.random() * 7);
-        this.nextBlock = new Block(index);
-    };
-    
     this.advance = function () {
+        var index;
+        
         if (this.board.checkCollision(this.block).down) {
-            this.next();
+            this.block = this.nextBlock;
+            this.block.position = {'x': 4, 'y': 0};
+            this.board.addBlock(this.block);
+            
+            index = Math.floor(Math.random() * 7);
+            this.nextBlock = new Block(index);
         } else {
             this.block.moveDown();
         }
@@ -385,7 +381,7 @@ var debugLoop = function () {
     // Clean screen.
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    //gameState.advance();
+    gameState.advance();
     gameState.draw();
     
     context.stroke();
