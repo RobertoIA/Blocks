@@ -225,7 +225,9 @@ function Board() {
     };
     
     this.checkCollision = function (block) {
-        var grid = this.grid(),
+        var i, j,
+            grid = this.grid(),
+            blockShape = {right: [], left: [], bottom: []},
             collisions = {down: false, right: false, left: false};
         
         // Border collisions.
@@ -237,6 +239,32 @@ function Board() {
         if (block.position.y + 1 > HEIGHT - block.height()) {
             collisions.down = true;
         }
+        
+        // Calculate block shape.
+        for (i = 0; i < block.shape.length; i += 1) {
+            for (j = block.shape[i].length - 1; j >= 0; j -= 1) {
+                if (block.shape[i][j]) {
+                    blockShape.right.push(j + 1);
+                    break;
+                }
+            }
+            for (j = 0; j < block.shape[i].length; j += 1) {
+                if (block.shape[i][j]) {
+                    blockShape.left.push(j - 1);
+                    break;
+                }
+            }
+        }
+        for (i = 0; i < block.shape[0].length; i += 1) {
+            for (j = block.shape.length - 1; j >= 0; j -= 1) {
+                if (block.shape[j][i] === 1) {
+                    blockShape.bottom.push(j + 1);
+                    break;
+                }
+            }
+        }
+        console.log(blockShape);
+        // Block collisions.
         
         return collisions;
     };
@@ -410,6 +438,8 @@ window.onload = function () {
             gameState.block.moveRight();
         }
     });
-
-    window.setInterval(debugLoop, 1000 / FPS);
+    
+    debugLoop();
+    gameState.draw();
+    //window.setInterval(debugLoop, 1000 / FPS);
 };
