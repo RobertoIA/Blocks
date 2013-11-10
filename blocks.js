@@ -224,21 +224,12 @@ function Board() {
         this.blocks.push(block);
     };
     
+    // NEEDS CLEANUP
     this.checkCollision = function (block) {
         var i, j,
             grid = this.grid(),
             blockShape = {right: [], left: [], bottom: []},
             collisions = {down: false, right: false, left: false};
-        
-        // Border collisions.
-        if (block.position.x + 1 > (WIDTH - block.width())) {
-            collisions.right = true;
-        } else if (block.position.x - 1 < 0) {
-            collisions.left = true;
-        }
-        if (block.position.y + 1 > HEIGHT - block.height()) {
-            collisions.down = true;
-        }
         
         // Calculate block shape.
         for (i = 0; i < block.shape.length; i += 1) {
@@ -263,8 +254,36 @@ function Board() {
                 }
             }
         }
-        console.log(blockShape);
+        
+        // Border collisions.
+        if (block.position.x + 1 > (WIDTH - block.width())) {
+            collisions.right = true;
+        } else if (block.position.x - 1 < 0) {
+            collisions.left = true;
+        }
+        
+        if (block.position.y + 1 > HEIGHT - block.height()) {
+            collisions.down = true;
+        } else {
+            for (i = 0; i < blockShape.bottom.length; i += 1) {
+                if (grid[block.position.y + blockShape.bottom[i]][block.position.x +
+                                                                       i]) {
+                    collisions.down = true;
+                }
+            }
+        }
+        
         // Block collisions.
+        for (i = 0; i < blockShape.right.length; i += 1) {
+            if (grid[block.position.y + i][block.position.x +
+                                                blockShape.right[i]]) {
+                collisions.right = true;
+            }
+            if (grid[block.position.y + i][block.position.x +
+                                                blockShape.left[i]]) {
+                collisions.left = true;
+            }
+        }
         
         return collisions;
     };
@@ -439,7 +458,6 @@ window.onload = function () {
         }
     });
     
-    debugLoop();
-    gameState.draw();
-    //window.setInterval(debugLoop, 1000 / FPS);
+    //debugLoop();
+    window.setInterval(debugLoop, 1000 / FPS);
 };
