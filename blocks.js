@@ -231,57 +231,57 @@ function Board() {
             blockShape = {right: [], left: [], bottom: []},
             collisions = {down: false, right: false, left: false};
         
-        // Calculate block shape.
-        for (i = 0; i < block.shape.length; i += 1) {
-            for (j = block.shape[i].length - 1; j >= 0; j -= 1) {
-                if (block.shape[i][j]) {
-                    blockShape.right.push(j + 1);
-                    break;
-                }
-            }
-            for (j = 0; j < block.shape[i].length; j += 1) {
-                if (block.shape[i][j]) {
-                    blockShape.left.push(j - 1);
-                    break;
-                }
-            }
-        }
-        for (i = 0; i < block.shape[0].length; i += 1) {
-            for (j = block.shape.length - 1; j >= 0; j -= 1) {
-                if (block.shape[j][i] === 1) {
-                    blockShape.bottom.push(j + 1);
-                    break;
-                }
-            }
-        }
-        
-        // Border collisions.
+        // Horizontal collisions
         if (block.position.x + 1 > (WIDTH - block.width())) {
             collisions.right = true;
         } else if (block.position.x - 1 < 0) {
             collisions.left = true;
+        } else {
+            // With other blocks.
+            for (i = 0; i < block.shape.length; i += 1) {
+                for (j = block.shape[i].length - 1; j >= 0; j -= 1) {
+                    if (block.shape[i][j]) {
+                        blockShape.right.push(j + 1);
+                        break;
+                    }
+                }
+                for (j = 0; j < block.shape[i].length; j += 1) {
+                    if (block.shape[i][j]) {
+                        blockShape.left.push(j - 1);
+                        break;
+                    }
+                }
+            }
+            for (i = 0; i < blockShape.right.length; i += 1) {
+                if (grid[block.position.y + i][block.position.x +
+                                                    blockShape.right[i]]) {
+                    collisions.right = true;
+                }
+                if (grid[block.position.y + i][block.position.x +
+                                                    blockShape.left[i]]) {
+                    collisions.left = true;
+                }
+            }
         }
         
+        // Vertical collisions.
         if (block.position.y + 1 > HEIGHT - block.height()) {
             collisions.down = true;
         } else {
+            // With other blocks.
+            for (i = 0; i < block.shape[0].length; i += 1) {
+                for (j = block.shape.length - 1; j >= 0; j -= 1) {
+                    if (block.shape[j][i] === 1) {
+                        blockShape.bottom.push(j + 1);
+                        break;
+                    }
+                }
+            }
             for (i = 0; i < blockShape.bottom.length; i += 1) {
                 if (grid[block.position.y + blockShape.bottom[i]][block.position.x +
                                                                        i]) {
                     collisions.down = true;
                 }
-            }
-        }
-        
-        // Block collisions.
-        for (i = 0; i < blockShape.right.length; i += 1) {
-            if (grid[block.position.y + i][block.position.x +
-                                                blockShape.right[i]]) {
-                collisions.right = true;
-            }
-            if (grid[block.position.y + i][block.position.x +
-                                                blockShape.left[i]]) {
-                collisions.left = true;
             }
         }
         
