@@ -324,6 +324,8 @@ function GameState() {
     this.board = new Board();
     
     this.block = new Block(indexA);
+    this.movement = {right: false, left: false};
+    
     this.block.position = {'x': 4, 'y': 0};
     this.board.addBlock(this.block);
     
@@ -334,8 +336,26 @@ function GameState() {
         this.nextBlock.draw();
     };
     
+    this.moveLeft = function () {
+        this.movement.left = true;
+    };
+    
+    this.moveRight = function () {
+        this.movement.right = true;
+    };
+    
     this.advance = function () {
         var index;
+        
+        if (this.movement.left && !this.board.checkCollision(this.block).left) {
+            this.block.moveLeft();
+        }
+        if (this.movement.right && !this.board.checkCollision(this.block).right) {
+            this.block.moveRight();
+        }
+        
+        this.movement.left = false;
+        this.movement.right = false;
         
         if (this.board.checkCollision(this.block).down) {
             this.block = this.nextBlock;
@@ -449,12 +469,10 @@ window.onload = function () {
     document.addEventListener('keydown', function (event) {
         if (event.keyCode === 38) {
             gameState.block.rotate();
-        } else if (event.keyCode === 37
-                   && !gameState.board.checkCollision(gameState.block).left) {
-            gameState.block.moveLeft();
-        } else if (event.keyCode === 39
-                   && !gameState.board.checkCollision(gameState.block).right) {
-            gameState.block.moveRight();
+        } else if (event.keyCode === 37) {
+            gameState.moveLeft();
+        } else if (event.keyCode === 39) {
+            gameState.moveRight();
         }
     });
     
