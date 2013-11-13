@@ -224,7 +224,6 @@ function Board() {
         this.blocks.push(block);
     };
     
-    // NEEDS CLEANUP
     this.checkCollision = function (block) {
         var i, j,
             grid = this.grid(),
@@ -288,6 +287,10 @@ function Board() {
         return collisions;
     };
     
+    this.checkRotation = function (block) {
+        return false;
+    };
+    
     this.draw = function () {
         var i;
         
@@ -324,7 +327,7 @@ function GameState() {
     this.board = new Board();
     
     this.block = new Block(indexA);
-    this.movement = {right: false, left: false};
+    this.movement = {right: false, left: false, rotate: false};
     
     this.block.position = {'x': 4, 'y': 0};
     this.board.addBlock(this.block);
@@ -344,6 +347,10 @@ function GameState() {
         this.movement.right = true;
     };
     
+    this.rotate = function () {
+        this.movement.rotate = true;
+    };
+    
     this.advance = function () {
         var index;
         
@@ -353,9 +360,13 @@ function GameState() {
         if (this.movement.right && !this.board.checkCollision(this.block).right) {
             this.block.moveRight();
         }
+        if (this.movement.rotate && !this.board.checkRotation(this.block)) {
+            this.block.rotate();
+        }
         
         this.movement.left = false;
         this.movement.right = false;
+        this.movement.rotate = false;
         
         if (this.board.checkCollision(this.block).down) {
             this.block = this.nextBlock;
@@ -468,7 +479,7 @@ window.onload = function () {
     
     document.addEventListener('keydown', function (event) {
         if (event.keyCode === 38) {
-            gameState.block.rotate();
+            gameState.rotate();
         } else if (event.keyCode === 37) {
             gameState.moveLeft();
         } else if (event.keyCode === 39) {
