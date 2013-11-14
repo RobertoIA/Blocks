@@ -89,6 +89,10 @@ function Block(index) {
         this.position.y += 1;
     };
     
+    this.clone = function () {
+        return new Block(index);
+    };
+    
     this.draw = function () {
         var i,
             fragments = [],
