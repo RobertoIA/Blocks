@@ -292,6 +292,28 @@ function Board() {
     };
     
     this.checkRotation = function (block) {
+        var i, j,
+            board = this.grid(),
+            auxBlock = block.clone();
+        
+        auxBlock.rotate();
+        if (auxBlock.position.x + auxBlock.shape.length > WIDTH) {
+            return false;
+        }
+        if (auxBlock.position.y + auxBlock.shape[0].length > HEIGHT) {
+            return false;
+        }
+        
+        //console.log(board);
+        for (i = 0; i < auxBlock.shape.length; i += 1) {
+            for (j = 0; j < auxBlock.shape[i].length; j += 1) {
+                console.log(auxBlock.shape[i][j]);
+                console.log(auxBlock.position.x + j);
+                console.log(board[auxBlock.position.x + j]);
+                //console.log(board[auxBlock.position.x + j][auxBlock.position.y + i]);
+            }
+        }
+        
         return true;
     };
     
@@ -373,14 +395,14 @@ function GameState() {
         this.movement.rotate = false;
         
         if (this.board.checkCollision(this.block).down) {
+            this.block.moveDown();
+        } else {
             this.block = this.nextBlock;
             this.block.position = {'x': 4, 'y': 0};
             this.board.addBlock(this.block);
             
             index = Math.floor(Math.random() * 7);
             this.nextBlock = new Block(index);
-        } else {
-            this.block.moveDown();
         }
     };
 }
