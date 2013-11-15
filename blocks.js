@@ -90,7 +90,17 @@ function Block(index) {
     };
     
     this.clone = function () {
-        return new Block(index);
+        var i,
+            clone = new Block(index);
+        
+        clone.position.x = this.position.x;
+        clone.position.y = this.position.y;
+        
+        for (i = 0; i < this.angle / 90; i += 1) {
+            clone.rotate();
+        }
+        
+        return clone;
     };
     
     this.draw = function () {
