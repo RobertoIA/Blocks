@@ -232,13 +232,13 @@ function Board() {
         var i, j,
             grid = this.grid(),
             blockShape = {right: [], left: [], bottom: []},
-            collisions = {down: false, right: false, left: false};
+            collisions = {down: true, right: true, left: true};
         
         // Horizontal collisions
         if (block.position.x + 1 > (WIDTH - block.width())) {
-            collisions.right = true;
+            collisions.right = false;
         } else if (block.position.x - 1 < 0) {
-            collisions.left = true;
+            collisions.left = false;
         } else {
             // With other blocks.
             for (i = 0; i < block.shape.length; i += 1) {
@@ -258,18 +258,18 @@ function Board() {
             for (i = 0; i < blockShape.right.length; i += 1) {
                 if (grid[block.position.y + i][block.position.x +
                                                     blockShape.right[i]]) {
-                    collisions.right = true;
+                    collisions.right = false;
                 }
                 if (grid[block.position.y + i][block.position.x +
                                                     blockShape.left[i]]) {
-                    collisions.left = true;
+                    collisions.left = false;
                 }
             }
         }
         
         // Vertical collisions.
         if (block.position.y + 1 > HEIGHT - block.height()) {
-            collisions.down = true;
+            collisions.down = false;
         } else {
             // With other blocks.
             for (i = 0; i < block.shape[0].length; i += 1) {
@@ -283,7 +283,7 @@ function Board() {
             for (i = 0; i < blockShape.bottom.length; i += 1) {
                 if (grid[block.position.y + blockShape.bottom[i]][block.position.x +
                                                                        i]) {
-                    collisions.down = true;
+                    collisions.down = false;
                 }
             }
         }
@@ -292,7 +292,7 @@ function Board() {
     };
     
     this.checkRotation = function (block) {
-        return false;
+        return true;
     };
     
     this.draw = function () {
@@ -358,13 +358,13 @@ function GameState() {
     this.advance = function () {
         var index;
         
-        if (this.movement.left && !this.board.checkCollision(this.block).left) {
+        if (this.movement.left && this.board.checkCollision(this.block).left) {
             this.block.moveLeft();
         }
-        if (this.movement.right && !this.board.checkCollision(this.block).right) {
+        if (this.movement.right && this.board.checkCollision(this.block).right) {
             this.block.moveRight();
         }
-        if (this.movement.rotate && !this.board.checkRotation(this.block)) {
+        if (this.movement.rotate && this.board.checkRotation(this.block)) {
             this.block.rotate();
         }
         
