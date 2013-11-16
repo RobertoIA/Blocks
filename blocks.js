@@ -109,7 +109,7 @@ function Block(index) {
         for (i = 0; i < this.shape.length; i += 1) {
             row = "";
             for (j = 0; j < this.shape[0].length; j += 1) {
-                row += this.shape[i][j] + ' '; //? 'x ' : '_ ';
+                row += this.shape[i][j] ? 'x ' : '_ ';
             }
             console.log(row);
         }
@@ -296,7 +296,7 @@ function Board() {
             // With other blocks.
             for (i = 0; i < block.shape[0].length; i += 1) {
                 for (j = block.shape.length - 1; j >= 0; j -= 1) {
-                    if (block.shape[j][i] === 1) {
+                    if (block.shape[j][i]) {
                         blockShape.bottom.push(j + 1);
                         break;
                     }
@@ -453,25 +453,25 @@ var load = function () {
             
             switch (spriteData.frames[sprite].filename) {
             case "I.png":
-                shape = [[1, 1, 1, 1]];
+                shape = [[true, true, true, true]];
                 break;
             case "J.png":
-                shape = [[1, 0, 0], [1, 1, 1]];
+                shape = [[true, false, false], [true, true, true]];
                 break;
             case "L.png":
-                shape = [[0, 0, 1], [1, 1, 1]];
+                shape = [[false, false, true], [true, true, true]];
                 break;
             case "O.png":
-                shape = [[1, 1], [1, 1]];
+                shape = [[true, true], [true, true]];
                 break;
             case "S.png":
-                shape = [[0, 1, 1], [1, 1, 0]];
+                shape = [[false, true, true], [true, true, false]];
                 break;
             case "T.png":
-                shape = [[0, 1, 0], [1, 1, 1]];
+                shape = [[false, true, false], [true, true, true]];
                 break;
             case "Z.png":
-                shape = [[1, 1, 0], [0, 1, 1]];
+                shape = [[true, true, false], [false, true, true]];
                 break;
             }
             
@@ -536,6 +536,7 @@ window.onload = function () {
     });
     
     gameState.board.print();
+    console.log('');
     gameState.block.print();
     
     //debugLoop();
