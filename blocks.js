@@ -103,6 +103,18 @@ function Block(index) {
         return clone;
     };
     
+    this.print = function () {
+        var i, j, row;
+        
+        for (i = 0; i < this.shape.length; i += 1) {
+            row = "";
+            for (j = 0; j < this.shape[0].length; j += 1) {
+                row += this.shape[i][j] + ' '; //? 'x ' : '_ ';
+            }
+            console.log(row);
+        }
+    };
+    
     this.draw = function () {
         var i,
             fragments = [],
@@ -522,6 +534,9 @@ window.onload = function () {
             gameState.moveRight();
         }
     });
+    
+    gameState.board.print();
+    gameState.block.print();
     
     //debugLoop();
     window.setInterval(debugLoop, 1000 / FPS);
