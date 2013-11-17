@@ -372,6 +372,8 @@ function GameState() {
     indexA = Math.floor(Math.random() * 7);
     indexB = Math.floor(Math.random() * 7);
     
+    this.paused = false;
+    
     this.board = new Board();
     
     this.block = new Block(indexA);
@@ -504,13 +506,15 @@ var setup = function () {
 var debugLoop = function () {
     'use strict';
     
-    // Clean screen.
-    context.clearRect(0, 0, canvas.width, canvas.height);
-
-    gameState.advance();
-    gameState.draw();
+    if (!gameState.paused) {
+        // Clean screen.
+        context.clearRect(0, 0, canvas.width, canvas.height);
     
-    context.stroke();
+        gameState.advance();
+        gameState.draw();
+        
+        context.stroke();
+    }
 };
 
 // Kicks in once the DOM has been loaded.
@@ -532,6 +536,10 @@ window.onload = function () {
             gameState.moveLeft();
         } else if (event.keyCode === 39) {
             gameState.moveRight();
+        } else if (event.keyCode === 32) {
+            gameState.paused = !gameState.paused;
+        } else {
+            console.log(event.keyCode);
         }
     });
     
