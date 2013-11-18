@@ -214,6 +214,7 @@ function Board() {
     
     this.grid = function () {
         var i, j, k,
+            x, y,
             grid = [],
             row, rowIndex;
     
@@ -228,19 +229,16 @@ function Board() {
         
         // Add blocks.
         for (i = 0; i < this.blocks.length; i += 1) {
-            rowIndex = 0;
+            x = this.blocks[i].position.x;
+            y = this.blocks[i].position.y;
             for (j = 0; j < this.blocks[i].shape.length; j += 1) {
-                if (this.blocks[i].shape[j].length !== 0) {
-                    for (k = 0; k < this.blocks[i].shape[j].length; k += 1) {
-                        grid[this.blocks[i].position.y + rowIndex][
-                            this.blocks[i].position.x + k
-                        ] = this.blocks[i].shape[j][k];
+                for (k = 0; k < this.blocks[i].shape[j].length; k += 1) {
+                    if (this.blocks[i].shape[j][k]) {
+                        grid[y + j][x + k] = true;
                     }
-                    rowIndex += 1;
                 }
             }
         }
-        
         return grid;
     };
     
@@ -325,7 +323,7 @@ function Board() {
         if (auxBlock.position.y + auxBlock.shape[0].length > HEIGHT) {
             return false;
         }
-        
+        /*
         //console.log(board);
         for (i = 0; i < auxBlock.shape.length; i += 1) {
             for (j = 0; j < auxBlock.shape[i].length; j += 1) {
@@ -335,7 +333,7 @@ function Board() {
                 //console.log(board[auxBlock.position.x + j][auxBlock.position.y + i]);
             }
         }
-        
+        */
         return true;
     };
     
@@ -538,14 +536,10 @@ window.onload = function () {
             gameState.moveRight();
         } else if (event.keyCode === 32) {
             gameState.paused = !gameState.paused;
-        } else {
-            console.log(event.keyCode);
+        //} else {
+        //    console.log(event.keyCode);
         }
     });
-    
-    gameState.board.print();
-    console.log('');
-    gameState.block.print();
     
     //debugLoop();
     window.setInterval(debugLoop, 1000 / FPS);
