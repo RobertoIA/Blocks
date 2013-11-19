@@ -317,19 +317,20 @@ function Board() {
             auxBlock = block.clone();
         
         auxBlock.rotate();
-        if (auxBlock.position.x + auxBlock.shape.length > WIDTH) {
+        if (auxBlock.position.x + auxBlock.shape[0].length > WIDTH ) {
             return false;
         }
-        if (auxBlock.position.y + auxBlock.shape[0].length > HEIGHT) {
+        if (auxBlock.position.y + auxBlock.shape.length > HEIGHT) {
             return false;
         }
         /*
         //console.log(board);
         for (i = 0; i < auxBlock.shape.length; i += 1) {
             for (j = 0; j < auxBlock.shape[i].length; j += 1) {
+                //console.log(auxBlock.shape[i][j]);
                 console.log(auxBlock.shape[i][j]);
-                console.log(auxBlock.position.x + j);
-                console.log(board[auxBlock.position.x + j]);
+                console.log(board[auxBlock.position.x + i][auxBlock.position.y + j]);
+                console.log(' ');
                 //console.log(board[auxBlock.position.x + j][auxBlock.position.y + i]);
             }
         }
