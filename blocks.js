@@ -314,7 +314,8 @@ function Board() {
     this.checkRotation = function (block) {
         var i, j,
             board = this.grid(),
-            auxBlock = block.clone();
+            auxBlock = block.clone(),
+            blockPiece, auxBlockPiece, boardPiece;
         
         auxBlock.rotate();
         if (auxBlock.position.x + auxBlock.shape[0].length > WIDTH ) {
@@ -323,18 +324,23 @@ function Board() {
         if (auxBlock.position.y + auxBlock.shape.length > HEIGHT) {
             return false;
         }
-        /*
-        //console.log(board);
+        
+        //console.log(board.length + ' ' + board[0].length);
+        
         for (i = 0; i < auxBlock.shape.length; i += 1) {
             for (j = 0; j < auxBlock.shape[i].length; j += 1) {
-                //console.log(auxBlock.shape[i][j]);
-                console.log(auxBlock.shape[i][j]);
-                console.log(board[auxBlock.position.x + i][auxBlock.position.y + j]);
-                console.log(' ');
-                //console.log(board[auxBlock.position.x + j][auxBlock.position.y + i]);
+                blockPiece = block.shape[j][i];
+                auxBlockPiece = auxBlock.shape[i][j];
+                boardPiece = board[auxBlock.position.y + j][auxBlock.position.x + i];
+                //console.log(i + ' ' + j + ' ' + (auxBlock.position.y + j) + ' '  +(auxBlock.position.x + i));
+                //console.log(blockPiece + ' ' + auxBlockPiece + ' ' + boardPiece);
+                if(!blockPiece && auxBlockPiece && boardPiece) {
+                    console.log('devuelve');
+                    return false;
+                }
             }
         }
-        */
+        
         return true;
     };
     
@@ -410,6 +416,7 @@ function GameState() {
             this.block.moveRight();
         }
         if (this.movement.rotate && this.board.checkRotation(this.block)) {
+            console.log((this.board.checkRotation(this.block)) ? 't':'f');
             this.block.rotate();
         }
         
