@@ -315,10 +315,10 @@ function Board() {
         var i, j,
             board = this.grid(),
             auxBlock = block.clone(),
-            blockPiece, auxBlockPiece, boardPiece;
+            auxBlockPiece, boardPiece;
         
         auxBlock.rotate();
-        if (auxBlock.position.x + auxBlock.shape[0].length > WIDTH ) {
+        if (auxBlock.position.x + auxBlock.shape[0].length > WIDTH) {
             return false;
         }
         if (auxBlock.position.y + auxBlock.shape.length > HEIGHT) {
@@ -329,13 +329,11 @@ function Board() {
         
         for (i = 0; i < auxBlock.shape.length; i += 1) {
             for (j = 0; j < auxBlock.shape[i].length; j += 1) {
-                blockPiece = block.shape[j][i];
                 auxBlockPiece = auxBlock.shape[i][j];
-                boardPiece = board[auxBlock.position.y + j][auxBlock.position.x + i];
-                //console.log(i + ' ' + j + ' ' + (auxBlock.position.y + j) + ' '  +(auxBlock.position.x + i));
-                //console.log(blockPiece + ' ' + auxBlockPiece + ' ' + boardPiece);
-                if(!blockPiece && auxBlockPiece && boardPiece) {
-                    console.log('devuelve');
+                boardPiece = board[auxBlock.position.y + j][auxBlock.position.x + i] && !block.shape[j][i];
+                console.log(i + ' ' + j + ' ' + (auxBlock.position.y + j) + ' ' + (auxBlock.position.x + i));
+                console.log(auxBlockPiece + ' ' + boardPiece);
+                if (auxBlockPiece && boardPiece) {
                     return false;
                 }
             }
@@ -345,10 +343,19 @@ function Board() {
     };
     
     this.draw = function () {
-        var i;
+        var i, j;
         
         context.rect(LEFT_MARGIN, TOP_MARGIN,
                  fragmentSize * WIDTH, fragmentSize * HEIGHT);
+        
+        // Debug grid
+        for (i = 0; i < WIDTH; i += 1) {
+            for (j = 0; j < HEIGHT; j += 1) {
+                context.rect(LEFT_MARGIN + fragmentSize * i,
+                             TOP_MARGIN + fragmentSize * j,
+                             fragmentSize, fragmentSize);
+            }
+        }
         
         for (i = 0; i < this.blocks.length; i += 1) {
             this.blocks[i].draw();
@@ -416,7 +423,7 @@ function GameState() {
             this.block.moveRight();
         }
         if (this.movement.rotate && this.board.checkRotation(this.block)) {
-            console.log((this.board.checkRotation(this.block)) ? 't':'f');
+            console.log(this.board.checkRotation(this.block));
             this.block.rotate();
         }
         
