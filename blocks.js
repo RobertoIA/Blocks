@@ -315,7 +315,7 @@ function Board() {
         var i, j,
             board = this.grid(),
             auxBlock = block.clone(),
-            auxBlockPiece, boardPiece;
+            boardPiece;
         
         auxBlock.rotate();
         if (auxBlock.position.x + auxBlock.shape[0].length > WIDTH) {
@@ -329,11 +329,10 @@ function Board() {
         
         for (i = 0; i < auxBlock.shape.length; i += 1) {
             for (j = 0; j < auxBlock.shape[i].length; j += 1) {
-                auxBlockPiece = auxBlock.shape[i][j];
                 boardPiece = board[auxBlock.position.y + j][auxBlock.position.x + i] && !block.shape[j][i];
-                console.log(i + ' ' + j + ' ' + (auxBlock.position.y + j) + ' ' + (auxBlock.position.x + i));
-                console.log(auxBlockPiece + ' ' + boardPiece);
-                if (auxBlockPiece && boardPiece) {
+                //console.log(i + ' ' + j + ' ' + (auxBlock.position.y + j) + ' ' + (auxBlock.position.x + i));
+                //console.log(auxBlockPiece + ' ' + boardPiece);
+                if (auxBlock.shape[i][j] && boardPiece) {
                     return false;
                 }
             }
