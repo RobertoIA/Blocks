@@ -242,6 +242,45 @@ function Board() {
         return grid;
     };
     
+    this.partialGrid = function (block) {
+        var i, j, k,
+            x, y,
+            grid = [],
+            row, rowIndex;
+    
+        // Initialize grid.
+        for (i = 0; i < HEIGHT; i += 1) {
+            row = [];
+            for (j = 0; j < WIDTH; j += 1) {
+                row.push(false);
+            }
+            grid.push(row);
+        }
+        
+        // Add blocks.
+        for (i = 0; i < this.blocks.length; i += 1) {
+            if(this.blocks[i] !== block) {
+                x = this.blocks[i].position.x;
+                y = this.blocks[i].position.y;
+                for (j = 0; j < this.blocks[i].shape.length; j += 1) {
+                    for (k = 0; k < this.blocks[i].shape[j].length; k += 1) {
+                        if (this.blocks[i].shape[j][k]) {
+                            grid[y + j][x + k] = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        for (i = 0; i < HEIGHT; i += 1) {
+            row = "";
+            for (j = 0; j < WIDTH; j += 1) {
+                row += grid[i][j] ? 'x ' : '_ ';
+            }
+            console.log(row);
+        }
+    };
+    
     this.blocks = [];
     
     this.addBlock = function (block) {
@@ -315,7 +354,7 @@ function Board() {
         var i, j,
             board = this.grid(),
             auxBlock = block.clone(),
-            boardPiece;
+            blockPiece, auxBlockPiece, boardPiece;
         
         auxBlock.rotate();
         if (auxBlock.position.x + auxBlock.shape[0].length > WIDTH) {
@@ -326,7 +365,7 @@ function Board() {
         }
         
         //console.log(board.length + ' ' + board[0].length);
-        
+        /*
         for (i = 0; i < auxBlock.shape.length; i += 1) {
             for (j = 0; j < auxBlock.shape[i].length; j += 1) {
                 boardPiece = board[auxBlock.position.y + j][auxBlock.position.x + i] && !block.shape[j][i];
@@ -337,6 +376,29 @@ function Board() {
                 }
             }
         }
+        */
+        for (i = 0; i < auxBlock.shape.length; i += 1) {
+            for (j = 0; j < auxBlock.shape[i].length; j += 1) {
+                //console.log('(' + (auxBlock.position.x + j) + ',' + (auxBlock.position.y + i) + ')');
+                //console.log(auxBlock.shape[i][j]); // rotated block
+                //console.log(block.shape[j][i]); // normal block;
+                //console.log(board[auxBlock.position.y + i][auxBlock.position.x + j]); // board
+                
+                blockPiece = block.shape[j][i];
+                auxBlockPiece = auxBlock.shape[i][j];
+                boardPiece = board[auxBlock.position.y + i][auxBlock.position.x + j];
+                
+                //if (auxBlockPiece && boardPiece && !blockPiece) {
+                //    return false;
+                //}
+                
+                console.log('(' + (auxBlock.position.x + j) + ',' + (auxBlock.position.y + i) + ')');
+                console.log(auxBlockPiece); // rotated block
+                console.log(blockPiece); // normal block;
+                console.log(boardPiece); // board
+            }
+        }
+        console.log('');
         
         return true;
     };
@@ -526,6 +588,8 @@ var debugLoop = function () {
         gameState.draw();
         
         context.stroke();
+        
+        //gameState.board.partialGrid(gameState.block);
     }
 };
 
