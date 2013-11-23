@@ -259,7 +259,7 @@ function Board() {
         
         // Add blocks.
         for (i = 0; i < this.blocks.length; i += 1) {
-            if(this.blocks[i] !== block) {
+            if (this.blocks[i] !== block) { // discriminate block.
                 x = this.blocks[i].position.x;
                 y = this.blocks[i].position.y;
                 for (j = 0; j < this.blocks[i].shape.length; j += 1) {
@@ -272,13 +272,7 @@ function Board() {
             }
         }
         
-        for (i = 0; i < HEIGHT; i += 1) {
-            row = "";
-            for (j = 0; j < WIDTH; j += 1) {
-                row += grid[i][j] ? 'x ' : '_ ';
-            }
-            console.log(row);
-        }
+        return grid;
     };
     
     this.blocks = [];
@@ -352,7 +346,7 @@ function Board() {
     
     this.checkRotation = function (block) {
         var i, j,
-            board = this.grid(),
+            board = this.partialGrid(block),
             auxBlock = block.clone(),
             blockPiece, auxBlockPiece, boardPiece;
         
@@ -363,42 +357,17 @@ function Board() {
         if (auxBlock.position.y + auxBlock.shape.length > HEIGHT) {
             return false;
         }
-        
-        //console.log(board.length + ' ' + board[0].length);
-        /*
+
         for (i = 0; i < auxBlock.shape.length; i += 1) {
             for (j = 0; j < auxBlock.shape[i].length; j += 1) {
-                boardPiece = board[auxBlock.position.y + j][auxBlock.position.x + i] && !block.shape[j][i];
-                //console.log(i + ' ' + j + ' ' + (auxBlock.position.y + j) + ' ' + (auxBlock.position.x + i));
-                //console.log(auxBlockPiece + ' ' + boardPiece);
-                if (auxBlock.shape[i][j] && boardPiece) {
+                auxBlockPiece = auxBlock.shape[i][j];
+                boardPiece = board[auxBlock.position.y + i][auxBlock.position.x + j];
+                
+                if (auxBlockPiece && boardPiece) {
                     return false;
                 }
             }
         }
-        */
-        for (i = 0; i < auxBlock.shape.length; i += 1) {
-            for (j = 0; j < auxBlock.shape[i].length; j += 1) {
-                //console.log('(' + (auxBlock.position.x + j) + ',' + (auxBlock.position.y + i) + ')');
-                //console.log(auxBlock.shape[i][j]); // rotated block
-                //console.log(block.shape[j][i]); // normal block;
-                //console.log(board[auxBlock.position.y + i][auxBlock.position.x + j]); // board
-                
-                blockPiece = block.shape[j][i];
-                auxBlockPiece = auxBlock.shape[i][j];
-                boardPiece = board[auxBlock.position.y + i][auxBlock.position.x + j];
-                
-                //if (auxBlockPiece && boardPiece && !blockPiece) {
-                //    return false;
-                //}
-                
-                console.log('(' + (auxBlock.position.x + j) + ',' + (auxBlock.position.y + i) + ')');
-                console.log(auxBlockPiece); // rotated block
-                console.log(blockPiece); // normal block;
-                console.log(boardPiece); // board
-            }
-        }
-        console.log('');
         
         return true;
     };
@@ -588,8 +557,6 @@ var debugLoop = function () {
         gameState.draw();
         
         context.stroke();
-        
-        //gameState.board.partialGrid(gameState.block);
     }
 };
 
