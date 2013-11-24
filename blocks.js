@@ -372,6 +372,25 @@ function Board() {
         return true;
     };
     
+    this.checkFilledRows = function (block) {
+        var i, j,
+            row,
+            grid = this.partialGrid(block),
+            filledRows = [];
+        
+        for (i = 0; i < HEIGHT; i += 1) {
+            row = true;
+            for (j = 0; j < WIDTH; j += 1) {
+                row = row && grid[i][j];
+            }
+            if (row) {
+                filledRows.push(i);
+            }
+        }
+        
+        return filledRows;
+    };
+    
     this.draw = function () {
         var i, j;
         
@@ -453,7 +472,6 @@ function GameState() {
             this.block.moveRight();
         }
         if (this.movement.rotate && this.board.checkRotation(this.block)) {
-            console.log(this.board.checkRotation(this.block));
             this.block.rotate();
         }
         
@@ -557,6 +575,8 @@ var debugLoop = function () {
         gameState.draw();
         
         context.stroke();
+        
+        console.log(gameState.board.checkFilledRows(gameState.block));
     }
 };
 
