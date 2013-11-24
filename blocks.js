@@ -372,10 +372,11 @@ function Board() {
         return true;
     };
     
-    this.checkFilledRows = function (block) {
+    this.checkFilledRows = function () {//(block) {
         var i, j,
             row,
-            grid = this.partialGrid(block),
+            //grid = this.partialGrid(block),
+            grid = this.grid(),
             filledRows = [];
         
         for (i = 0; i < HEIGHT; i += 1) {
@@ -468,6 +469,7 @@ function GameState() {
     this.advance = function () {
         var index;
         
+        // Movement.
         if (this.movement.left && this.board.checkCollision(this.block).left) {
             this.block.moveLeft();
         }
@@ -485,6 +487,8 @@ function GameState() {
         if (this.board.checkCollision(this.block).down) {
             this.block.moveDown();
         } else {
+            console.log(this.board.checkFilledRows());
+            
             this.block = this.nextBlock;
             this.block.position = {'x': 4, 'y': 0};
             this.board.addBlock(this.block);
@@ -580,8 +584,6 @@ var debugLoop = function () {
         gameState.draw();
         
         context.stroke();
-        
-        console.log(gameState.board.checkFilledRows(gameState.block));
     }
 };
 
