@@ -435,8 +435,8 @@ function GameState() {
     
     this.paused = false;
     
+    this.score = 0;
     this.board = new Board();
-    
     this.block = new Block(indexA);
     this.movement = {right: false, left: false, rotate: false};
     
@@ -448,6 +448,9 @@ function GameState() {
     this.draw = function () {
         this.board.draw();
         this.nextBlock.draw();
+        
+        context.fillText("Score: " + this.score, LEFT_MARGIN - (fragmentSize * 5),
+                         TOP_MARGIN + fragmentSize * 3);
     };
     
     this.moveLeft = function () {
@@ -560,6 +563,8 @@ var setup = function () {
     
     // Fragment size is the minor side of the I piece.
     fragmentSize = Math.min(blockData[0].sprite.frame.w, blockData[0].sprite.frame.h);
+    
+    context.font = "bold 20px Arial";
 
     console.log('Setup completed.');
 };
