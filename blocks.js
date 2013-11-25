@@ -103,6 +103,19 @@ function Block(index) {
         return clone;
     };
     
+    this.getHeight = function () {
+        var i,
+            height = 0;
+        
+        for (i = 0; i < this.shape.length; i += 1) {
+            if (this.shape[i].length > 0) {
+                height += 1;
+            }
+        }
+        
+        return height;
+    };
+    
     this.print = function () {
         var i, j, row;
         
@@ -372,10 +385,9 @@ function Board() {
         return true;
     };
     
-    this.checkFilledRows = function () {//(block) {
+    this.checkFilledRows = function () {
         var i, j,
             row,
-            //grid = this.partialGrid(block),
             grid = this.grid(),
             filledRows = [];
         
@@ -390,6 +402,29 @@ function Board() {
         }
         
         return filledRows;
+    };
+    
+    this.deleteRow = function (row) {
+        var i, j,
+            height, position;
+
+        for (j = 0; j < this.blocks.length; j += 1) {
+            height = this.blocks[j].getHeight();
+            position = this.blocks[j].position.y - 1;
+            
+            if (position <= row && position + height >= row && height > 0) {
+                //console.log(position + ' ' + (position + height));
+                //console.log('borrar! ' + (row - position - 1));
+                this.blocks[j].shape[row - position - 1] = [];
+                if (this.blocks[j].getHeight() > 0) {
+                    this.blocks[j].position.y += 1;
+                } else {
+                    // remove block entirely
+                }
+            }
+        }
+        
+        this.print();
     };
     
     this.draw = function () {
@@ -467,7 +502,9 @@ function GameState() {
     };
     
     this.advance = function () {
-        var index;
+        var index,
+            filledRows,
+            i;
         
         // Movement.
         if (this.movement.left && this.board.checkCollision(this.block).left) {
@@ -487,7 +524,11 @@ function GameState() {
         if (this.board.checkCollision(this.block).down) {
             this.block.moveDown();
         } else {
-            console.log(this.board.checkFilledRows());
+            filledRows = this.board.checkFilledRows();
+            
+            for (i = 0; i < filledRows.length; i += 1) {
+                this.board.deleteRow(filledRows[i]);
+            }
             
             this.block = this.nextBlock;
             this.block.position = {'x': 4, 'y': 0};
