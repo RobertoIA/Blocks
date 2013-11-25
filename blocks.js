@@ -294,6 +294,14 @@ function Board() {
         this.blocks.push(block);
     };
     
+    this.removeBlock = function (block) {
+        var index = this.blocks.indexOf(block);
+        
+        if (index !== -1) {
+            this.blocks.splice(index, 1);
+        }
+    };
+    
     this.checkCollision = function (block) {
         var i, j,
             grid = this.grid(),
@@ -413,13 +421,11 @@ function Board() {
             position = this.blocks[j].position.y - 1;
             
             if (position <= row && position + height >= row && height > 0) {
-                //console.log(position + ' ' + (position + height));
-                //console.log('borrar! ' + (row - position - 1));
                 this.blocks[j].shape[row - position - 1] = [];
                 if (this.blocks[j].getHeight() > 0) {
                     this.blocks[j].position.y += 1;
                 } else {
-                    // remove block entirely
+                    this.removeBlock(this.blocks[j]);
                 }
             }
         }
