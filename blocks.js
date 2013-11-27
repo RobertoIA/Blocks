@@ -413,21 +413,20 @@ function Board() {
     };
     
     this.deleteRow = function (row) {
-        var i, j,
-            height, position;
+        var i, height, position;
 
-        for (j = 0; j < this.blocks.length; j += 1) {
-            height = this.blocks[j].getHeight();
-            position = this.blocks[j].position.y - 1;
+        for (i = 0; i < this.blocks.length; i += 1) {
+            height = this.blocks[i].getHeight();
+            position = this.blocks[i].position.y;
             
-            if (position <= row && height > 0) {
+            if (position <= row) {
                 if (position + height >= row) {
-                    this.blocks[j].shape[row - position - 1] = [];
+                    this.blocks[i].shape[row - position - 1] = [];
                 }
-                if (this.blocks[j].getHeight() > 0) {
-                    this.blocks[j].position.y += 1;
+                if (this.blocks[i].getHeight() > 0) {
+                    this.blocks[i].position.y += 1;
                 } else {
-                    this.removeBlock(this.blocks[j]);
+                    this.removeBlock(this.blocks[i]);
                 }
             }
         }
