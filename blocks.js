@@ -226,33 +226,7 @@ function Board() {
     'use strict';
     
     this.grid = function () {
-        var i, j, k,
-            x, y,
-            grid = [],
-            row, rowIndex;
-    
-        // Initialize grid.
-        for (i = 0; i < HEIGHT; i += 1) {
-            row = [];
-            for (j = 0; j < WIDTH; j += 1) {
-                row.push(false);
-            }
-            grid.push(row);
-        }
-        
-        // Add blocks.
-        for (i = 0; i < this.blocks.length; i += 1) {
-            x = this.blocks[i].position.x;
-            y = this.blocks[i].position.y;
-            for (j = 0; j < this.blocks[i].shape.length; j += 1) {
-                for (k = 0; k < this.blocks[i].shape[j].length; k += 1) {
-                    if (this.blocks[i].shape[j][k]) {
-                        grid[y + j][x + k] = true;
-                    }
-                }
-            }
-        }
-        return grid;
+        return this.partialGrid(null);
     };
     
     this.partialGrid = function (block) {
