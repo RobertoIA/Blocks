@@ -630,6 +630,11 @@ window.onload = function () {
             gameState.moveRight();
         } else if (event.keyCode === 32) {
             gameState.paused = !gameState.paused;
+        } else if (event.keyCode === 13) {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            gameState.advance();
+            gameState.draw();
+            context.stroke();
         //} else {
         //    console.log(event.keyCode);
         }
