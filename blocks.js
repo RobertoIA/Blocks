@@ -395,7 +395,7 @@ function Board() {
             
             if (position <= row) {
                 if (position + height >= row) {
-                    this.blocks[i].shape[row - position - 1] = [];
+                    this.blocks[i].shape[row - position] = [];
                 }
                 if (this.blocks[i].getHeight() > 0) {
                     this.blocks[i].position.y += 1;
