@@ -635,6 +635,9 @@ window.onload = function () {
             gameState.advance();
             gameState.draw();
             context.stroke();
+            console.log('');
+            gameState.board.print();
+            console.log('');
         //} else {
         //    console.log(event.keyCode);
         }
