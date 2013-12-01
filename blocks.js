@@ -249,11 +249,15 @@ function Board() {
             if (this.blocks[i] !== block) { // discriminate block.
                 x = this.blocks[i].position.x;
                 y = this.blocks[i].position.y;
+                rowIndex = 0;
                 for (j = 0; j < this.blocks[i].shape.length; j += 1) {
-                    for (k = 0; k < this.blocks[i].shape[j].length; k += 1) {
-                        if (this.blocks[i].shape[j][k]) {
-                            grid[y + j][x + k] = true;
+                    if (this.blocks[i].shape[j].length !== 0) {
+                        for (k = 0; k < this.blocks[i].shape[j].length; k += 1) {
+                            if (this.blocks[i].shape[j][k]) {
+                                grid[y + rowIndex][x + k] = true;
+                            }
                         }
+                        rowIndex += 1;
                     }
                 }
             }
