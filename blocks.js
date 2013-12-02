@@ -6,6 +6,11 @@ var FPS = 6,
     TOP_MARGIN = 10,
     WIDTH = 10,
     HEIGHT = 20,
+    
+    SCORE_1LINE = 1,
+    SCORE_2LINE = 2,
+    SCORE_3LINE = 3,
+    SCORE_4LINE = 4,
 
     // Size of the minimun fragment of a block.
     fragmentSize,
@@ -510,6 +515,21 @@ function GameState() {
             this.block.moveDown();
         } else {
             filledRows = this.board.checkFilledRows();
+            
+            switch (filledRows.length) {
+            case 1:
+                this.score += SCORE_1LINE;
+                break;
+            case 2:
+                this.score += SCORE_2LINE;
+                break;
+            case 3:
+                this.score += SCORE_3LINE;
+                break;
+            case 4:
+                this.score += SCORE_4LINE;
+                break;
+            }
             
             for (i = 0; i < filledRows.length; i += 1) {
                 this.board.deleteRow(filledRows[i]);
