@@ -7,10 +7,10 @@ var FPS = 6,
     WIDTH = 10,
     HEIGHT = 20,
     
-    SCORE_1LINE = 1,
-    SCORE_2LINE = 2,
-    SCORE_3LINE = 3,
-    SCORE_4LINE = 4,
+    SCORE_1LINE = 40,
+    SCORE_2LINE = 100,
+    SCORE_3LINE = 300,
+    SCORE_4LINE = 1200,
 
     // Size of the minimun fragment of a block.
     fragmentSize,
