@@ -622,15 +622,18 @@ var setup = function () {
 var debugLoop = function () {
     'use strict';
     
-    if (!gameState.paused) {
-        // Clean screen.
-        context.clearRect(0, 0, canvas.width, canvas.height);
+    // Clean screen.
+    context.clearRect(0, 0, canvas.width, canvas.height);
     
+    if (!gameState.paused) {
         gameState.advance();
-        gameState.draw();
-        
-        context.stroke();
+    } else {
+        context.fillText("PAUSED", LEFT_MARGIN - (fragmentSize * 5),
+                         TOP_MARGIN + fragmentSize * 4);
     }
+    
+    gameState.draw();
+    context.stroke();
 };
 
 // Kicks in once the DOM has been loaded.
@@ -655,10 +658,7 @@ window.onload = function () {
         } else if (event.keyCode === 32) {
             gameState.paused = !gameState.paused;
         } else if (event.keyCode === 13) {
-            context.clearRect(0, 0, canvas.width, canvas.height);
             gameState.advance();
-            gameState.draw();
-            context.stroke();
             console.log('');
             gameState.board.print();
             console.log('');
