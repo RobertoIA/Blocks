@@ -460,6 +460,7 @@ function GameState() {
     indexB = Math.floor(Math.random() * 7);
     
     this.paused = false;
+    this.over = false;
     
     this.score = 0;
     this.board = new Board();
@@ -541,6 +542,10 @@ function GameState() {
             
             index = Math.floor(Math.random() * 7);
             this.nextBlock = new Block(index);
+            
+            if (!this.board.checkCollision(this.block).down) {
+                gameState.over = true;
+            }
         }
     };
 }
@@ -625,11 +630,14 @@ var debugLoop = function () {
     // Clean screen.
     context.clearRect(0, 0, canvas.width, canvas.height);
     
-    if (!gameState.paused) {
-        gameState.advance();
-    } else {
+    if (gameState.over) {
+        context.fillText("GAME OVER", LEFT_MARGIN - (fragmentSize * 5),
+                         TOP_MARGIN + fragmentSize * 4);
+    } else if (gameState.paused) {
         context.fillText("PAUSED", LEFT_MARGIN - (fragmentSize * 5),
                          TOP_MARGIN + fragmentSize * 4);
+    } else {
+        gameState.advance();
     }
     
     gameState.draw();
