@@ -628,7 +628,7 @@ var setup = function () {
     console.log('Setup completed.');
 };
 
-var debugLoop = function () {
+var mainLoop = function () {
     'use strict';
     
     // Clean screen.
@@ -679,6 +679,5 @@ window.onload = function () {
         }
     });
     
-    //debugLoop();
-    window.setInterval(debugLoop, 1000 / FPS);
+    window.setInterval(mainLoop, 1000 / FPS);
 };
