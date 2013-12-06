@@ -94,6 +94,10 @@ function Block(index) {
         this.position.y += 1;
     };
     
+    this.deleteRow = function (row) {
+        this.shape[row] = [];
+    };
+    
     this.clone = function () {
         var i,
             clone = new Block(index);
@@ -404,10 +408,10 @@ function Board() {
             
             if (position <= row) {
                 if (position + height >= row) {
-                    this.blocks[i].shape[row - position] = [];
+                    this.blocks[i].deleteRow(row - position);
                 }
                 if (this.blocks[i].getHeight() > 0) {
-                    this.blocks[i].position.y += 1;
+                    this.blocks[i].moveDown();
                 } else {
                     this.removeBlock(this.blocks[i]);
                 }
