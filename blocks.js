@@ -95,7 +95,17 @@ function Block(index) {
     };
     
     this.deleteRow = function (row) {
-        this.shape[row] = [];
+        var i, currentRow = 0;
+        
+        for (i = 0; i < this.shape.length; i += 1) {
+            if (this.shape[i].length > 0) {
+                if (currentRow === row) {
+                    this.shape[i] = [];
+                    break;
+                }
+                currentRow += 1;
+            }
+        }
     };
     
     this.clone = function () {
