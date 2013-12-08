@@ -417,7 +417,8 @@ function Board() {
             position = this.blocks[i].position.y;
             
             if (position <= row) {
-                if (position + height >= row) {
+                if (position + height > row) {
+                    console.log('bloque ' + i + ' - borrar ' + (row - position));
                     this.blocks[i].deleteRow(row - position);
                 }
                 if (this.blocks[i].getHeight() > 0) {
@@ -427,8 +428,6 @@ function Board() {
                 }
             }
         }
-        
-        this.print();
     };
     
     this.draw = function () {
@@ -681,9 +680,6 @@ window.onload = function () {
             gameState.paused = !gameState.paused;
         } else if (event.keyCode === 13) {
             gameState.advance();
-            console.log('');
-            gameState.board.print();
-            console.log('');
         //} else {
         //    console.log(event.keyCode);
         }
