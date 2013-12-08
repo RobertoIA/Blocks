@@ -94,6 +94,27 @@ function Block(index) {
         this.position.y += 1;
     };
     
+    this.markRow = function (row) {
+        var i, j,
+            currentRow = 0;
+        
+        for (i = 0; i < this.shape.length; i += 1) {
+            if (this.shape[i].length > 0) {
+                if (currentRow === row) {
+                    for (j = 0; j < this.shape[i].length; j += 1) {
+                        if (this.shape[i][j]) {
+                            context.fillRect(this.absolutePosition().x + fragmentSize * j,
+                                 this.absolutePosition().y + fragmentSize * i,
+                                 fragmentSize, fragmentSize);
+                        }
+                    }
+                    break;
+                }
+                currentRow += 1;
+            }
+        }
+    };
+    
     this.deleteRow = function (row) {
         var i, currentRow = 0;
         
@@ -418,7 +439,6 @@ function Board() {
             
             if (position <= row) {
                 if (position + height > row) {
-                    console.log('bloque ' + i + ' - borrar ' + (row - position));
                     this.blocks[i].deleteRow(row - position);
                 }
                 if (this.blocks[i].getHeight() > 0) {
@@ -426,6 +446,19 @@ function Board() {
                 } else {
                     this.removeBlock(this.blocks[i]);
                 }
+            }
+        }
+    };
+    
+    this.markRow = function (row) {
+        var i, height, position;
+
+        for (i = 0; i < this.blocks.length; i += 1) {
+            height = this.blocks[i].getHeight();
+            position = this.blocks[i].position.y;
+            
+            if (position <= row && position + height > row) {
+                this.blocks[i].markRow(row - position);
             }
         }
     };
@@ -486,11 +519,17 @@ function GameState() {
     this.nextBlock = new Block(indexB);
     
     this.draw = function () {
+        var i;
+        
         this.board.draw();
         this.nextBlock.draw();
         
         context.fillText("Score: " + this.score, LEFT_MARGIN - (fragmentSize * 5),
                          TOP_MARGIN + fragmentSize * 3);
+        
+        for (i = 0; i < this.markedRows.length; i += 1) {
+            this.board.markRow(this.markedRows[i]);
+        }
     };
     
     this.moveLeft = function () {
@@ -525,6 +564,12 @@ function GameState() {
         this.movement.right = false;
         this.movement.rotate = false;
         
+        for (i = 0; i < this.markedRows.length; i += 1) {
+            this.board.deleteRow(this.markedRows[i]);
+        }
+        
+        this.markedRows = [];
+        
         if (this.board.checkCollision(this.block).down) {
             this.block.moveDown();
         } else {
@@ -546,7 +591,7 @@ function GameState() {
             }
             
             for (i = 0; i < filledRows.length; i += 1) {
-                this.board.deleteRow(filledRows[i]);
+                this.markedRows.push(filledRows[i]);
             }
             
             this.block = this.nextBlock;
@@ -561,6 +606,8 @@ function GameState() {
             }
         }
     };
+    
+    this.markedRows = [];
 }
 
 // Loads sprites and sprite data.
