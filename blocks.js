@@ -104,7 +104,7 @@ function Block(index) {
                     for (j = 0; j < this.shape[i].length; j += 1) {
                         if (this.shape[i][j]) {
                             context.fillRect(this.absolutePosition().x + fragmentSize * j,
-                                 this.absolutePosition().y + fragmentSize * i,
+                                 this.absolutePosition().y + fragmentSize * currentRow,
                                  fragmentSize, fragmentSize);
                         }
                     }
@@ -438,7 +438,7 @@ function Board() {
             position = this.blocks[i].position.y;
             
             if (position <= row) {
-                if (position + height > row) {
+                if (position + height >= row) {
                     this.blocks[i].deleteRow(row - position);
                 }
                 if (this.blocks[i].getHeight() > 0) {
