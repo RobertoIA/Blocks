@@ -438,7 +438,7 @@ function Board() {
             position = this.blocks[i].position.y;
             
             if (position <= row) {
-                if (position + height >= row) {
+                if (position + height > row) {
                     this.blocks[i].deleteRow(row - position);
                 }
                 if (this.blocks[i].getHeight() > 0) {
