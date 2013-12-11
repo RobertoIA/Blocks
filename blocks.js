@@ -143,19 +143,6 @@ function Block(index) {
         return clone;
     };
     
-    this.getHeight = function () {
-        var i,
-            height = 0;
-        
-        for (i = 0; i < this.shape.length; i += 1) {
-            if (this.shape[i].length > 0) {
-                height += 1;
-            }
-        }
-        
-        return height;
-    };
-    
     this.print = function () {
         var i, j, row;
         
@@ -434,14 +421,14 @@ function Board() {
         var i, height, position;
 
         for (i = 0; i < this.blocks.length; i += 1) {
-            height = this.blocks[i].getHeight();
+            height = this.blocks[i].height();
             position = this.blocks[i].position.y;
             
             if (position <= row) {
                 if (position + height > row) {
                     this.blocks[i].deleteRow(row - position);
                 }
-                if (this.blocks[i].getHeight() >= 0) {
+                if (this.blocks[i].height() >= 0) {
                     this.blocks[i].moveDown();
                 } else {
                     this.removeBlock(this.blocks[i]);
@@ -454,7 +441,7 @@ function Board() {
         var i, height, position;
 
         for (i = 0; i < this.blocks.length; i += 1) {
-            height = this.blocks[i].getHeight();
+            height = this.blocks[i].height();
             position = this.blocks[i].position.y;
             
             if (position <= row && position + height > row) {
