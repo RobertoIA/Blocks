@@ -441,7 +441,7 @@ function Board() {
                 if (position + height > row) {
                     this.blocks[i].deleteRow(row - position);
                 }
-                if (this.blocks[i].getHeight() > 0) {
+                if (this.blocks[i].getHeight() >= 0) {
                     this.blocks[i].moveDown();
                 } else {
                     this.removeBlock(this.blocks[i]);
