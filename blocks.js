@@ -677,17 +677,26 @@ var mainLoop = function () {
     // Clean screen.
     context.clearRect(0, 0, canvas.width, canvas.height);
     
+    gameState.draw();
+    
     if (gameState.over) {
         context.fillText("GAME OVER", LEFT_MARGIN - (fragmentSize * 5),
                          TOP_MARGIN + fragmentSize * 4);
+        context.fillStyle = "rgba(0, 0, 0, 0.5)";
+        context.fillRect(LEFT_MARGIN, TOP_MARGIN,
+                 fragmentSize * WIDTH, fragmentSize * HEIGHT);
+        context.fillStyle = "rgba(0, 0, 0, 1)";
     } else if (gameState.paused) {
         context.fillText("PAUSED", LEFT_MARGIN - (fragmentSize * 5),
                          TOP_MARGIN + fragmentSize * 4);
+        context.fillStyle = "rgba(0, 0, 0, 0.5)";
+        context.fillRect(LEFT_MARGIN, TOP_MARGIN,
+                 fragmentSize * WIDTH, fragmentSize * HEIGHT);
+        context.fillStyle = "rgba(0, 0, 0, 1)";
     } else {
         gameState.advance();
     }
     
-    gameState.draw();
     context.stroke();
 };
 
