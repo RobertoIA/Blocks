@@ -509,6 +509,9 @@ function GameState() {
     this.draw = function () {
         var i;
         
+        // Clean screen.
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        
         this.board.draw();
         this.nextBlock.draw();
         
@@ -518,6 +521,24 @@ function GameState() {
         for (i = 0; i < this.markedRows.length; i += 1) {
             this.board.markRow(this.markedRows[i]);
         }
+        
+        if (this.over) {
+            context.fillText("GAME OVER", LEFT_MARGIN - (fragmentSize * 5),
+                         TOP_MARGIN + fragmentSize * 4);
+            context.fillStyle = "rgba(0, 0, 0, 0.5)";
+            context.fillRect(LEFT_MARGIN, TOP_MARGIN,
+                 fragmentSize * WIDTH, fragmentSize * HEIGHT);
+            context.fillStyle = "rgba(0, 0, 0, 1)";
+        } else if (this.paused) {
+            context.fillText("PAUSED", LEFT_MARGIN - (fragmentSize * 5),
+                         TOP_MARGIN + fragmentSize * 4);
+            context.fillStyle = "rgba(0, 0, 0, 0.5)";
+            context.fillRect(LEFT_MARGIN, TOP_MARGIN,
+                     fragmentSize * WIDTH, fragmentSize * HEIGHT);
+            context.fillStyle = "rgba(0, 0, 0, 1)";
+        }
+        
+        context.stroke();
     };
     
     this.moveLeft = function () {
@@ -675,30 +696,11 @@ var setup = function () {
 var mainLoop = function () {
     'use strict';
     
-    // Clean screen.
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    
     gameState.draw();
     
-    if (gameState.over) {
-        context.fillText("GAME OVER", LEFT_MARGIN - (fragmentSize * 5),
-                         TOP_MARGIN + fragmentSize * 4);
-        context.fillStyle = "rgba(0, 0, 0, 0.5)";
-        context.fillRect(LEFT_MARGIN, TOP_MARGIN,
-                 fragmentSize * WIDTH, fragmentSize * HEIGHT);
-        context.fillStyle = "rgba(0, 0, 0, 1)";
-    } else if (gameState.paused) {
-        context.fillText("PAUSED", LEFT_MARGIN - (fragmentSize * 5),
-                         TOP_MARGIN + fragmentSize * 4);
-        context.fillStyle = "rgba(0, 0, 0, 0.5)";
-        context.fillRect(LEFT_MARGIN, TOP_MARGIN,
-                 fragmentSize * WIDTH, fragmentSize * HEIGHT);
-        context.fillStyle = "rgba(0, 0, 0, 1)";
-    } else {
+    if (!gameState.over && !gameState.paused) {
         gameState.advance();
     }
-    
-    context.stroke();
 };
 
 // Kicks in once the DOM has been loaded.
