@@ -701,6 +701,8 @@ var mainLoop = function () {
     if (!gameState.over && !gameState.paused) {
         gameState.advance();
     }
+    
+    window.setTimeout(mainLoop, 1000 / FPS);
 };
 
 // Kicks in once the DOM has been loaded.
@@ -731,5 +733,5 @@ window.onload = function () {
         }
     });
     
-    window.setInterval(mainLoop, 1000 / FPS);
+    mainLoop();
 };
