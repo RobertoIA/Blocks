@@ -497,6 +497,7 @@ function GameState() {
     this.over = false;
     
     this.score = 0;
+    this.speed = 5;
     this.board = new Board();
     this.block = new Block(indexA);
     this.movement = {right: false, left: false, rotate: false};
@@ -702,7 +703,7 @@ var mainLoop = function () {
         gameState.advance();
     }
     
-    window.setTimeout(mainLoop, 1000 / FPS);
+    window.setTimeout(mainLoop, 1000 / gameState.speed);
 };
 
 // Kicks in once the DOM has been loaded.
