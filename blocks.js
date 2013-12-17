@@ -1,7 +1,7 @@
 /*global console, window, document, XMLHttpRequest, Image*/
 
 // Constants.
-var FPS = 6,
+var FPS = 60,
     LEFT_MARGIN = 150,
     TOP_MARGIN = 10,
     WIDTH = 10,
@@ -694,16 +694,22 @@ var setup = function () {
     console.log('Setup completed.');
 };
 
-var mainLoop = function () {
+var gameLoop = function () {
     'use strict';
-    
-    gameState.draw();
     
     if (!gameState.over && !gameState.paused) {
         gameState.advance();
     }
     
-    window.setTimeout(mainLoop, 1000 / gameState.speed);
+    window.setTimeout(gameLoop, 1000 / gameState.speed);
+};
+
+var drawLoop = function () {
+    'use strict';
+    
+    gameState.draw();
+    
+    window.setTimeout(drawLoop, 1000 / FPS);
 };
 
 // Kicks in once the DOM has been loaded.
@@ -734,5 +740,6 @@ window.onload = function () {
         }
     });
     
-    mainLoop();
+    gameLoop();
+    drawLoop();
 };
