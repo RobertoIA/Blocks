@@ -723,7 +723,7 @@ window.onload = function () {
             gameState.moveRight();
         } else if (event.keyCode === 32) {
             gameState.paused = !gameState.paused;
-        } else if (event.keyCode === 13) {
+        } else if (event.keyCode === 40) {
             gameState.advance();
         //} else {
         //    console.log(event.keyCode);
