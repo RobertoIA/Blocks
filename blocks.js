@@ -500,7 +500,6 @@ function GameState() {
     this.speed = 5;
     this.board = new Board();
     this.block = new Block(indexA);
-    this.movement = {right: false, left: false, rotate: false};
     
     this.block.position = {'x': 4, 'y': 0};
     this.board.addBlock(this.block);
@@ -543,36 +542,27 @@ function GameState() {
     };
     
     this.moveLeft = function () {
-        this.movement.left = true;
+        if (this.board.checkCollision(this.block).left) {
+            this.block.moveLeft();
+        }
     };
     
     this.moveRight = function () {
-        this.movement.right = true;
+        if (this.board.checkCollision(this.block).right) {
+            this.block.moveRight();
+        }
     };
     
     this.rotate = function () {
-        this.movement.rotate = true;
+        if (this.board.checkRotation(this.block)) {
+            this.block.rotate();
+        }
     };
     
     this.advance = function () {
         var index,
             filledRows,
             i;
-        
-        // Movement.
-        if (this.movement.left && this.board.checkCollision(this.block).left) {
-            this.block.moveLeft();
-        }
-        if (this.movement.right && this.board.checkCollision(this.block).right) {
-            this.block.moveRight();
-        }
-        if (this.movement.rotate && this.board.checkRotation(this.block)) {
-            this.block.rotate();
-        }
-        
-        this.movement.left = false;
-        this.movement.right = false;
-        this.movement.rotate = false;
         
         for (i = 0; i < this.markedRows.length; i += 1) {
             this.board.deleteRow(this.markedRows[i]);
