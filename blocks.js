@@ -98,6 +98,7 @@ function Block(index) {
         var i, j,
             currentRow = 0;
         
+        context.fillStyle = "rgba(255, 255, 255, 1)";
         for (i = 0; i < this.shape.length; i += 1) {
             if (this.shape[i].length > 0) {
                 if (currentRow === row) {
@@ -113,6 +114,7 @@ function Block(index) {
                 currentRow += 1;
             }
         }
+        context.fillStyle = "rgba(0, 0, 0, 1)";
     };
     
     this.deleteRow = function (row) {
