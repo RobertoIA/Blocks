@@ -458,16 +458,6 @@ function Board() {
         context.rect(LEFT_MARGIN, TOP_MARGIN,
                  fragmentSize * WIDTH, fragmentSize * HEIGHT);
         
-        // Debug grid
-        /*
-        for (i = 0; i < WIDTH; i += 1) {
-            for (j = 0; j < HEIGHT; j += 1) {
-                context.rect(LEFT_MARGIN + fragmentSize * i,
-                             TOP_MARGIN + fragmentSize * j,
-                             fragmentSize, fragmentSize);
-            }
-        }*/
-        
         for (i = 0; i < this.blocks.length; i += 1) {
             this.blocks[i].draw();
         }
@@ -727,8 +717,6 @@ window.onload = function () {
             gameState.paused = !gameState.paused;
         } else if (event.keyCode === 40) {
             gameState.advance();
-        //} else {
-        //    console.log(event.keyCode);
         }
     });
     
