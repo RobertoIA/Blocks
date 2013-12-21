@@ -498,6 +498,20 @@ function GameState() {
     
     this.nextBlock = new Block(indexB);
     
+    document.addEventListener('keydown', function (event) {
+        if (event.keyCode === 38) {
+            gameState.rotate();
+        } else if (event.keyCode === 37) {
+            gameState.moveLeft();
+        } else if (event.keyCode === 39) {
+            gameState.moveRight();
+        } else if (event.keyCode === 32) {
+            gameState.paused = !gameState.paused;
+        } else if (event.keyCode === 40) {
+            gameState.advance();
+        }
+    });
+    
     this.draw = function () {
         var i;
         
@@ -707,20 +721,6 @@ window.onload = function () {
     setup();
     
     gameState = new GameState();
-    
-    document.addEventListener('keydown', function (event) {
-        if (event.keyCode === 38) {
-            gameState.rotate();
-        } else if (event.keyCode === 37) {
-            gameState.moveLeft();
-        } else if (event.keyCode === 39) {
-            gameState.moveRight();
-        } else if (event.keyCode === 32) {
-            gameState.paused = !gameState.paused;
-        } else if (event.keyCode === 40) {
-            gameState.advance();
-        }
-    });
     
     gameLoop();
     drawLoop();
