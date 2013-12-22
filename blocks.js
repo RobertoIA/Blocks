@@ -477,7 +477,7 @@ function Board() {
     };
 }
 
-function GameState() {
+function GameState(controls) {
     'use strict';
     var indexA,
         indexB;
@@ -499,15 +499,15 @@ function GameState() {
     this.nextBlock = new Block(indexB);
     
     document.addEventListener('keydown', function (event) {
-        if (event.keyCode === 38) {
+        if (event.keyCode === controls.rotate) {
             gameState.rotate();
-        } else if (event.keyCode === 37) {
+        } else if (event.keyCode === controls.left) {
             gameState.moveLeft();
-        } else if (event.keyCode === 39) {
+        } else if (event.keyCode === controls.right) {
             gameState.moveRight();
-        } else if (event.keyCode === 32) {
+        } else if (event.keyCode === controls.pause) {
             gameState.paused = !gameState.paused;
-        } else if (event.keyCode === 40) {
+        } else if (event.keyCode === controls.advance) {
             gameState.advance();
         }
     });
@@ -713,14 +713,18 @@ var drawLoop = function () {
 // Kicks in once the DOM has been loaded.
 window.onload = function () {
     'use strict';
-    var board,
-        block,
-        nextBlock;
+    var controls;
     
     load();
     setup();
     
-    gameState = new GameState();
+    controls = {'rotate': 38,
+                'left': 37,
+                'right': 39,
+                'pause': 32,
+                'advance': 40};
+    
+    gameState = new GameState(controls);
     
     gameLoop();
     drawLoop();
