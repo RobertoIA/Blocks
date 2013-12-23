@@ -479,7 +479,8 @@ function Board() {
 
 function GameState(controls) {
     'use strict';
-    var indexA,
+    var reference = this,
+        indexA,
         indexB;
     
     indexA = Math.floor(Math.random() * 7);
@@ -500,15 +501,15 @@ function GameState(controls) {
     
     document.addEventListener('keydown', function (event) {
         if (event.keyCode === controls.rotate) {
-            gameState.rotate();
+            reference.rotate();
         } else if (event.keyCode === controls.left) {
-            gameState.moveLeft();
+            reference.moveLeft();
         } else if (event.keyCode === controls.right) {
-            gameState.moveRight();
+            reference.moveRight();
         } else if (event.keyCode === controls.pause) {
-            gameState.paused = !gameState.paused;
+            reference.paused = !reference.paused;
         } else if (event.keyCode === controls.advance) {
-            gameState.advance();
+            reference.advance();
         }
     });
     
