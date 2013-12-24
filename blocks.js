@@ -477,7 +477,7 @@ function Board() {
     };
 }
 
-function GameState(controls) {
+function GameState(size, position, controls) {
     'use strict';
     var reference = this,
         indexA,
@@ -522,28 +522,28 @@ function GameState(controls) {
         this.board.draw();
         this.nextBlock.draw();
         
-        context.fillText("Next:", LEFT_MARGIN - (fragmentSize * 5),
-                         TOP_MARGIN + fragmentSize * 0.5);
-        context.fillText("Score: " + this.score, LEFT_MARGIN - (fragmentSize * 5),
-                         TOP_MARGIN + fragmentSize * 5);
+        context.fillText("Next:", position.x - (fragmentSize * 5),
+                         position.y + fragmentSize * 0.5);
+        context.fillText("Score: " + this.score, position.x - (fragmentSize * 5),
+                         position.y + fragmentSize * 5);
         
         for (i = 0; i < this.markedRows.length; i += 1) {
             this.board.markRow(this.markedRows[i]);
         }
         
         if (this.over) {
-            context.fillText("GAME OVER", LEFT_MARGIN - (fragmentSize * 5),
-                         TOP_MARGIN + fragmentSize * 6);
+            context.fillText("GAME OVER", position.x - (fragmentSize * 5),
+                         position.y + fragmentSize * 6);
             context.fillStyle = "rgba(0, 0, 0, 0.5)";
-            context.fillRect(LEFT_MARGIN, TOP_MARGIN,
-                 fragmentSize * WIDTH, fragmentSize * HEIGHT);
+            context.fillRect(position.x, position.y,
+                 fragmentSize * size.width, fragmentSize * size.height);
             context.fillStyle = "rgba(0, 0, 0, 1)";
         } else if (this.paused) {
-            context.fillText("PAUSED", LEFT_MARGIN - (fragmentSize * 5),
-                         TOP_MARGIN + fragmentSize * 6);
+            context.fillText("PAUSED", position.x - (fragmentSize * 5),
+                         position.y + fragmentSize * 6);
             context.fillStyle = "rgba(0, 0, 0, 0.5)";
-            context.fillRect(LEFT_MARGIN, TOP_MARGIN,
-                     fragmentSize * WIDTH, fragmentSize * HEIGHT);
+            context.fillRect(position.x, position.y,
+                     fragmentSize * size.width, fragmentSize * size.height);
             context.fillStyle = "rgba(0, 0, 0, 1)";
         }
         
@@ -714,10 +714,18 @@ var drawLoop = function () {
 // Kicks in once the DOM has been loaded.
 window.onload = function () {
     'use strict';
-    var controls;
+    var size,
+        position,
+        controls;
     
     load();
     setup();
+    
+    size = {'width': 10,
+            'height': 20};
+    
+    position = {'x': 150,
+                'y': 10};
     
     controls = {'rotate': 38,
                 'left': 37,
@@ -725,7 +733,7 @@ window.onload = function () {
                 'pause': 32,
                 'advance': 40};
     
-    gameState = new GameState(controls);
+    gameState = new GameState(size, position, controls);
     
     gameLoop();
     drawLoop();
