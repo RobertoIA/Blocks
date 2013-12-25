@@ -251,7 +251,7 @@ function Block(index) {
     };
 }
 
-function Board() {
+function Board(size, position) {
     'use strict';
     
     this.grid = function () {
@@ -265,9 +265,9 @@ function Board() {
             row, rowIndex;
     
         // Initialize grid.
-        for (i = 0; i < HEIGHT; i += 1) {
+        for (i = 0; i < size.height; i += 1) {
             row = [];
-            for (j = 0; j < WIDTH; j += 1) {
+            for (j = 0; j < size.width; j += 1) {
                 row.push(false);
             }
             grid.push(row);
@@ -349,7 +349,7 @@ function Board() {
         }
         
         // Vertical collisions.
-        if (block.position.y + 1 > HEIGHT - block.height()) {
+        if (block.position.y + 1 > size.height - block.height()) {
             collisions.down = false;
         } else {
             // With other blocks.
@@ -379,10 +379,10 @@ function Board() {
             blockPiece, auxBlockPiece, boardPiece;
         
         auxBlock.rotate();
-        if (auxBlock.position.x + auxBlock.shape[0].length > WIDTH) {
+        if (auxBlock.position.x + auxBlock.shape[0].length > size.width) {
             return false;
         }
-        if (auxBlock.position.y + auxBlock.shape.length > HEIGHT) {
+        if (auxBlock.position.y + auxBlock.shape.length > size.height) {
             return false;
         }
 
@@ -406,9 +406,9 @@ function Board() {
             grid = this.grid(),
             filledRows = [];
         
-        for (i = 0; i < HEIGHT; i += 1) {
+        for (i = 0; i < size.height; i += 1) {
             row = true;
-            for (j = 0; j < WIDTH; j += 1) {
+            for (j = 0; j < size.width; j += 1) {
                 row = row && grid[i][j];
             }
             if (row) {
@@ -455,8 +455,8 @@ function Board() {
     this.draw = function () {
         var i, j;
         
-        context.rect(LEFT_MARGIN, TOP_MARGIN,
-                 fragmentSize * WIDTH, fragmentSize * HEIGHT);
+        context.rect(position.x, position.y,
+                 fragmentSize * size.width, fragmentSize * size.height);
         
         for (i = 0; i < this.blocks.length; i += 1) {
             this.blocks[i].draw();
@@ -467,9 +467,9 @@ function Board() {
         var i, j, row,
             grid = this.grid();
         
-        for (i = 0; i < HEIGHT; i += 1) {
+        for (i = 0; i < size.height; i += 1) {
             row = "";
-            for (j = 0; j < WIDTH; j += 1) {
+            for (j = 0; j < size.width; j += 1) {
                 row += grid[i][j] ? 'x ' : '_ ';
             }
             console.log(row);
@@ -491,7 +491,7 @@ function GameState(size, position, controls) {
     
     this.score = 0;
     this.speed = 5;
-    this.board = new Board();
+    this.board = new Board(size, position);
     this.block = new Block(indexA);
     
     this.block.position = {'x': 4, 'y': 0};
