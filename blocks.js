@@ -2,10 +2,6 @@
 
 // Constants.
 var FPS = 60,
-    LEFT_MARGIN = 150,
-    TOP_MARGIN = 10,
-    WIDTH = 10,
-    HEIGHT = 20,
     
     SCORE_1LINE = 40,
     SCORE_2LINE = 100,
@@ -25,7 +21,7 @@ var FPS = 60,
     
     gameState;
 
-function Block(index) {
+function Block(index, boardSize, boardPosition) {
     'use strict';
     var i,
         shape;
@@ -42,8 +38,8 @@ function Block(index) {
     this.angle = 0;
     
     this.absolutePosition = function () {
-        return {'x': (this.position.x * fragmentSize) + LEFT_MARGIN,
-                'y': (this.position.y * fragmentSize) + TOP_MARGIN};
+        return {'x': (this.position.x * fragmentSize) + boardPosition.x,
+                'y': (this.position.y * fragmentSize) + boardPosition.y};
     };
     
     this.width = function () {
@@ -133,7 +129,7 @@ function Block(index) {
     
     this.clone = function () {
         var i,
-            clone = new Block(index);
+            clone = new Block(index, boardSize, boardPosition);
         
         clone.position.x = this.position.x;
         clone.position.y = this.position.y;
@@ -316,7 +312,7 @@ function Board(size, position) {
             collisions = {down: true, right: true, left: true};
         
         // Horizontal collisions
-        if (block.position.x + 1 > (WIDTH - block.width())) {
+        if (block.position.x + 1 > (size.width - block.width())) {
             collisions.right = false;
         } else if (block.position.x - 1 < 0) {
             collisions.left = false;
@@ -492,12 +488,12 @@ function GameState(size, position, controls) {
     this.score = 0;
     this.speed = 5;
     this.board = new Board(size, position);
-    this.block = new Block(indexA);
+    this.block = new Block(indexA, size, position);
     
     this.block.position = {'x': 4, 'y': 0};
     this.board.addBlock(this.block);
     
-    this.nextBlock = new Block(indexB);
+    this.nextBlock = new Block(indexB, size, position);
     
     document.addEventListener('keydown', function (event) {
         if (event.keyCode === controls.rotate) {
@@ -608,7 +604,7 @@ function GameState(size, position, controls) {
             this.board.addBlock(this.block);
             
             index = Math.floor(Math.random() * 7);
-            this.nextBlock = new Block(index);
+            this.nextBlock = new Block(index, size, position);
             
             if (!this.board.checkCollision(this.block).down) {
                 gameState.over = true;
