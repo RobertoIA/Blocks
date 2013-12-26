@@ -512,9 +512,6 @@ function GameState(size, position, controls) {
     this.draw = function () {
         var i;
         
-        // Clean screen.
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        
         this.board.draw();
         this.nextBlock.draw();
         
@@ -702,6 +699,7 @@ var gameLoop = function () {
 var drawLoop = function () {
     'use strict';
     
+    context.clearRect(0, 0, canvas.width, canvas.height);
     gameState.draw();
     
     window.setTimeout(drawLoop, 1000 / FPS);
