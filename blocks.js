@@ -19,7 +19,8 @@ var FPS = 60,
     blockData = [],
     spriteSheet = new Image(),
     
-    gameState;
+    gameStateA,
+    gameStateB;
 
 function Block(index, boardSize, boardPosition) {
     'use strict';
@@ -604,7 +605,7 @@ function GameState(size, position, controls) {
             this.nextBlock = new Block(index, size, position);
             
             if (!this.board.checkCollision(this.block).down) {
-                gameState.over = true;
+                gameStateA.over = true;
             }
         }
     };
@@ -675,7 +676,7 @@ var setup = function () {
     
     canvas = document.getElementById("canvas");
     context = canvas.getContext('2d');
-    canvas.width = 800;
+    canvas.width = 1200;
     canvas.height = 700;
     
     // Fragment size is the minor side of the I piece.
@@ -689,18 +690,23 @@ var setup = function () {
 var gameLoop = function () {
     'use strict';
     
-    if (!gameState.over && !gameState.paused) {
-        gameState.advance();
+    if (!gameStateA.over && !gameStateA.paused) {
+        gameStateA.advance();
     }
     
-    window.setTimeout(gameLoop, 1000 / gameState.speed);
+    if (!gameStateB.over && !gameStateB.paused) {
+        gameStateB.advance();
+    }
+    
+    window.setTimeout(gameLoop, 1000 / gameStateA.speed);
 };
 
 var drawLoop = function () {
     'use strict';
     
     context.clearRect(0, 0, canvas.width, canvas.height);
-    gameState.draw();
+    gameStateA.draw();
+    gameStateB.draw();
     
     window.setTimeout(drawLoop, 1000 / FPS);
 };
@@ -721,13 +727,24 @@ window.onload = function () {
     position = {'x': 150,
                 'y': 10};
     
+    controls = {'rotate': 87,
+                'left': 65,
+                'right': 68,
+                'pause': 32,
+                'advance': 83};
+    
+    gameStateA = new GameState(size, position, controls);
+    
+    position = {'x': 650,
+                'y': 10};
+    
     controls = {'rotate': 38,
                 'left': 37,
                 'right': 39,
                 'pause': 32,
                 'advance': 40};
     
-    gameState = new GameState(size, position, controls);
+    gameStateB = new GameState(size, position, controls);
     
     gameLoop();
     drawLoop();
