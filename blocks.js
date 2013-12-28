@@ -497,16 +497,20 @@ function GameState(size, position, controls) {
     this.nextBlock = new Block(indexB, size, position);
     
     document.addEventListener('keydown', function (event) {
-        if (event.keyCode === controls.rotate) {
-            reference.rotate();
-        } else if (event.keyCode === controls.left) {
-            reference.moveLeft();
-        } else if (event.keyCode === controls.right) {
-            reference.moveRight();
-        } else if (event.keyCode === controls.pause) {
+        if (!reference.paused) {
+            if (event.keyCode === controls.rotate) {
+                reference.rotate();
+            } else if (event.keyCode === controls.left) {
+                reference.moveLeft();
+            } else if (event.keyCode === controls.right) {
+                reference.moveRight();
+            } else if (event.keyCode === controls.advance) {
+                reference.advance();
+            }
+        }
+        
+        if (event.keyCode === controls.pause) {
             reference.paused = !reference.paused;
-        } else if (event.keyCode === controls.advance) {
-            reference.advance();
         }
     });
     
