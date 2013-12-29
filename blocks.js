@@ -609,7 +609,7 @@ function GameState(size, position, controls) {
             this.nextBlock = new Block(index, size, position);
             
             if (!this.board.checkCollision(this.block).down) {
-                gameStateA.over = true;
+                this.over = true;
             }
         }
     };
