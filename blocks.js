@@ -617,6 +617,15 @@ function GameState(size, position, controls) {
     };
     
     this.markedRows = [];
+    
+    this.loop = function () {
+        if (!this.over && !this.paused) {
+            this.advance();
+        }
+        window.setTimeout(function () {
+            reference.loop()
+        }, 1000 / reference.speed);
+    }
 }
 
 // Loads sprites and sprite data.
@@ -693,20 +702,6 @@ var setup = function () {
     console.log('Setup completed.');
 };
 
-var gameLoop = function () {
-    'use strict';
-    
-    if (!gameStateA.over && !gameStateA.paused) {
-        gameStateA.advance();
-    }
-    
-    if (!gameStateB.over && !gameStateB.paused) {
-        gameStateB.advance();
-    }
-    
-    window.setTimeout(gameLoop, 1000 / gameStateA.speed);
-};
-
 var drawLoop = function () {
     'use strict';
     
@@ -752,6 +747,7 @@ window.onload = function () {
     
     gameStateB = new GameState(size, position, controls);
     
-    gameLoop();
+    gameStateA.loop();
+    gameStateB.loop();
     drawLoop();
 };
