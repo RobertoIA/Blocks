@@ -2,7 +2,6 @@
 
 // Constants.
 var FPS = 60,
-    
     SCORE_1LINE = 40,
     SCORE_2LINE = 100,
     SCORE_3LINE = 300,
@@ -19,8 +18,8 @@ var FPS = 60,
     blockData = [],
     spriteSheet = new Image(),
     
-    gameStateA,
-    gameStateB;
+    // Current games.
+    gameStates = [];
 
 function Block(index, boardSize, boardPosition) {
     'use strict';
@@ -623,9 +622,9 @@ function GameState(size, position, controls) {
             this.advance();
         }
         window.setTimeout(function () {
-            reference.loop()
+            reference.loop();
         }, 1000 / reference.speed);
-    }
+    };
 }
 
 // Loads sprites and sprite data.
@@ -704,10 +703,13 @@ var setup = function () {
 
 var drawLoop = function () {
     'use strict';
+    var i;
     
     context.clearRect(0, 0, canvas.width, canvas.height);
-    gameStateA.draw();
-    gameStateB.draw();
+    
+    for (i = 0; i < gameStates.length; i += 1) {
+        gameStates[i].draw();
+    }
     
     window.setTimeout(drawLoop, 1000 / FPS);
 };
@@ -715,7 +717,8 @@ var drawLoop = function () {
 // Kicks in once the DOM has been loaded.
 window.onload = function () {
     'use strict';
-    var size,
+    var i,
+        size,
         position,
         controls;
     
@@ -734,7 +737,7 @@ window.onload = function () {
                 'pause': 32,
                 'advance': 83};
     
-    gameStateA = new GameState(size, position, controls);
+    gameStates.push(new GameState(size, position, controls));
     
     position = {'x': 650,
                 'y': 10};
@@ -745,9 +748,13 @@ window.onload = function () {
                 'pause': 32,
                 'advance': 40};
     
-    gameStateB = new GameState(size, position, controls);
+    gameStates.push(new GameState(size, position, controls));
     
-    gameStateA.loop();
-    gameStateB.loop();
+    for (i = 0; i < gameStates.length; i += 1) {
+        gameStates[i].loop();
+    }
+    
     drawLoop();
+    
+    console.log(gameStates.length);
 };
