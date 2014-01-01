@@ -34,7 +34,7 @@ function Block(index, boardSize, boardPosition) {
         this.shape.push(shape[i].slice(0));
     }
     
-    this.position = {'x': -4, 'y': 1};
+    this.position = {'x': -5, 'y': 1};
     this.angle = 0;
     
     this.absolutePosition = function () {
