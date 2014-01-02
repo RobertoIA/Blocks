@@ -477,10 +477,12 @@ function GameState(size, position, controls) {
     'use strict';
     var reference = this,
         indexA,
-        indexB;
+        indexB,
+        indexC;
     
     indexA = Math.floor(Math.random() * 7);
     indexB = Math.floor(Math.random() * 7);
+    indexC = Math.floor(Math.random() * 7);
     
     this.paused = false;
     this.over = false;
@@ -494,6 +496,8 @@ function GameState(size, position, controls) {
     this.board.addBlock(this.block);
     
     this.nextBlock = new Block(indexB, size, position);
+    this.savedBlock = new Block(indexC, size, position);
+    this.savedBlock.position.y += 4;
     
     document.addEventListener('keydown', function (event) {
         if (!reference.over) {
@@ -520,11 +524,14 @@ function GameState(size, position, controls) {
         
         this.board.draw();
         this.nextBlock.draw();
+        this.savedBlock.draw();
         
         context.fillText("Next:", position.x - (fragmentSize * 5),
                          position.y + fragmentSize * 0.5);
+        context.fillText("Saved:", position.x - (fragmentSize * 5),
+                         position.y + fragmentSize * 4.5);
         context.fillText("Score: " + this.score, position.x - (fragmentSize * 5),
-                         position.y + fragmentSize * 5);
+                         position.y + fragmentSize * 9.5);
         
         for (i = 0; i < this.markedRows.length; i += 1) {
             this.board.markRow(this.markedRows[i]);
@@ -532,14 +539,14 @@ function GameState(size, position, controls) {
         
         if (this.over) {
             context.fillText("GAME OVER", position.x - (fragmentSize * 5),
-                         position.y + fragmentSize * 6);
+                         position.y + fragmentSize * 10.5);
             context.fillStyle = "rgba(0, 0, 0, 0.5)";
             context.fillRect(position.x, position.y,
                  fragmentSize * size.width, fragmentSize * size.height);
             context.fillStyle = "rgba(0, 0, 0, 1)";
         } else if (this.paused) {
             context.fillText("PAUSED", position.x - (fragmentSize * 5),
-                         position.y + fragmentSize * 6);
+                         position.y + fragmentSize * 10.5);
             context.fillStyle = "rgba(0, 0, 0, 0.5)";
             context.fillRect(position.x, position.y,
                      fragmentSize * size.width, fragmentSize * size.height);
