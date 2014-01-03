@@ -732,6 +732,10 @@ window.onload = function () {
     load();
     setup();
     
+    document.addEventListener('keydown', function (event) {
+        console.log('Pressed keyCode ' + event.keyCode);
+    });
+    
     size = {'width': 10,
             'height': 20};
     
