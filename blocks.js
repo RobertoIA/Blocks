@@ -746,7 +746,8 @@ window.onload = function () {
                 'left': 65,
                 'right': 68,
                 'pause': 32,
-                'advance': 83};
+                'advance': 83,
+                'save': 81};
     
     gameStates.push(new GameState(size, position, controls));
     
@@ -757,7 +758,8 @@ window.onload = function () {
                 'left': 37,
                 'right': 39,
                 'pause': 32,
-                'advance': 40};
+                'advance': 40,
+                'save': 17};
     
     gameStates.push(new GameState(size, position, controls));
     
