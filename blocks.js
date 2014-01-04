@@ -510,6 +510,8 @@ function GameState(size, position, controls) {
                     reference.moveRight();
                 } else if (event.keyCode === controls.advance) {
                     reference.advance();
+                } else if (event.keyCode === controls.save) {
+                    reference.save();
                 }
             }
             
@@ -620,6 +622,12 @@ function GameState(size, position, controls) {
                 this.over = true;
             }
         }
+    };
+    
+    this.save = function () {
+        this.savedBlock = this.block.clone();
+        this.savedBlock.position.x = -5;
+        this.savedBlock.position.y = 5;
     };
     
     this.markedRows = [];
