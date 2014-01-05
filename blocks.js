@@ -625,7 +625,13 @@ function GameState(size, position, controls) {
     };
     
     this.save = function () {
-        this.savedBlock = this.block.clone();
+        var savedBlock = this.savedBlock;
+        this.board.removeBlock(this.block);
+        this.savedBlock = this.block;
+        savedBlock.position.x = this.block.position.x;
+        savedBlock.position.y = this.block.position.y;
+        this.block = savedBlock;
+        this.board.addBlock(savedBlock);
         this.savedBlock.position.x = -5;
         this.savedBlock.position.y = 5;
     };
