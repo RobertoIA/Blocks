@@ -396,6 +396,10 @@ function Board(size, position) {
         return true;
     };
     
+    this.checkLoad = function (block) {
+        return true;
+    };
+    
     this.checkFilledRows = function () {
         var i, j,
             row,
@@ -625,15 +629,17 @@ function GameState(size, position, controls) {
     };
     
     this.save = function () {
-        var savedBlock = this.savedBlock;
-        this.board.removeBlock(this.block);
-        this.savedBlock = this.block;
-        savedBlock.position.x = this.block.position.x;
-        savedBlock.position.y = this.block.position.y;
-        this.block = savedBlock;
-        this.board.addBlock(savedBlock);
-        this.savedBlock.position.x = -5;
-        this.savedBlock.position.y = 5;
+        if (this.board.checkLoad(this.savedBlock)) {
+            var savedBlock = this.savedBlock;
+            this.board.removeBlock(this.block);
+            this.savedBlock = this.block;
+            savedBlock.position.x = this.block.position.x;
+            savedBlock.position.y = this.block.position.y;
+            this.block = savedBlock;
+            this.board.addBlock(savedBlock);
+            this.savedBlock.position.x = -5;
+            this.savedBlock.position.y = 5;
+        }
     };
     
     this.markedRows = [];
