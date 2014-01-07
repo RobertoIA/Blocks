@@ -396,7 +396,22 @@ function Board(size, position) {
         return true;
     };
     
-    this.checkLoad = function (block) {
+    this.checkLoad = function (savedBlock, currBlock) {
+        var i, j,
+            board = this.partialGrid(currBlock),
+            auxBlockPiece, boardPiece;
+        
+        for (i = 0; i < savedBlock.shape.length; i += 1) {
+            for (j = 0; j < savedBlock.shape[i].length; j += 1) {
+                auxBlockPiece = savedBlock.shape[i][j];
+                boardPiece = board[currBlock.position.y + i][currBlock.position.x + j];
+                
+                if (auxBlockPiece && boardPiece) {
+                    return false;
+                }
+            }
+        }
+        
         return true;
     };
     
@@ -629,7 +644,7 @@ function GameState(size, position, controls) {
     };
     
     this.save = function () {
-        if (this.board.checkLoad(this.savedBlock)) {
+        if (this.board.checkLoad(this.savedBlock, this.block)) {
             var savedBlock = this.savedBlock;
             this.board.removeBlock(this.block);
             this.savedBlock = this.block;
