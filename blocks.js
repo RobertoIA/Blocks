@@ -494,29 +494,7 @@ function Board(size, position) {
 
 function GameState(size, position, controls) {
     'use strict';
-    var reference = this,
-        indexA,
-        indexB,
-        indexC;
-    
-    indexA = Math.floor(Math.random() * 7);
-    indexB = Math.floor(Math.random() * 7);
-    indexC = Math.floor(Math.random() * 7);
-    
-    this.paused = false;
-    this.over = false;
-    
-    this.score = 0;
-    this.speed = 5;
-    this.board = new Board(size, position);
-    this.block = new Block(indexA, size, position);
-    
-    this.block.position = {'x': 4, 'y': 0};
-    this.board.addBlock(this.block);
-    
-    this.nextBlock = new Block(indexB, size, position);
-    this.savedBlock = new Block(indexC, size, position);
-    this.savedBlock.position.y += 4;
+    var reference = this;
     
     document.addEventListener('keydown', function (event) {
         if (!reference.over) {
@@ -531,6 +509,7 @@ function GameState(size, position, controls) {
                     reference.advance();
                 } else if (event.keyCode === controls.save) {
                     reference.save();
+                    reference.reset();
                 }
             }
             
@@ -539,6 +518,33 @@ function GameState(size, position, controls) {
             }
         }
     });
+    
+    this.reset = function () {
+        var indexA,
+            indexB,
+            indexC;
+        
+        indexA = Math.floor(Math.random() * 7);
+        indexB = Math.floor(Math.random() * 7);
+        indexC = Math.floor(Math.random() * 7);
+        
+        this.paused = false;
+        this.over = false;
+        
+        this.score = 0;
+        this.speed = 5;
+        this.board = new Board(size, position);
+        this.block = new Block(indexA, size, position);
+        
+        this.block.position = {'x': 4, 'y': 0};
+        this.board.addBlock(this.block);
+        
+        this.nextBlock = new Block(indexB, size, position);
+        this.savedBlock = new Block(indexC, size, position);
+        this.savedBlock.position.y += 4;
+    };
+    
+    this.reset();
     
     this.draw = function () {
         var i;
