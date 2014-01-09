@@ -516,6 +516,12 @@ function GameState(size, position, controls) {
             if (event.keyCode === controls.pause) {
                 reference.paused = !reference.paused;
             }
+        } else if (event.keyCode === controls.rotate ||
+                   event.keyCode === controls.left ||
+                   event.keyCode === controls.right ||
+                   event.keyCode === controls.advance ||
+                   event.keyCode === controls.save) {
+            reference.reset();
         }
     });
     
