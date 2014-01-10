@@ -509,7 +509,6 @@ function GameState(size, position, controls) {
                     reference.advance();
                 } else if (event.keyCode === controls.save) {
                     reference.save();
-                    reference.reset();
                 }
             }
             
