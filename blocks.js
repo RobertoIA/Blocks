@@ -494,7 +494,8 @@ function Board(size, position) {
 
 function GameState(size, position, controls) {
     'use strict';
-    var reference = this;
+    var drawText,
+        reference = this;
     
     document.addEventListener('keydown', function (event) {
         if (!reference.over) {
@@ -523,6 +524,12 @@ function GameState(size, position, controls) {
             reference.reset();
         }
     });
+    
+    drawText = function (text, x, y) {
+        context.fillText(text,
+                         position.x + (x * fragmentSize),
+                         position.y + (y * fragmentSize));
+    };
     
     this.reset = function () {
         var indexA,
@@ -558,27 +565,22 @@ function GameState(size, position, controls) {
         this.nextBlock.draw();
         this.savedBlock.draw();
         
-        context.fillText("Next:", position.x - (fragmentSize * 5),
-                         position.y + fragmentSize * 0.5);
-        context.fillText("Saved:", position.x - (fragmentSize * 5),
-                         position.y + fragmentSize * 4.5);
-        context.fillText("Score: " + this.score, position.x - (fragmentSize * 5),
-                         position.y + fragmentSize * 9.5);
+        drawText("Next:", -5, 0.5);
+        drawText("Saved:", -5, 4.5);
+        drawText("Score: " + this.score, -5, 9.5);
         
         for (i = 0; i < this.markedRows.length; i += 1) {
             this.board.markRow(this.markedRows[i]);
         }
         
         if (this.over) {
-            context.fillText("GAME OVER", position.x - (fragmentSize * 5),
-                         position.y + fragmentSize * 10.5);
+            drawText("GAME OVER", -5, 10.5);
             context.fillStyle = "rgba(0, 0, 0, 0.5)";
             context.fillRect(position.x, position.y,
                  fragmentSize * size.width, fragmentSize * size.height);
             context.fillStyle = "rgba(0, 0, 0, 1)";
         } else if (this.paused) {
-            context.fillText("PAUSED", position.x - (fragmentSize * 5),
-                         position.y + fragmentSize * 10.5);
+            drawText("PAUSED", -5, 10.5);
             context.fillStyle = "rgba(0, 0, 0, 0.5)";
             context.fillRect(position.x, position.y,
                      fragmentSize * size.width, fragmentSize * size.height);
