@@ -495,6 +495,7 @@ function Board(size, position) {
 function GameState(size, position, controls) {
     'use strict';
     var drawText,
+        drawScreenFilter,
         reference = this;
     
     document.addEventListener('keydown', function (event) {
@@ -529,6 +530,13 @@ function GameState(size, position, controls) {
         context.fillText(text,
                          position.x + (x * fragmentSize),
                          position.y + (y * fragmentSize));
+    };
+    
+    drawScreenFilter = function () {
+        context.fillStyle = "rgba(0, 0, 0, 0.5)";
+        context.fillRect(position.x, position.y,
+                         fragmentSize * size.width, fragmentSize * size.height);
+        context.fillStyle = "rgba(0, 0, 0, 1)";
     };
     
     this.reset = function () {
@@ -575,16 +583,10 @@ function GameState(size, position, controls) {
         
         if (this.over) {
             drawText("GAME OVER", -5, 10.5);
-            context.fillStyle = "rgba(0, 0, 0, 0.5)";
-            context.fillRect(position.x, position.y,
-                 fragmentSize * size.width, fragmentSize * size.height);
-            context.fillStyle = "rgba(0, 0, 0, 1)";
+            drawScreenFilter();
         } else if (this.paused) {
             drawText("PAUSED", -5, 10.5);
-            context.fillStyle = "rgba(0, 0, 0, 0.5)";
-            context.fillRect(position.x, position.y,
-                     fragmentSize * size.width, fragmentSize * size.height);
-            context.fillStyle = "rgba(0, 0, 0, 1)";
+            drawScreenFilter();
         }
         
         context.stroke();
