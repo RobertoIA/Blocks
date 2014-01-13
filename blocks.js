@@ -526,10 +526,12 @@ function GameState(size, position, controls) {
         }
     });
     
-    drawText = function (text, x, y) {
+    drawText = function (text, x, y, color) {
+        context.fillStyle = color;
         context.fillText(text,
                          position.x + (x * fragmentSize),
                          position.y + (y * fragmentSize));
+        context.fillStyle = "rgba(0, 0, 0, 1)";
     };
     
     drawScreenFilter = function () {
