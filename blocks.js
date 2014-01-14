@@ -541,33 +541,6 @@ function GameState(size, position, controls) {
         context.fillStyle = "rgba(0, 0, 0, 1)";
     };
     
-    this.reset = function () {
-        var indexA,
-            indexB,
-            indexC;
-        
-        indexA = Math.floor(Math.random() * 7);
-        indexB = Math.floor(Math.random() * 7);
-        indexC = Math.floor(Math.random() * 7);
-        
-        this.paused = false;
-        this.over = false;
-        
-        this.score = 0;
-        this.speed = 5;
-        this.board = new Board(size, position);
-        this.block = new Block(indexA, size, position);
-        
-        this.block.position = {'x': 4, 'y': 0};
-        this.board.addBlock(this.block);
-        
-        this.nextBlock = new Block(indexB, size, position);
-        this.savedBlock = new Block(indexC, size, position);
-        this.savedBlock.position.y += 4;
-    };
-    
-    this.reset();
-    
     this.draw = function () {
         var i;
         
@@ -677,13 +650,47 @@ function GameState(size, position, controls) {
     this.markedRows = [];
     
     this.loop = function () {
-        if (!this.over && !this.paused) {
-            this.advance();
+        if (!this.over) {
+            if (!this.paused) {
+                this.advance();
+            }
+            window.setTimeout(function () {
+                reference.loop();
+            }, 1000 / reference.speed);
         }
-        window.setTimeout(function () {
-            reference.loop();
-        }, 1000 / reference.speed);
     };
+    
+    this.start = function () {
+        this.loop();
+    };
+    
+    this.reset = function () {
+        var indexA,
+            indexB,
+            indexC;
+        
+        indexA = Math.floor(Math.random() * 7);
+        indexB = Math.floor(Math.random() * 7);
+        indexC = Math.floor(Math.random() * 7);
+        
+        this.paused = false;
+        this.over = false;
+        
+        this.score = 0;
+        this.speed = 5;
+        this.board = new Board(size, position);
+        this.block = new Block(indexA, size, position);
+        
+        this.block.position = {'x': 4, 'y': 0};
+        this.board.addBlock(this.block);
+        
+        this.nextBlock = new Block(indexB, size, position);
+        this.savedBlock = new Block(indexC, size, position);
+        this.savedBlock.position.y += 4;
+        this.start();
+    };
+    
+    this.reset();
 }
 
 // Loads sprites and sprite data.
@@ -815,11 +822,5 @@ window.onload = function () {
     
     gameStates.push(new GameState(size, position, controls));
     
-    for (i = 0; i < gameStates.length; i += 1) {
-        gameStates[i].loop();
-    }
-    
     drawLoop();
-    
-    console.log(gameStates.length);
 };
