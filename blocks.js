@@ -526,7 +526,12 @@ function GameState(size, position, controls) {
         }
     });
     
-    drawText = function (text, x, y, color) {
+    drawText = function (text, x, y, color, size) {
+        if (size) {
+            context.font = "bold " + size + "px Arial";
+        } else {
+            context.font = "bold 20px Arial";
+        }
         context.fillStyle = color;
         context.fillText(text,
                          position.x + (x * fragmentSize),
@@ -777,7 +782,7 @@ var setup = function () {
     // Fragment size is the minor side of the I piece.
     fragmentSize = Math.min(blockData[0].sprite.frame.w, blockData[0].sprite.frame.h);
     
-    context.font = "bold 20px Arial";
+    //context.font = "bold 20px Arial";
 
     console.log('Setup completed.');
 };
