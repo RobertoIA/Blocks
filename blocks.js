@@ -556,7 +556,10 @@ function GameState(size, position, controls) {
             this.board.markRow(this.markedRows[i]);
         }
         
-        if (this.over) {
+        if (this.countdown.active) {
+            drawText(this.countdown.count, 5, 10);
+            drawScreenFilter();
+        } else if (this.over) {
             drawText("GAME OVER", -5, 10.5);
             drawScreenFilter();
         } else if (this.paused) {
@@ -650,13 +653,23 @@ function GameState(size, position, controls) {
     this.markedRows = [];
     
     this.loop = function () {
+        var speed = 1000 / reference.speed;
+        
         if (!this.over) {
-            if (!this.paused) {
+            if (this.countdown.active) {
+                if (this.countdown.count > 0) {
+                    console.log(this.countdown.count);
+                    this.countdown.count -= 1;
+                    speed = 1000;
+                } else {
+                    this.countdown.active = false;
+                }
+            } else if (!this.paused) {
                 this.advance();
             }
             window.setTimeout(function () {
                 reference.loop();
-            }, 1000 / reference.speed);
+            }, speed);
         }
     };
     
@@ -678,6 +691,8 @@ function GameState(size, position, controls) {
         
         this.score = 0;
         this.speed = 5;
+        this.countdown = {'active': true,
+                          'count': 4};
         this.board = new Board(size, position);
         this.block = new Block(indexA, size, position);
         
