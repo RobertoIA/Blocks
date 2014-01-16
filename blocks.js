@@ -563,7 +563,11 @@ function GameState(size, position, controls) {
         
         if (this.countdown.active) {
             drawScreenFilter();
-            drawText(this.countdown.count, 5, 10, "rgba(255, 255, 255, 1)", 50);
+            if (this.countdown.count !== 0) {
+                drawText(this.countdown.count, 5, 10, "rgba(255, 255, 255, 1)", 50);
+            } else {
+                drawText("GO!", 4, 10, "rgba(255, 255, 255, 1)", 50);
+            }
         } else if (this.over) {
             drawText("GAME OVER", -5, 10.5);
             drawScreenFilter();
