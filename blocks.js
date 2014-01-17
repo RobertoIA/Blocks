@@ -34,7 +34,7 @@ function Block(index, boardSize, boardPosition) {
         this.shape.push(shape[i].slice(0));
     }
     
-    this.position = {'x': -5, 'y': 1};
+    this.position = {'x': -5.5, 'y': 1};
     this.angle = 0;
     
     this.absolutePosition = function () {
@@ -553,9 +553,9 @@ function GameState(size, position, controls) {
         this.nextBlock.draw();
         this.savedBlock.draw();
         
-        drawText("Next:", -5, 0.5);
-        drawText("Saved:", -5, 4.5);
-        drawText("Score: " + this.score, -5, 9.5);
+        drawText("Next:", -5.5, 0.5);
+        drawText("Saved:", -5.5, 4.5);
+        drawText("Score: " + this.score, -5.5, 9.5);
         
         for (i = 0; i < this.markedRows.length; i += 1) {
             this.board.markRow(this.markedRows[i]);
@@ -569,10 +569,10 @@ function GameState(size, position, controls) {
                 drawText("GO!", 4, 10, "rgba(255, 255, 255, 1)", 50);
             }
         } else if (this.over) {
-            drawText("GAME OVER", -5, 10.5);
+            drawText("GAME OVER", -5.5, 10.5);
             drawScreenFilter();
         } else if (this.paused) {
-            drawText("PAUSED", -5, 10.5);
+            drawText("PAUSED", -5.5, 10.5);
             drawScreenFilter();
         }
         
@@ -654,7 +654,7 @@ function GameState(size, position, controls) {
             savedBlock.position.y = this.block.position.y;
             this.block = savedBlock;
             this.board.addBlock(savedBlock);
-            this.savedBlock.position.x = -5;
+            this.savedBlock.position.x = -5.5;
             this.savedBlock.position.y = 5;
         }
     };
@@ -822,7 +822,7 @@ window.onload = function () {
     size = {'width': 10,
             'height': 20};
     
-    position = {'x': 150,
+    position = {'x': 175,
                 'y': 10};
     
     controls = {'rotate': 87,
@@ -834,7 +834,7 @@ window.onload = function () {
     
     gameStates.push(new GameState(size, position, controls));
     
-    position = {'x': 650,
+    position = {'x': 775,
                 'y': 10};
     
     controls = {'rotate': 38,
