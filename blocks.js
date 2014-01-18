@@ -667,7 +667,6 @@ function GameState(size, position, controls) {
         if (!this.over) {
             if (this.countdown.active) {
                 if (this.countdown.count > 0) {
-                    console.log(this.countdown.count);
                     this.countdown.count -= 1;
                     speed = 1000;
                 } else {
