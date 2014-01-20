@@ -372,7 +372,7 @@ function Board(size, position) {
         var i, j,
             board = this.partialGrid(block),
             auxBlock = block.clone(),
-            blockPiece, auxBlockPiece, boardPiece;
+            auxBlockPiece, boardPiece;
         
         auxBlock.rotate();
         if (auxBlock.position.x + auxBlock.shape[0].length > size.width) {
@@ -468,7 +468,7 @@ function Board(size, position) {
     };
     
     this.draw = function () {
-        var i, j;
+        var i;
         
         context.rect(position.x, position.y,
                  fragmentSize * size.width, fragmentSize * size.height);
@@ -775,7 +775,6 @@ var load = function () {
 // Sets up basics elements.
 var setup = function () {
     'use strict';
-    var i, j, row;
     
     canvas = document.getElementById("canvas");
     context = canvas.getContext('2d');
@@ -806,8 +805,7 @@ var drawLoop = function () {
 // Kicks in once the DOM has been loaded.
 window.onload = function () {
     'use strict';
-    var i,
-        size,
+    var size,
         position,
         controls;
     
