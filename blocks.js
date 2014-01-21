@@ -681,10 +681,6 @@ function GameState(size, position, controls) {
         }
     };
     
-    this.start = function () {
-        this.loop();
-    };
-    
     this.reset = function () {
         var indexA,
             indexB,
@@ -710,7 +706,7 @@ function GameState(size, position, controls) {
         this.nextBlock = new Block(indexB, size, position);
         this.savedBlock = new Block(indexC, size, position);
         this.savedBlock.position.y += 4;
-        this.start();
+        this.loop();
     };
     
     this.reset();
